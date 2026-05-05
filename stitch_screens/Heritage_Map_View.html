@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Heritage Map View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<style data-purpose="custom-styles">/* Custom styles for map background and specific element positioning if needed beyond Tailwind */
+body {
+    /* Simulating the map background with an image. In a real app, this would be a map component. */
+    background-image: url(https://lh3.googleusercontent.com/aida/ADBb0ugQKlwtxR9lMscgPgbOX_ZKUnHAiO1VEG9RT1Jsm4u8nzcgoV_1RMFDgE5jYpYQumBsJgcTudII-QAyFL-4CNPUj89FbY5n9vqxivysGplwERKBfufH9My3jpOwpoIF4EzpgUdKwqJEnDtc6rQGSwATKozbzGtj8_FK3kMILtQTDcd6ckfiARFwEDYKFYLrEy_DPczUpf87JD3Y1jmMbVFgyERtR4M9nQZ4GDnAuTMAORaO9cksiI8uutM);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif
+    }
+/* Using absolute positioning for elements overlaying the map background */
+.map-overlay-container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    /* Let clicks pass through to map if needed, but not on interactive overlays */
+    }
+.interactive-element {
+    pointer-events: auto
+    }
+/* Custom color for the maroon theme */
+.bg-maroon-900 {
+    background-color: #7B1113
+    }
+.text-maroon-900 {
+    color: #7B1113
+    }
+.border-maroon-900 {
+    border-color: #7B1113
+    }</style>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            maroon: {
+              900: '#7B1113', // Approximate maroon from image
+            },
+            warm: {
+              50: '#FDFBF7',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="relative overflow-hidden selection:bg-maroon-900 selection:text-white">
+<!-- BEGIN: Map Overlay Container -->
+<main class="map-overlay-container flex flex-col justify-between p-4 h-full">
+<!-- BEGIN: Top Navigation & Controls -->
+<header class="flex justify-between items-start mt-8 interactive-element">
+<!-- Back Button -->
+<button aria-label="Go back" class="bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-md text-maroon-900 hover:bg-gray-50 transition-colors">
+<i class="fa-solid fa-arrow-left text-xl"></i>
+</button>
+<!-- Layer Toggle Button -->
+<button aria-label="Toggle map layers" class="bg-white rounded-full w-12 h-12 flex items-center justify-center shadow-md text-maroon-900 hover:bg-gray-50 transition-colors">
+<i class="fa-solid fa-layer-group text-xl"></i>
+</button>
+</header>
+<!-- END: Top Navigation & Controls -->
+<!-- BEGIN: Map Pins (Visual Representation for layout completeness, real implementation would use map markers) -->
+<!-- These are absolute positioned based on visual approximation from the provided image -->
+<div aria-hidden="true" class="absolute inset-0 z-0 pointer-events-none">
+<!-- We are using the background image for the actual map and pins visually in this HTML replica, 
+           as placing individual pins accurately over a static background image without coordinates is prone to error.
+           The pins are visible in the background image. -->
+</div>
+<!-- END: Map Pins -->
+<!-- BEGIN: Bottom Detail Card -->
+<section class="interactive-element w-full mb-6">
+<div class="bg-warm-50 rounded-2xl p-4 shadow-lg flex gap-4 items-center">
+<!-- Location Image -->
+<div class="w-24 h-24 shrink-0 overflow-hidden rounded-xl border border-gray-100">
+<img alt="Virupaksha Temple" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgmMbp7BHiCh2D-l_liOzAefMQys60Dmf2Z0t8sbsWrhJxrpDOt4fUQv43xdwqC2Z9RDXF_xmAcJxZvQ78b6uB2zinl81W-3Olz72yojOw0mhnFSvlrkj6ZO6MbOe7KNKvjejGZL8cjuhZjX67jUA-X4piFohu_jPS_1s0AKxrjVSEgEf_YbqFqh3-PcbRTdNMKdGFjNwW0hmz8puzen2DthpaT0te299K2nJdktlbrEfNU5LC1UY4NUhQ270zFjKayiuJoRx6xM8n"/>
+</div>
+<!-- Location Details & Actions -->
+<div class="flex-1 flex flex-col justify-between h-24">
+<div>
+<h2 class="text-lg font-semibold text-gray-900 leading-tight">Virupaksha Temple</h2>
+<p class="text-sm text-gray-500 mt-1">500 m away</p>
+</div>
+<div class="flex gap-3 mt-auto">
+<!-- View Details Button -->
+<button class="flex-1 bg-maroon-900 text-white text-sm font-medium py-2 px-4 rounded-xl hover:bg-red-900 transition-colors">
+              View Details
+            </button>
+<!-- Bookmark Button -->
+<button aria-label="Bookmark" class="w-10 h-10 border border-maroon-900 text-maroon-900 rounded-xl flex items-center justify-center hover:bg-maroon-50 transition-colors">
+<i class="fa-regular fa-bookmark text-lg"></i>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Bottom Detail Card -->
+</main>
+<!-- END: Map Overlay Container -->
+</body></html>

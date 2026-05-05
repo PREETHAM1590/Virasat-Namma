@@ -1,0 +1,3 @@
+- No crash. 
+- Save memory on chat complete.
+- Read stitch_screens for UI truth.

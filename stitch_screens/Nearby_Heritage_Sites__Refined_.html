@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nearby Heritage Sites</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style data-purpose="custom-fonts-and-resets">    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&display=swap');
+    body {
+      font-family: 'Noto Serif', serif;
+      background-color: #f7f3e8;
+      -webkit-font-smoothing: antialiased;
+    }</style><script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "surface-container": "#efefd7",
+                "surface-container-lowest": "#ffffff",
+                "on-tertiary-fixed": "#28180b",
+                "primary-fixed": "#ffdad4",
+                "tertiary": "#342416",
+                "surface-bright": "#fbfbe2",
+                "on-primary-fixed-variant": "#8f0f07",
+                "error-container": "#ffdad6",
+                "inverse-on-surface": "#f2f2d9",
+                "on-secondary-container": "#745c00",
+                "surface-variant": "#e4e4cc",
+                "on-tertiary-fixed-variant": "#574333",
+                "secondary-fixed-dim": "#e9c349",
+                "surface-container-highest": "#e4e4cc",
+                "on-surface-variant": "#5a413d",
+                "on-secondary-fixed-variant": "#574500",
+                "secondary-container": "#fed65b",
+                "on-tertiary-container": "#bea28f",
+                "surface-tint": "#b22b1d",
+                "surface-container-high": "#eaead1",
+                "primary": "#570000",
+                "on-primary": "#ffffff",
+                "error": "#ba1a1a",
+                "tertiary-fixed": "#fbddc7",
+                "primary-container": "#800000",
+                "on-error": "#ffffff",
+                "on-error-container": "#93000a",
+                "on-tertiary": "#ffffff",
+                "on-secondary": "#ffffff",
+                "secondary": "#735c00",
+                "on-surface": "#1b1d0e",
+                "tertiary-fixed-dim": "#dec1ac",
+                "primary-fixed-dim": "#ffb4a8",
+                "secondary-fixed": "#ffe088",
+                "inverse-surface": "#303221",
+                "surface-dim": "#dbdcc3",
+                "inverse-primary": "#ffb4a8",
+                "tertiary-container": "#4c392a",
+                "on-background": "#1b1d0e",
+                "outline-variant": "#e2bfb9",
+                "outline": "#8e706c",
+                "on-primary-container": "#ff8371",
+                "on-primary-fixed": "#410000",
+                "background": "#fbfbe2",
+                "on-secondary-fixed": "#241a00",
+                "surface-container-low": "#f5f5dc",
+                "surface": "#fbfbe2"
+        },
+        "fontFamily": {
+                "label-md": ["Noto Serif"],
+                "headline-lg": ["Noto Serif"],
+                "headline-md": ["Noto Serif"],
+                "body-md": ["Noto Serif"],
+                "body-lg": ["Noto Serif"],
+                "headline-xl": ["Noto Serif"]
+        }
+      },
+    },
+  }
+</script>
+</head>
+<body class="text-black flex flex-col min-h-screen px-5 py-6 max-w-md mx-auto relative">
+<!-- BEGIN: TopNavigation -->
+<header class="flex justify-between items-center mb-8 mt-4" data-purpose="top-app-bar">
+<!-- Back Button -->
+<button aria-label="Go back" class="p-1 -ml-1 text-black hover:opacity-70 transition-opacity">
+<svg fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="28">
+<line x1="19" x2="5" y1="12" y2="12"></line>
+<polyline points="12 19 5 12 12 5"></polyline>
+</svg>
+</button>
+<!-- Filter/Funnel Button -->
+<button aria-label="Filter sites" class="p-1 -mr-1 text-black hover:opacity-70 transition-opacity">
+<svg fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="28">
+<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+</svg>
+</button>
+</header>
+<!-- END: TopNavigation -->
+<!-- BEGIN: PageHeader -->
+<section class="mb-8" data-purpose="page-title-section">
+<h1 class="text-[34px] leading-[1.1] font-extrabold tracking-tight mb-2 text-black">
+      Nearby Heritage Sites
+    </h1>
+<p class="text-[19px] text-gray-900 font-normal">
+      Within 5 km of you
+    </p>
+</section>
+<!-- END: PageHeader -->
+<!-- BEGIN: SiteList -->
+<main class="flex-1 flex flex-col gap-4 mb-6" data-purpose="heritage-sites-list">
+<!-- Site Card: Virupaksha Temple -->
+<article class="bg-white rounded-2xl p-2.5 flex items-center shadow-[0_2px_10px_rgba(0,0,0,0.04)] rounded-2xl shadow-sm">
+<img alt="Virupaksha Temple" class="w-[76px] h-[76px] rounded-xl object-cover shrink-0 mr-4" src="https://lh3.googleusercontent.com/aida/ADBb0uhrYPjmX5_5F9T8D2RETWsHKzSsIfa_sm3JXNHJ9HJeTvsJtlvR1U6k679S7l5NckmJqnQyUcesCsp-LiVOJbBIAeCvZuhpe3oHB1ESA3-o2s46-eO_p57c7pN7FOXxFEUGJOte_F2BROp4qtFZVIT9QILkr1fsUxzxW3ZT5IbmTCwkLN553pInsoJbg4_1F7AysOyRzvYq0uxyKCHcTS81AtPqfP2gGtHEu1mQVTObzFh_errOARywtNVN"/>
+<div class="flex flex-col justify-center">
+<h2 class="text-[19px] font-bold text-black mb-0.5 leading-tight tracking-tight">Virupaksha Temple</h2>
+<p class="text-[15px] text-gray-800 font-normal">500 m away</p>
+</div>
+</article>
+<!-- Site Card: Vittala Temple -->
+<article class="bg-white rounded-2xl p-2.5 flex items-center shadow-[0_2px_10px_rgba(0,0,0,0.04)] rounded-2xl shadow-sm">
+<img alt="Vittala Temple" class="w-[76px] h-[76px] rounded-xl object-cover shrink-0 mr-4" src="https://lh3.googleusercontent.com/aida/ADBb0uhrYPjmX5_5F9T8D2RETWsHKzSsIfa_sm3JXNHJ9HJeTvsJtlvR1U6k679S7l5NckmJqnQyUcesCsp-LiVOJbBIAeCvZuhpe3oHB1ESA3-o2s46-eO_p57c7pN7FOXxFEUGJOte_F2BROp4qtFZVIT9QILkr1fsUxzxW3ZT5IbmTCwkLN553pInsoJbg4_1F7AysOyRzvYq0uxyKCHcTS81AtPqfP2gGtHEu1mQVTObzFh_errOARywtNVN"/>
+<div class="flex flex-col justify-center">
+<h2 class="text-[19px] font-bold text-black mb-0.5 leading-tight tracking-tight">Vittala Temple</h2>
+<p class="text-[15px] text-gray-800 font-normal">1.2 km away</p>
+</div>
+</article>
+<!-- Site Card: Hampi Bazaar -->
+<article class="bg-white rounded-2xl p-2.5 flex items-center shadow-[0_2px_10px_rgba(0,0,0,0.04)] rounded-2xl shadow-sm">
+<img alt="Hampi Bazaar" class="w-[76px] h-[76px] rounded-xl object-cover shrink-0 mr-4" src="https://lh3.googleusercontent.com/aida/ADBb0uhrYPjmX5_5F9T8D2RETWsHKzSsIfa_sm3JXNHJ9HJeTvsJtlvR1U6k679S7l5NckmJqnQyUcesCsp-LiVOJbBIAeCvZuhpe3oHB1ESA3-o2s46-eO_p57c7pN7FOXxFEUGJOte_F2BROp4qtFZVIT9QILkr1fsUxzxW3ZT5IbmTCwkLN553pInsoJbg4_1F7AysOyRzvYq0uxyKCHcTS81AtPqfP2gGtHEu1mQVTObzFh_errOARywtNVN"/>
+<div class="flex flex-col justify-center">
+<h2 class="text-[19px] font-bold text-black mb-0.5 leading-tight tracking-tight">Hampi Bazaar</h2>
+<p class="text-[15px] text-gray-800 font-normal">1.6 km away</p>
+</div>
+</article>
+<!-- Site Card: Lotus Mahal -->
+<article class="bg-white rounded-2xl p-2.5 flex items-center shadow-[0_2px_10px_rgba(0,0,0,0.04)] rounded-2xl shadow-sm">
+<img alt="Lotus Mahal" class="w-[76px] h-[76px] rounded-xl object-cover shrink-0 mr-4" src="https://lh3.googleusercontent.com/aida/ADBb0uhrYPjmX5_5F9T8D2RETWsHKzSsIfa_sm3JXNHJ9HJeTvsJtlvR1U6k679S7l5NckmJqnQyUcesCsp-LiVOJbBIAeCvZuhpe3oHB1ESA3-o2s46-eO_p57c7pN7FOXxFEUGJOte_F2BROp4qtFZVIT9QILkr1fsUxzxW3ZT5IbmTCwkLN553pInsoJbg4_1F7AysOyRzvYq0uxyKCHcTS81AtPqfP2gGtHEu1mQVTObzFh_errOARywtNVN"/>
+<div class="flex flex-col justify-center">
+<h2 class="text-[19px] font-bold text-black mb-0.5 leading-tight tracking-tight">Lotus Mahal</h2>
+<p class="text-[15px] text-gray-800 font-normal">2.1 km away</p>
+</div>
+</article>
+</main>
+<!-- END: SiteList -->
+<!-- BEGIN: BottomAction -->
+<footer class="mt-auto pb-4 pt-2" data-purpose="map-action-footer">
+<button class="w-full bg-[#731924] hover:bg-[#5a131b] transition-colors text-white font-bold text-[19px] py-4 rounded-xl shadow-md flex items-center justify-center">
+      View All on Map
+    </button>
+</footer>
+<!-- END: BottomAction -->
+</body></html>

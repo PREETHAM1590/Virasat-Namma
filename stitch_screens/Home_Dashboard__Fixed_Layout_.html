@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Heritage App Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brand-bg': '#FCF8F5',
+            'brand-primary': '#5B1A1E',
+            'brand-text': '#1D1A1A',
+            'brand-muted': '#6B6262',
+            'brand-card': '#EFE2D2',
+            'brand-search': '#FBF6F0',
+            'brand-border': '#E4D5C5'
+          },
+          fontFamily: {
+            'serif': ['"Noto Serif"', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-styles">
+    body {
+      background-color: #FCF8F5;
+      font-family: 'Noto Serif', serif;
+      color: #1D1A1A;
+      /* Prevent pull-to-refresh on mobile */
+      overscroll-behavior-y: none;
+    }
+    
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col relative pb-28 font-serif">
+<!-- BEGIN: TopHeader -->
+<header class="px-6 pt-12 pb-4 flex justify-between items-center bg-brand-bg sticky top-0 z-10">
+<button aria-label="Menu" class="text-brand-text">
+<svg fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg">
+<line x1="4" x2="20" y1="12" y2="12"></line>
+<line x1="4" x2="20" y1="6" y2="6"></line>
+<line x1="4" x2="20" y1="18" y2="18"></line>
+</svg>
+</button>
+<button aria-label="Notifications" class="relative text-brand-text">
+<svg fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg">
+<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+<path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+</svg>
+<span class="absolute top-0 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-brand-bg"></span>
+</button>
+</header>
+<!-- END: TopHeader -->
+<main class="flex-grow px-6 pt-4 pb-8">
+<!-- BEGIN: Greeting -->
+<section class="mb-8">
+<h1 class="font-serif text-[32px] font-medium text-brand-primary leading-tight mb-2">
+        Namaskara! <span class="inline-block origin-bottom-right rotate-[-10deg]">👋</span>
+</h1>
+<p class="text-brand-text text-base">Where will heritage take you today?</p>
+</section>
+<!-- END: Greeting -->
+<!-- BEGIN: SearchBar -->
+<section class="mb-10">
+<div class="relative flex items-center w-full h-14 rounded-2xl bg-white border border-brand-border shadow-sm px-4">
+<svg class="text-brand-muted" fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+<circle cx="11" cy="11" r="8"></circle>
+<path d="m21 21-4.3-4.3"></path>
+</svg>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-[15px] placeholder-brand-muted ml-3 outline-none w-full font-serif" placeholder="Search heritage sites, forts, temples..." type="text"/>
+<button aria-label="Filter" class="ml-2 w-10 h-10 flex items-center justify-center rounded-xl bg-brand-card text-brand-primary">
+<svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+<line x1="4" x2="20" y1="21" y2="14"></line>
+<line x1="4" x2="20" y1="10" y2="3"></line>
+<line x1="12" x2="12" y1="21" y2="12"></line>
+<line x1="12" x2="12" y1="8" y2="3"></line>
+<line x1="20" x2="20" y1="21" y2="16"></line>
+<line x1="20" x2="20" y1="12" y2="3"></line>
+<line x1="1" x2="1" y1="14" y2="14"></line>
+<line x1="9" x2="9" y1="8" y2="8"></line>
+<line x1="17" x2="17" y1="16" y2="16"></line>
+</svg>
+</button>
+</div>
+</section>
+<!-- END: SearchBar -->
+<!-- BEGIN: QuickActions -->
+<section class="grid grid-cols-4 gap-4 mb-10">
+<button class="flex flex-col items-center justify-center bg-brand-card rounded-2xl p-3 h-[90px] w-full">
+<svg class="text-brand-primary mb-2" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+<span class="text-[13px] font-medium text-brand-text">Nearby</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-brand-card rounded-2xl p-3 h-[90px] w-full">
+<svg class="text-brand-primary mb-2" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+<line x1="9" x2="9" y1="3" y2="18"></line>
+<line x1="15" x2="15" y1="6" y2="21"></line>
+</svg>
+<span class="text-[13px] font-medium text-brand-text">Map</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-brand-card rounded-2xl p-3 h-[90px] w-full">
+<svg class="text-brand-primary mb-2" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+<line x1="16" x2="16" y1="2" y2="6"></line>
+<line x1="8" x2="8" y1="2" y2="6"></line>
+<line x1="3" x2="21" y1="10" y2="10"></line>
+<path d="M8 14h.01"></path>
+<path d="M12 14h.01"></path>
+<path d="M16 14h.01"></path>
+<path d="M8 18h.01"></path>
+<path d="M12 18h.01"></path>
+<path d="M16 18h.01"></path>
+</svg>
+<span class="text-[13px] font-medium text-brand-text">Passport</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-brand-card rounded-2xl p-3 h-[90px] w-full">
+<svg class="text-brand-primary mb-2" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+<path d="M8 7h6"></path>
+<path d="M8 11h8"></path>
+</svg>
+<span class="text-[13px] font-medium text-brand-text">Guides</span>
+</button>
+</section>
+<!-- END: QuickActions -->
+<!-- BEGIN: ContinueJourney -->
+<section class="mb-12">
+<div class="relative w-full h-[200px] rounded-[24px] overflow-hidden shadow-md">
+<!-- Using a placeholder image since actual photography isn't provided as a clean URL in prompt -->
+<img alt="Hampi" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhiul6gJA_5eYaLag4PQK1byVDMfa-hB9scF1nBRkzybLWaA0Q9VXA47tKvV44JeluAtp3jY1uYh20BdyI7r2Bkgia178TZo8oX92RzurVRIH8EmY7N9gtnk2vr3F2IZTk-l3sCQvTL4WbTqtYM-o9LLR44B1AHh3iVYmY8zS9gOwOG7AEXR3AOqQtt6XRkN25rnkSaLZJqVa1MCIdkYcNFck4lVgRo3YqwEB09n9vzLJ5xiwQKrI1R84L6lqaPFKrwhM6whIWCpUp"/>
+<div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+<div class="absolute inset-0 p-5 flex flex-col justify-between">
+<p class="text-white/90 text-[13px] font-medium">Continue Your Journey</p>
+<div class="mt-auto">
+<h2 class="font-serif text-[32px] text-white leading-tight mb-1">Hampi</h2>
+<p class="text-white/80 text-[15px] mb-5">Vijayanagara Empire</p>
+<div class="flex items-center justify-between">
+<div class="w-2/3">
+<p class="text-white text-[13px] font-medium mb-2">3 / 8 Sites Explored</p>
+<div class="w-full h-1 bg-white/30 rounded-full overflow-hidden">
+<div class="h-full bg-white rounded-full" style="width: 37.5%"></div>
+</div>
+</div>
+<button aria-label="Go" class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-brand-primary shrink-0 ml-4 shadow-sm">
+<svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+<path d="M5 12h14"></path>
+<path d="m12 5 7 7-7 7"></path>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: ContinueJourney -->
+<!-- BEGIN: PopularCategories -->
+<section class="mb-10">
+<h3 class="font-serif text-xl font-medium text-brand-primary mb-4">Popular Categories</h3>
+<div class="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+<button class="flex flex-col items-center justify-center bg-brand-card rounded-2xl p-3 min-w-[96px] h-[96px] shrink-0">
+<svg class="text-brand-primary mb-2" fill="none" height="32" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 22h20"></path>
+<path d="M12 2v20"></path>
+<path d="M4 22V10h4v12"></path>
+<path d="M16 22V10h4v12"></path>
+<path d="M8 6h8"></path>
+<path d="M6 14h12"></path>
+</svg>
+<span class="text-[13px] font-medium text-brand-text">Temples</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-brand-card rounded-2xl p-3 min-w-[96px] h-[96px] shrink-0">
+<svg class="text-brand-primary mb-2" fill="none" height="32" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg">
+<path d="M22 20v-7l-10-5-10 5v7"></path>
+<path d="M12 15v5"></path>
+<path d="M6 16v4"></path>
+<path d="M18 16v4"></path>
+</svg>
+<span class="text-[13px] font-medium text-brand-text">Forts</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-brand-card rounded-2xl p-3 min-w-[96px] h-[96px] shrink-0">
+<svg class="text-brand-primary mb-2" fill="none" height="32" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 22h16"></path>
+<path d="M12 2v20"></path>
+<path d="M8 12h8"></path>
+<path d="M8 7h8"></path>
+</svg>
+<span class="text-[13px] font-medium text-brand-text">Palaces</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-brand-card rounded-2xl p-3 min-w-[96px] h-[96px] shrink-0">
+<svg class="text-brand-primary mb-2" fill="none" height="32" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg">
+<path d="m8 3 4 8 5-5 5 15H2L8 3z"></path>
+</svg>
+<span class="text-[13px] font-medium text-brand-text">Heritage Walks</span>
+</button>
+</div>
+</section>
+<!-- END: PopularCategories -->
+<!-- BEGIN: Recommended -->
+<section class="mb-6">
+<h3 class="font-serif text-xl font-medium text-brand-primary mb-4">Recommended For You</h3>
+<div class="flex gap-4 overflow-x-auto hide-scrollbar pb-4">
+<!-- Card 1 -->
+<div class="min-w-[280px] w-[280px] bg-white rounded-[20px] overflow-hidden shadow-sm border border-brand-border shrink-0">
+<div class="relative h-[160px] w-full">
+<img alt="Pattadakal Temple" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4UKfFAYy8mxl4It2tzByd_-vXIogRuw47Y0F-ePmSWpdgNq5b_4RK_jxJ9oKauCjN2Od_SPlLp3xXHd4-XTr7OhzvyNjCr4TRHc3WG2o4rV3qK4mbtxrKPDJWdFMoJjTfpF7EqdZurM0pHThWEf-6ACtrh1oBwRmzYaevMUtsaEgOMAjYrU8ysBbXoEWBwu7soR1BempVdUtTMehwuW3iTR19LaYrnV-fAQrJb8lLdDEk4E4kk4q7iKs7yVoJMb8_aQyRd2q_ekVr"/>
+<button class="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-brand-text shadow-sm">
+<svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
+<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path>
+</svg>
+</button>
+</div>
+<div class="p-4">
+<h4 class="font-medium text-brand-text text-[17px] mb-1">Pattadakal</h4>
+<p class="text-brand-muted text-[13px] mb-3">UNESCO World Heritage Site</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center text-brand-muted text-[13px]">
+<svg class="mr-1" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+                77 km away
+              </div>
+<div class="flex items-center text-brand-text text-[13px] font-medium">
+<svg class="mr-1" fill="#FBBF24" height="14" stroke="#FBBF24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+</svg>
+                4.6
+              </div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="min-w-[280px] w-[280px] bg-white rounded-[20px] overflow-hidden shadow-sm border border-brand-border shrink-0">
+<div class="relative h-[160px] w-full">
+<img alt="Badami Cave Temples" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2-_3xqQMSt2EhC_0LvSdow5R1eU4NKeezcEUbIUYR7RVaIJ0JVPBLZ9z1tPLZlE6ohHiOl5JHNpEzzzcDSkdphR-L7TPqZpnxQp_x798QPLV9MeESfPASbdbv7hgJLvWVejcgvBwQOJiDjyXeRqEJ-LrYdsG6YxM9831fZisvavnkQllZfyekBBf87ZT0iRtAysoN8-H-hXgzn83M4u6v7vG6grAIQQ9nMa6i4Y-7T_EuZpSywCQnrYLCLfYNsy_UbxDrERyd7t6c"/>
+<button class="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-brand-text shadow-sm">
+<svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
+<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path>
+</svg>
+</button>
+</div>
+<div class="p-4">
+<h4 class="font-medium text-brand-text text-[17px] mb-1">Badami Cave Temples</h4>
+<p class="text-brand-muted text-[13px] mb-3">Ancient Rock-cut Temples</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center text-brand-muted text-[13px]">
+<svg class="mr-1" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+                143 km away
+              </div>
+<div class="flex items-center text-brand-text text-[13px] font-medium">
+<svg class="mr-1" fill="#FBBF24" height="14" stroke="#FBBF24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+</svg>
+                4.5
+              </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Recommended -->
+</main>
+<!-- BEGIN: BottomNavigation -->
+<nav class="fixed bottom-0 left-0 w-full bg-brand-search border-t border-brand-border px-6 py-2 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20">
+<ul class="flex justify-between items-center h-16">
+<li>
+<a class="flex flex-col items-center justify-center w-14 text-brand-primary" href="#">
+<div class="relative flex flex-col items-center">
+<div class="w-10 h-1 bg-brand-primary absolute -top-4 rounded-b-md"></div>
+<svg class="mb-1" fill="currentColor" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+<span class="text-[11px] font-medium">Home</span>
+</div>
+</a>
+</li>
+<li>
+<a class="flex flex-col items-center justify-center w-14 text-brand-muted hover:text-brand-primary transition-colors" href="#">
+<svg class="mb-1" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<circle cx="11" cy="11" r="8"></circle>
+<path d="m21 21-4.3-4.3"></path>
+<line x1="11" x2="11" y1="8" y2="14"></line>
+<line x1="8" x2="14" y1="11" y2="11"></line>
+</svg>
+<span class="text-[11px] font-medium">Discover</span>
+</a>
+</li>
+<li>
+<a class="flex flex-col items-center justify-center w-14 text-brand-muted hover:text-brand-primary transition-colors" href="#">
+<svg class="mb-1" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+<line x1="16" x2="16" y1="2" y2="6"></line>
+<line x1="8" x2="8" y1="2" y2="6"></line>
+<line x1="3" x2="21" y1="10" y2="10"></line>
+<circle cx="12" cy="15" r="2"></circle>
+</svg>
+<span class="text-[11px] font-medium">Passport</span>
+</a>
+</li>
+<li>
+<a class="flex flex-col items-center justify-center w-14 text-brand-muted hover:text-brand-primary transition-colors" href="#">
+<svg class="mb-1" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+</svg>
+<span class="text-[11px] font-medium">Saved</span>
+</a>
+</li>
+<li>
+<a class="flex flex-col items-center justify-center w-14 text-brand-muted hover:text-brand-primary transition-colors" href="#">
+<svg class="mb-1" fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+<circle cx="12" cy="7" r="4"></circle>
+</svg>
+<span class="text-[11px] font-medium">Profile</span>
+</a>
+</li>
+</ul>
+<!-- Add padding for safe area on modern iOS devices -->
+<div class="h-safe-area-inset-bottom"></div>
+</nav>
+<!-- END: BottomNavigation -->
+</body></html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Heritage Map View</title><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<style data-purpose="custom-styles">body {
+    background-image: url(https://lh3.googleusercontent.com/aida/ADBb0ugQKlwtxR9lMscgPgbOX_ZKUnHAiO1VEG9RT1Jsm4u8nzcgoV_1RMFDgE5jYpYQumBsJgcTudII-QAyFL-4CNPUj89FbY5n9vqxivysGplwERKBfufH9My3jpOwpoIF4EzpgUdKwqJEnDtc6rQGSwATKozbzGtj8_FK3kMILtQTDcd6ckfiARFwEDYKFYLrEy_DPczUpf87JD3Y1jmMbVFgyERtR4M9nQZ4GDnAuTMAORaO9cksiI8uutM);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    font-family: "Noto Serif", serif
+    }
+.map-overlay-container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none
+    }
+.interactive-element {
+    pointer-events: auto
+    }
+.temple-pin {
+    position: absolute;
+    cursor: pointer;
+    transform: translate(-50%, -100%)
+    }
+.temple-pin-icon {
+    width: 48px;
+    height: 60px;
+    background-color: #570000;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 50% 100%, 0% 75%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3)
+    }</style>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            maroon: {
+              900: '#7B1113', // Approximate maroon from image
+            },
+            warm: {
+              50: '#FDFBF7',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="relative overflow-hidden selection:bg-maroon-900 selection:text-white">
+<!-- BEGIN: Map Overlay Container -->
+<main class="map-overlay-container flex flex-col justify-between p-4 h-full">
+<!-- BEGIN: Top Navigation & Controls -->
+<header class="flex justify-between items-start mt-8 interactive-element"><!-- Back Button -->
+<button aria-label="Go back" class="bg-surface-container-lowest rounded-full w-12 h-12 flex items-center justify-center shadow-md text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<!-- Layer Toggle Button -->
+<button aria-label="Toggle map layers" class="bg-surface-container-lowest rounded-full w-12 h-12 flex items-center justify-center shadow-md text-primary hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-2xl">layers</span>
+</button></header>
+<!-- END: Top Navigation & Controls -->
+<!-- BEGIN: Map Pins (Visual Representation for layout completeness, real implementation would use map markers) -->
+<!-- These are absolute positioned based on visual approximation from the provided image -->
+<div aria-hidden="true" class="absolute inset-0 z-0 pointer-events-none"><!-- Central Active Pin -->
+<div class="temple-pin" style="top: 40%; left: 50%;">
+<div class="temple-pin-icon text-white">
+<span class="material-symbols-outlined text-3xl">temple_hindu</span>
+</div>
+</div>
+<!-- Other Pins (Simplified) -->
+<div class="temple-pin opacity-80 scale-75" style="top: 18%; left: 48%;">
+<div class="temple-pin-icon text-white">
+<span class="material-symbols-outlined text-2xl">temple_hindu</span>
+</div>
+</div>
+<div class="temple-pin opacity-80 scale-75" style="top: 32%; left: 16%;">
+<div class="temple-pin-icon text-white">
+<span class="material-symbols-outlined text-2xl">temple_hindu</span>
+</div>
+</div>
+<div class="temple-pin opacity-80 scale-75" style="top: 26%; left: 83%;">
+<div class="temple-pin-icon text-white">
+<span class="material-symbols-outlined text-2xl">temple_hindu</span>
+</div>
+</div>
+<div class="temple-pin opacity-80 scale-75" style="top: 52%; left: 16%;">
+<div class="temple-pin-icon text-white">
+<span class="material-symbols-outlined text-2xl">temple_hindu</span>
+</div>
+</div>
+<div class="temple-pin opacity-80 scale-75" style="top: 52%; left: 71%;">
+<div class="temple-pin-icon text-white">
+<span class="material-symbols-outlined text-2xl">temple_hindu</span>
+</div>
+</div></div>
+<!-- END: Map Pins -->
+<!-- BEGIN: Bottom Detail Card -->
+<section class="interactive-element w-full mb-6"><div class="bg-surface-container-lowest rounded-2xl p-4 shadow-lg flex gap-4 items-center border border-outline-variant">
+<!-- Location Image -->
+<div class="w-24 h-24 shrink-0 overflow-hidden rounded-xl border border-outline-variant">
+<img alt="Virupaksha Temple" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ugQKlwtxR9lMscgPgbOX_ZKUnHAiO1VEG9RT1Jsm4u8nzcgoV_1RMFDgE5jYpYQumBsJgcTudII-QAyFL-4CNPUj89FbY5n9vqxivysGplwERKBfufH9My3jpOwpoIF4EzpgUdKwqJEnDtc6rQGSwATKozbzGtj8_FK3kMILtQTDcd6ckfiARFwEDYKFYLrEy_DPczUpf87JD3Y1jmMbVFgyERtR4M9nQZ4GDnAuTMAORaO9cksiI8uutM"/>
+</div>
+<!-- Location Details & Actions -->
+<div class="flex-1 flex flex-col justify-between h-24">
+<div>
+<h2 class="text-headline-md font-headline-md text-on-surface leading-tight">Virupaksha Temple</h2>
+<p class="text-body-md text-on-surface-variant">500 m away</p>
+</div>
+<div class="flex gap-3 mt-auto">
+<!-- View Details Button -->
+<button class="flex-1 bg-primary text-on-primary text-label-md font-label-md py-2 px-4 rounded-xl hover:opacity-90 transition-colors">
+              View Details
+            </button>
+<!-- Bookmark Button -->
+<button aria-label="Bookmark" class="w-10 h-10 border border-primary text-primary rounded-xl flex items-center justify-center hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+</div>
+</div>
+</div></section>
+<!-- END: Bottom Detail Card -->
+</main>
+<!-- END: Map Overlay Container -->
+</body></html>

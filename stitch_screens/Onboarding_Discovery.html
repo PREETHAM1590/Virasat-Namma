@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Karnataka Heritage Onboarding</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Custom Configuration & Styles -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brand-bg': '#fcf8f2',
+            'brand-maroon': '#6a1a1f',
+            'brand-gold': '#b89456',
+            'brand-text': '#333333',
+            'brand-dot': '#e0cca9'
+          },
+          fontFamily: {
+            'serif': ['"Noto Serif"', 'serif'],
+            'sans': ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-shapes">
+    /* Curved bottom for the hero image container */
+    .bowl-curve {
+      border-bottom-left-radius: 50% 10%;
+      border-bottom-right-radius: 50% 10%;
+      border-bottom: 3px solid #b89456;
+      overflow: hidden;
+    }
+
+    /* Faint background mandala patterns (simulated with radial gradients for pure CSS approach) */
+    .bg-pattern-top-left {
+      background: radial-gradient(circle at 0% 0%, rgba(184, 148, 86, 0.1) 0%, transparent 40%);
+    }
+    .bg-pattern-bottom-left {
+      background: radial-gradient(circle at 0% 100%, rgba(184, 148, 86, 0.1) 0%, transparent 40%);
+    }
+  </style>
+</head>
+<body class="bg-brand-bg font-serif min-h-screen relative flex flex-col overflow-x-hidden selection:bg-brand-maroon selection:text-white">
+<!-- Decorative Background Elements -->
+<div aria-hidden="true" class="absolute inset-0 pointer-events-none bg-pattern-top-left z-0"></div>
+<div aria-hidden="true" class="absolute inset-0 pointer-events-none bg-pattern-bottom-left z-0"></div>
+<!-- BEGIN: MainHeader -->
+<header class="absolute top-0 w-full p-6 flex justify-end z-20">
+<button class="text-brand-maroon text-lg font-medium tracking-wide hover:opacity-80 transition-opacity" data-purpose="skip-button">
+      Skip
+    </button>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: MainContent -->
+<main class="flex-grow flex flex-col relative z-10 pt-20">
+<!-- Title Section -->
+<section aria-labelledby="onboarding-title" class="flex flex-col items-center text-center px-6 mt-4 z-20">
+<!-- Top Ornament -->
+<div aria-hidden="true" class="flex items-center justify-center space-x-2 mb-4">
+<div class="h-px w-8 bg-brand-gold"></div>
+<svg class="text-brand-gold" fill="none" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="currentColor"></path>
+<!-- Adding some smaller leaves to mimic the lotus shape -->
+<path d="M12 6L13.5 9.5L17 12L13.5 14.5L12 18L10.5 14.5L7 12L10.5 9.5L12 6Z" fill="#fcf8f2"></path>
+</svg>
+<div class="h-px w-8 bg-brand-gold"></div>
+</div>
+<!-- Headline -->
+<h1 class="text-4xl md:text-5xl font-bold text-brand-maroon leading-[1.15] tracking-tight" id="onboarding-title">
+        Discover<br/>
+        Karnataka<br/>
+        Heritage
+      </h1>
+<!-- Bottom Ornament -->
+<div aria-hidden="true" class="flex items-center justify-center space-x-2 mt-6 mb-6">
+<div class="h-px w-6 bg-brand-gold"></div>
+<div class="w-2 h-2 rotate-45 border border-brand-gold"></div>
+<div class="h-px w-6 bg-brand-gold"></div>
+</div>
+<!-- Description -->
+<p class="font-sans text-brand-text text-[15px] leading-relaxed max-w-[280px]">
+        Explore timeless palaces, forts, temples and stories across Karnataka.
+      </p>
+</section>
+<!-- Hero Image Section with curved bottom -->
+<section aria-hidden="true" class="w-full relative mt-auto mb-24 z-10">
+<!-- The image container with the bowl curve and gold border -->
+<div class="w-full h-[45vh] min-h-[300px] bowl-curve relative shadow-sm">
+<!-- Placeholder for the Mysore Palace image -->
+<img alt="Mysore Palace at sunset" class="absolute inset-0 w-full h-full object-cover object-bottom" data-purpose="hero-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIdkS2PRMsKrUoBNIMWZCBcDWYfK03HjOpIVaLhvLlw4SkNISEobPRdEU3c65gh72IfVuzcxpFC4O1mrAiOq18ivuazcTqvwx-bKjxRziU2l_RA4kWOmZP8Kp0KP-yC28pGmV549tJZcUzIWlx1f1ezsJHwSmhc3xvUptdZErsxThdNAvjJ6wwOyfNafmtIvypnheYzzYlFO0H_VAF_OfsZwbWC17y7Ta174UK0v9Trfy5nuUIWgBQnQ42koWvCBB8jH4DSk1Clr11"/>
+<!-- Subtle gradient overlay at bottom to blend image slightly if needed -->
+<div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/20 to-transparent"></div>
+</div>
+</section>
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: BottomNavigation -->
+<footer class="absolute bottom-0 w-full p-8 flex justify-between items-center z-20">
+<!-- Spacer for flex alignment -->
+<div class="w-14"></div>
+<!-- Pagination Dots -->
+<div aria-label="Onboarding progress" class="flex space-x-3" role="tablist">
+<button aria-label="Page 1" aria-selected="true" class="w-2.5 h-2.5 rounded-full bg-brand-maroon" role="tab"></button>
+<button aria-label="Page 2" aria-selected="false" class="w-2.5 h-2.5 rounded-full bg-brand-dot" role="tab"></button>
+<button aria-label="Page 3" aria-selected="false" class="w-2.5 h-2.5 rounded-full bg-brand-dot" role="tab"></button>
+<button aria-label="Page 4" aria-selected="false" class="w-2.5 h-2.5 rounded-full bg-brand-dot" role="tab"></button>
+</div>
+<!-- Next Button -->
+<button aria-label="Next page" class="w-14 h-14 rounded-full bg-brand-maroon flex items-center justify-center shadow-lg hover:bg-[#541418] transition-colors focus:outline-none focus:ring-4 focus:ring-brand-maroon/30">
+<svg class="text-white" fill="none" height="24" viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+<path d="M5 12H19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M12 5L19 12L12 19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</footer>
+<!-- END: BottomNavigation -->
+</body></html>

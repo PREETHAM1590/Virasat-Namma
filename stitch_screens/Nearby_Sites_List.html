@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nearby Heritage Sites</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Serif:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'cream-bg': '#fdf6e7',
+            'maroon-btn': '#721c24',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Noto Serif', 'serif'],
+          },
+          boxShadow: {
+            'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+          }
+        }
+      }
+    }
+  </style>
+<style data-purpose="base-styles">
+    body {
+      background-color: #fdf6e7;
+      font-family: 'Inter', sans-serif;
+      color: #000;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col items-center py-10 px-6 sm:px-8">
+<div class="w-full max-w-md mx-auto relative h-full flex flex-col">
+<!-- BEGIN: Header -->
+<header class="flex items-center justify-between mb-8" data-purpose="top-navigation">
+<button aria-label="Go back" class="p-2 -ml-2 text-black hover:bg-black/5 rounded-full transition-colors">
+<svg fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg">
+<line x1="19" x2="5" y1="12" y2="12"></line>
+<polyline points="12 19 5 12 12 5"></polyline>
+</svg>
+</button>
+<button aria-label="Filter" class="p-2 -mr-2 text-black hover:bg-black/5 rounded-full transition-colors">
+<svg fill="none" height="28" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="28" xmlns="http://www.w3.org/2000/svg">
+<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+</svg>
+</button>
+</header>
+<!-- END: Header -->
+<!-- BEGIN: Title Section -->
+<section class="mb-8" data-purpose="page-title">
+<h1 class="text-4xl font-serif font-bold mb-2 tracking-tight">Nearby Heritage Sites</h1>
+<p class="text-lg text-gray-800">Within 5 km of you</p>
+</section>
+<!-- END: Title Section -->
+<!-- BEGIN: Heritage Sites List -->
+<main class="flex-grow flex flex-col gap-4 mb-8" data-purpose="site-list">
+<!-- Site Card: Virupaksha Temple -->
+<article class="bg-white rounded-2xl p-4 flex items-center gap-4 shadow-card hover:shadow-md transition-shadow cursor-pointer" data-purpose="site-card">
+<div class="w-20 h-20 flex-shrink-0 overflow-hidden rounded-xl bg-gray-200">
+<img alt="Virupaksha Temple" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaWNFTC97wZ0Cc2TvkfckQFjg6GNoAZ4gpLBe1PRo5NgLZD8VmOcmqbeli-wv5GGbjjgLmKb4v_RxF86-CJ3F9pzrhxpdh3GI45W_VzL4QwkWsO6ycOSEUu4Z6ABtC1dyWTocmvAH5gFO6I_4KaGXRGJJbHwl3RzOUM5v4wK_4z6IjrhOy41DTA6e2EDqH8fLi6wsoBmCPrrR87N7b_aDvQoeiz3GxICbij_7Xoqh9SqSkHOr330JkHDaPiClK0LnwjzVAvSnspWX3"/>
+</div>
+<div class="flex flex-col">
+<h2 class="text-xl font-bold font-sans">Virupaksha Temple</h2>
+<p class="text-gray-700 text-base">500 m away</p>
+</div>
+</article>
+<!-- Site Card: Vittala Temple -->
+<article class="bg-white rounded-2xl p-4 flex items-center gap-4 shadow-card hover:shadow-md transition-shadow cursor-pointer" data-purpose="site-card">
+<div class="w-20 h-20 flex-shrink-0 overflow-hidden rounded-xl bg-gray-200">
+<img alt="Vittala Temple" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1-jUmcmyrLk0WUnxzTtmSm8_2pZmBsQFFlFPfb2O-RwoiQ0_geL5lAPgfjTB0dY8gVzg5Idd86vhvXPHRjrekyAZUaooIsXy4LdMQyVYWkruDtaW7VRrtOn1329awB3Pbromuf9R_4frs75yrvDSe_TFfN0XYKmSjUoFkW6IYEh3Y-1jtvSyEitfAwDVolSKDJKl9IXeUp0k13vOsoMMrAhb2c433dc9n_n5mKqdZnStOOGWlAEGKsnjiHMm00oAovmt7J9yXqdX6"/>
+</div>
+<div class="flex flex-col">
+<h2 class="text-xl font-bold font-sans">Vittala Temple</h2>
+<p class="text-gray-700 text-base">1.2 km away</p>
+</div>
+</article>
+<!-- Site Card: Hampi Bazaar -->
+<article class="bg-white rounded-2xl p-4 flex items-center gap-4 shadow-card hover:shadow-md transition-shadow cursor-pointer" data-purpose="site-card">
+<div class="w-20 h-20 flex-shrink-0 overflow-hidden rounded-xl bg-gray-200">
+<img alt="Hampi Bazaar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfzU0gY7LfGMcgBv0dfd90nHI0crdcnY0fRaJhRg1xndBbpED58HvXILfB33BrCnHEHCXfe13eE8WGTCF0Vl2-wz-R-YF18ABbxJLZGuRC_GPSduq-LZpZ9elvYKkZN2Dtub_S9N9Wk_KIG7mE9uErosQPehzCcFTlbWaYuc5xOWdHT58KQ0dLVwDn8iuyO0Ht_7E7XdeZMUOl7BIZd4BlX3bj5iKWvGL_lkjiRyQaabyu_p4MNey3ZU2XyBXNoUTkqQnLxe2ftvS1"/>
+</div>
+<div class="flex flex-col">
+<h2 class="text-xl font-bold font-sans">Hampi Bazaar</h2>
+<p class="text-gray-700 text-base">1.6 km away</p>
+</div>
+</article>
+<!-- Site Card: Lotus Mahal -->
+<article class="bg-white rounded-2xl p-4 flex items-center gap-4 shadow-card hover:shadow-md transition-shadow cursor-pointer" data-purpose="site-card">
+<div class="w-20 h-20 flex-shrink-0 overflow-hidden rounded-xl bg-gray-200">
+<img alt="Lotus Mahal" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMFn9j_IXoJ8rwJke19wan89aCYot8jx2cncuzGH3PPmZ74vdK_jx3zRLY4Agb3zUYmMp8w02yj8ax37csOArJjetAMBvMyKP-9rvXVEQLZvWozXWjrG_9wE9yiQl8dNMI9hkxmr4ddxIbZuGl3pgLq3e4vzKu992XgtJplxIeZlynrDA-mFUsVkbBaXkQ-ocJTpRs6bwVmVyH4EpiVn5XEmF1BN7nv0KBmoWNM8Nb-asrcn4-1mcwKtNitvRn8Vori0_pQm7vxmyM"/>
+</div>
+<div class="flex flex-col">
+<h2 class="text-xl font-bold font-sans">Lotus Mahal</h2>
+<p class="text-gray-700 text-base">2.1 km away</p>
+</div>
+</article>
+</main>
+<!-- END: Heritage Sites List -->
+<!-- BEGIN: Footer Actions -->
+<footer class="mt-auto" data-purpose="bottom-actions">
+<button class="w-full bg-[#721c24] text-white font-bold text-lg py-4 rounded-xl shadow-lg hover:bg-[#5a161c] transition-colors focus:outline-none focus:ring-4 focus:ring-maroon-btn/30">
+        View All on Map
+      </button>
+</footer>
+<!-- END: Footer Actions -->
+</div>
+</body></html>

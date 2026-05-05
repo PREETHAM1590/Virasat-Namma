@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Living History - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#dec1ac",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#e2bfb9",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1b1d0e",
+                        "tertiary-container": "#4c392a",
+                        "surface-tint": "#b22b1d",
+                        "on-secondary-container": "#745c00",
+                        "inverse-primary": "#ffb4a8",
+                        "on-primary-container": "#ff8371",
+                        "on-surface": "#1b1d0e",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#fed65b",
+                        "on-primary-fixed-variant": "#8f0f07",
+                        "on-tertiary-fixed-variant": "#574333",
+                        "tertiary-fixed": "#fbddc7",
+                        "inverse-on-surface": "#f2f2d9",
+                        "on-secondary-fixed": "#241a00",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#bea28f",
+                        "on-primary-fixed": "#410000",
+                        "on-surface-variant": "#5a413d",
+                        "secondary-fixed-dim": "#e9c349",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "background": "#fbfbe2",
+                        "primary-fixed-dim": "#ffb4a8",
+                        "tertiary": "#342416",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#574500",
+                        "surface-container-low": "#f5f5dc",
+                        "primary-fixed": "#ffdad4",
+                        "on-tertiary-fixed": "#28180b",
+                        "surface-dim": "#dbdcc3",
+                        "secondary-fixed": "#ffe088",
+                        "surface-container": "#efefd7",
+                        "outline": "#8e706c",
+                        "surface-bright": "#fbfbe2",
+                        "secondary": "#735c00",
+                        "surface": "#fbfbe2",
+                        "primary": "#570000",
+                        "surface-container-highest": "#e4e4cc",
+                        "primary-container": "#800000",
+                        "inverse-surface": "#303221",
+                        "surface-container-high": "#eaead1",
+                        "surface-variant": "#e4e4cc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "heritage": "16px"
+                    },
+                    "spacing": {
+                        "lg": "48px",
+                        "base": "8px",
+                        "gutter": "16px",
+                        "xl": "80px",
+                        "container-padding": "20px",
+                        "sm": "12px",
+                        "xs": "4px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Noto Serif"],
+                        "headline-xl": ["Noto Serif"],
+                        "body-md": ["Noto Serif"],
+                        "label-md": ["Noto Serif"],
+                        "body-lg": ["Noto Serif"],
+                        "headline-md": ["Noto Serif"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "1.25", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-xl": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            background-image: url('data:image/svg+xml,%3Csvg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23e4e4cc" fill-opacity="0.2" fill-rule="evenodd"%3E%3Ccircle cx="3" cy="3" r="3"/%3E%3Ccircle cx="13" cy="13" r="3"/%3E%3C/g%3E%3C/svg%3E');
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+        
+        /* Heritage Card Style */
+        .heritage-card {
+            border-radius: theme('borderRadius.heritage');
+            border: 1px solid theme('colors.surface-container-highest');
+            background-color: theme('colors.surface-container-lowest');
+            box-shadow: 0 4px 12px rgba(74, 55, 40, 0.08);
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col pt-safe pb-safe pb-[80px] md:pb-0 font-body-md text-body-md">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-40 bg-stone-50 dark:bg-stone-950 flex justify-between items-center w-full px-5 py-4 border-b border-stone-200 dark:border-stone-800 shadow-sm shadow-stone-900/5">
+<button class="text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors scale-95 active:scale-90 transition-transform p-2 rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+<h1 class="font-serif text-2xl font-bold tracking-tight text-red-900 dark:text-red-400">Namaskara! 👋</h1>
+<button class="text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors scale-95 active:scale-90 transition-transform p-2 rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+</header>
+<!-- Desktop Navigation (Hidden on Mobile) -->
+<nav class="hidden md:flex justify-center bg-surface-container-lowest border-b border-surface-container-highest py-3 sticky top-[73px] z-30 shadow-sm shadow-tertiary-container/5">
+<div class="flex gap-8">
+<a class="flex items-center gap-2 text-primary font-label-md text-label-md border-b-2 border-primary pb-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+                Home
+            </a>
+<a class="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors pb-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">explore</span>
+                Discover
+            </a>
+<a class="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors pb-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu_book</span>
+                Passport
+            </a>
+<a class="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors pb-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">bookmark</span>
+                Saved
+            </a>
+<a class="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors pb-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+                Profile
+            </a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col md:max-w-7xl md:mx-auto md:w-full px-container-padding md:px-lg py-md gap-lg">
+<!-- Hero Journey Banner (Bento Style) -->
+<section class="relative w-full rounded-[24px] overflow-hidden shadow-lg shadow-tertiary-container/10 group cursor-pointer aspect-[4/3] md:aspect-[21/9]">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A breathtaking, wide-angle landscape photograph of the intricate stone carvings at the Chennakeshava Temple in Belur, Karnataka. The scene is bathed in warm, golden-hour sunlight that highlights the detailed Hoysala architecture. The image reflects a modern heritage style with a rich, earthy color palette, featuring deep browns, warm creams, and subtle shadows. The mood is majestic and awe-inspiring, perfect for a premium travel discovery app." src="https://lh3.googleusercontent.com/aida/ADBb0ujJp_wBEQpiH0b_Wz4Lt22_AJg6BtmhP-g-9NqW0AHxYmzRhZd2EcddbqZ8U6L75fQfXLQv9rx3NzKT5QP_QuxTscTY-p_mk-P9-3n-O2ePdqryrmsT05m7ZQNEDUBdbR_bggBraP0z56aMWM74hK-f2gc0m9x6-vmT5Pw-QkbnUYH7RA459fDhrl_x0UKGq0ut1s1tLJxyZq5XIHnVGllRgDzLs-tpZeDMb1lgGhK_pobSkCg9_ABIHV49WG7-yfk67FIF_NXN3IA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-tertiary/90 via-tertiary/40 to-transparent"></div>
+<div class="absolute bottom-0 left-0 w-full p-md md:p-lg flex flex-col justify-end">
+<span class="text-secondary-fixed font-label-md text-label-md uppercase tracking-widest mb-xs">Continue Your Journey</span>
+<h2 class="text-on-primary font-headline-xl text-headline-xl mb-sm text-balance">Belur &amp; Halebidu</h2>
+<div class="flex items-center justify-between w-full mt-sm">
+<div class="flex-grow pr-md">
+<div class="flex justify-between items-center mb-xs">
+<span class="text-on-primary/80 font-label-md text-[12px] uppercase tracking-wider">Hoysala Empire</span>
+<span class="text-secondary-fixed font-label-md text-[12px]">2 / 6 Sites Explored</span>
+</div>
+<div class="w-full bg-surface-container-highest/30 rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary-fixed h-1.5 rounded-full" style="width: 33%"></div>
+</div>
+</div>
+<button class="bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center shadow-lg shadow-primary/20 shrink-0 hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Curated Recommendations (Glassmorphism & Bento) -->
+<section class="flex flex-col gap-md">
+<div class="flex justify-between items-end">
+<div>
+<h3 class="font-headline-md text-headline-md text-tertiary">Curated for You</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Based on your architectural interests</p>
+</div>
+<button class="text-primary font-label-md text-label-md flex items-center gap-1 hover:text-primary-container transition-colors">
+                    See All <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-md auto-rows-[280px]">
+<!-- Primary Recommendation -->
+<div class="heritage-card md:col-span-8 relative group cursor-pointer h-full">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A striking architectural photograph of the Gol Gumbaz mausoleum in Bijapur. The massive dome dominates the composition against a clear, pale sky. The warm sunlight casts soft, elegant shadows, emphasizing the scale and geometric perfection of the Adil Shahi architecture. The visual style is premium and tactile, with a color palette centered around warm sandstone hues, deep terracottas, and a light-mode creamy background. The mood is grand and historical." src="https://lh3.googleusercontent.com/aida/ADBb0ugeiUqN_u7pNVELjgs4cx1PZbeVo3os9C57aOnl4qiRn3kCPwt8d0AimYv949t0gSTufbqjZR52GdgsUi4i7u6XIi-n21nHE4qPFWtvNqi2tpPwUdSyPWmR33rQ2nGlVoMqCQIWxjYXu0QB8lnDlPymYahHpqSgpyVUjB5DXNrHG43Zaj2Ej6ZRwZcEgB3d87rZWPe5vo0YEtMGLyujlymdT75U9HpEcZZ5HUOoZU3_vg8nrAe-Dt-C3_HddRZS28SmIAvapBAIpcE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-tertiary/95 via-tertiary/50 to-transparent"></div>
+<!-- Glassmorphism Badge -->
+<div class="absolute top-sm right-sm bg-surface-container-lowest/20 backdrop-blur-md border border-surface-container-lowest/30 rounded-full px-3 py-1 flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-secondary-fixed text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-on-primary font-label-md text-[12px]">4.7</span>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-md">
+<span class="inline-block bg-primary text-on-primary font-label-md text-[10px] uppercase tracking-widest px-2 py-1 rounded-sm mb-2">Adil Shahi Dynasty</span>
+<h4 class="text-on-primary font-headline-lg text-headline-lg mb-1">Gol Gumbaz</h4>
+<div class="flex items-center gap-2 text-surface-container-high font-body-md text-[14px]">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span>210 km away</span>
+<span class="w-1 h-1 rounded-full bg-surface-container-high/50 mx-1"></span>
+<span>Bijapur</span>
+</div>
+</div>
+</div>
+<!-- Secondary Recommendation 1 -->
+<div class="heritage-card md:col-span-4 relative group cursor-pointer h-full">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A detailed close-up shot of an ancient stone pillar with intricate mandala-like carvings. The texture of the weathered stone is highly tactile, lit by soft, diffused daylight. The aesthetic is modern heritage, focusing on the craftsmanship of the past. The color palette features earthy umbers, warm creams, and subtle shadows, fitting a premium, culturally rich travel app design." src="https://lh3.googleusercontent.com/aida/ADBb0ujdILWQNwKpkdLJyzOuJiWZAbrmAYu_BMgyfLywSRVedKlmSLdJ6rVfUUEt1kaC1HJJZXWC6QmV98Iq6p2-OA_yxtoIz28TXyXu8UG5gOF5zNho4ArjnWP8MYrj0F7ltM2-GgvUWDC-WG_WUKDVs8uzGGdk0kzC9w0cIXj4kKLPJk2Ne44_hSYzXD3sY6vxM8Wr9XkF6T_NbvGHUB8OF_FE9Jk-EEJVDN8zB1unkvtebytawAq6hzmZKIsNxUr2OLzyjiqYBUStoyI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-tertiary/90 to-transparent"></div>
+<div class="absolute bottom-0 left-0 w-full p-sm">
+<h4 class="text-on-primary font-headline-md text-[20px] font-semibold mb-1">Pattadakal</h4>
+<div class="flex items-center gap-1 text-surface-container-high font-body-md text-[12px]">
+<span class="material-symbols-outlined text-[14px]">history_edu</span>
+<span>Chalukya Architecture</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive Map Teaser (Asymmetric Pattern) -->
+<section class="mt-md mb-lg bg-surface-container-low rounded-[24px] p-md flex flex-col md:flex-row items-center gap-md border border-surface-container-highest shadow-sm">
+<div class="w-full md:w-1/2 flex flex-col items-start text-left">
+<div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center mb-sm shadow-sm shadow-secondary-container/20">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">map</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-tertiary mb-xs">Explore the Map</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-md text-balance">Discover nearby heritage sites, hidden trails, and local artisan workshops plotted on our interactive cultural map.</p>
+<button class="bg-surface-container-lowest border border-outline text-tertiary font-label-md text-label-md px-6 py-3 rounded-full hover:bg-surface-container-highest transition-colors shadow-sm">
+                    Open Map View
+                </button>
+</div>
+<div class="w-full md:w-1/2 h-[200px] md:h-[250px] rounded-heritage overflow-hidden relative border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A highly stylized, artistic rendering of a digital map showing ancient heritage routes. The map uses a parchment-like texture with subtle, warm tonal layering in creams, light browns, and deep maroon accents. Custom heritage pins shaped like temple domes mark locations. The lighting is soft and ambient, creating a tactile, 'living history' feel suitable for a premium travel UI." data-location="Karnataka" src="https://lh3.googleusercontent.com/aida/ADBb0uh8unxqbVUrwVhvWZRKkXtRqBlO3uPIuQbV-mwUVW3QQ-AXj8Fmv8Jxg72qUIJ7GFb2hsh40-1rQ8sU8o_IwZlv72GdhwFcTcF78c2esqjt3djS0vWK-7UpuX8Klo-_HMLY1m09LT95pu2L7RO-AVTntHR9dwYOkzX0Bkuwv_xpt5FznzewNb6QEr78oQofARUQ0Yfp8vPx093kRWk6ziVBTPyBaNsCHjflKPCdj7GIFGhMgOYZ1-dV5w9a"/>
+<!-- Simulated Map UI Elements -->
+<div class="absolute top-1/2 left-1/3 w-8 h-8 -mt-4 -ml-4 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[32px] drop-shadow-md" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<div class="absolute bottom-1/4 right-1/4 w-6 h-6 -mt-3 -ml-3 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-[24px] drop-shadow-md" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Nav Bar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-3xl border-t bg-stone-50 dark:bg-stone-950 border-t border-stone-200 dark:border-stone-800 shadow-[0_-4px_12px_rgba(74,55,40,0.08)]">
+<div class="flex justify-around items-center px-4 py-3 pb-safe">
+<a class="flex flex-col items-center justify-center text-red-900 dark:text-red-400 scale-110 hover:text-red-800 dark:hover:text-red-300 transition-all duration-300 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-serif text-[10px] font-bold uppercase tracking-widest mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 hover:text-red-800 dark:hover:text-red-300 transition-all duration-300 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">explore</span>
+<span class="font-serif text-[10px] font-bold uppercase tracking-widest mt-1">Discover</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 hover:text-red-800 dark:hover:text-red-300 transition-all duration-300 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">menu_book</span>
+<span class="font-serif text-[10px] font-bold uppercase tracking-widest mt-1">Passport</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 hover:text-red-800 dark:hover:text-red-300 transition-all duration-300 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">bookmark</span>
+<span class="font-serif text-[10px] font-bold uppercase tracking-widest mt-1">Saved</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 hover:text-red-800 dark:hover:text-red-300 transition-all duration-300 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">person</span>
+<span class="font-serif text-[10px] font-bold uppercase tracking-widest mt-1">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

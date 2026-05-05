@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Map Discovery - Heritage Sites</title>
+<!-- Font Setup: Noto Serif -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Noto Serif"', 'serif'],
+          },
+          colors: {
+            'map-bg': '#f3eee4', // Approximate background color from the image
+            'map-road': '#ffffff',
+            'map-water': '#9dc3e6',
+            'map-park': '#e2f0d9',
+            'heritage-red': '#7a1410',
+            'card-bg': '#fcfbf8',
+            'text-primary': '#1a1a1a',
+            'text-secondary': '#666666',
+          },
+          boxShadow: {
+            'map-marker': '0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1)',
+            'floating-card': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom Styles -->
+<style data-purpose="custom-styles">
+    body {
+      font-family: 'Noto Serif', serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* Prevent scrolling on the main map view */
+      background-color: #f3eee4; /* Base map background */
+    }
+
+    /* Abstract map pattern background for pure CSS visual */
+    .map-pattern {
+      background-color: #f3eee4;
+      background-image: 
+        linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff),
+        linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff);
+      background-size: 100px 100px;
+      background-position: 0 0, 50px 50px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0.6;
+      z-index: 0;
+    }
+
+    /* Simulated river */
+    .river {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      border-top: 40px solid #9dc3e6;
+      border-radius: 50%;
+      transform: scale(2) rotate(30deg) translate(-20%, -30%);
+      opacity: 0.7;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Simulated roads layer to make it look more like a map */
+    .roads {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.7) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(255,255,255,0.7) 2px, transparent 2px);
+      background-size: 80px 80px;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Specific marker positioning */
+    .marker-1 { top: 15%; left: 45%; }
+    .marker-2 { top: 25%; left: 80%; }
+    .marker-3 { top: 30%; left: 15%; }
+    .marker-4 { top: 40%; left: 50%; transform: scale(1.3); z-index: 20; } /* Selected marker */
+    .marker-5 { top: 50%; left: 70%; }
+    .marker-6 { top: 50%; left: 15%; }
+
+    /* Shadow for markers */
+    .marker-shadow {
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 4px;
+      background-color: rgba(0,0,0,0.3);
+      border-radius: 50%;
+      filter: blur(2px);
+      z-index: -1;
+    }
+  </style>
+<!-- Phosphor Icons (for icons like back arrow, layers, temple, bookmark) -->
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="relative h-screen w-screen bg-map-bg text-text-primary antialiased font-serif">
+<!-- BEGIN: Map Background -->
+<!-- 
+    Simulating a map background with CSS since we don't have a real map instance.
+    In a real app, this would be a Google Maps, Mapbox, or similar component.
+  -->
+<div class="absolute inset-0 z-0 overflow-hidden">
+<div class="map-pattern"></div>
+<div class="river"></div>
+<div class="roads"></div>
+</div>
+<!-- END: Map Background -->
+<!-- BEGIN: Top Navigation / Controls -->
+<header class="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-30 pointer-events-none">
+<!-- Back Button -->
+<button class="pointer-events-auto w-14 h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm text-heritage-red hover:bg-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-heritage-red/50">
+<i class="ph ph-arrow-left text-2xl font-bold"></i>
+</button>
+<!-- Map Layers Button -->
+<button class="pointer-events-auto w-14 h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm text-heritage-red hover:bg-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-heritage-red/50">
+<i class="ph ph-stack text-2xl font-bold"></i>
+</button>
+</header>
+<!-- END: Top Navigation / Controls -->
+<!-- BEGIN: Map Markers -->
+<main class="absolute inset-0 z-10 pointer-events-none">
+<div class="relative w-full h-full max-w-3xl mx-auto">
+<!-- Marker 1 -->
+<div class="absolute marker-1 pointer-events-auto cursor-pointer group">
+<div class="relative flex flex-col items-center">
+<div class="w-10 h-10 bg-heritage-red rounded-t-full rounded-br-full transform rotate-45 flex items-center justify-center shadow-map-marker transition-transform group-hover:scale-110">
+<div class="transform -rotate-45 text-white">
+<i class="ph-fill ph-bank text-xl"></i>
+</div>
+</div>
+<div class="marker-shadow"></div>
+</div>
+</div>
+<!-- Marker 2 -->
+<div class="absolute marker-2 pointer-events-auto cursor-pointer group">
+<div class="relative flex flex-col items-center">
+<div class="w-10 h-10 bg-heritage-red rounded-t-full rounded-br-full transform rotate-45 flex items-center justify-center shadow-map-marker transition-transform group-hover:scale-110">
+<div class="transform -rotate-45 text-white">
+<i class="ph-fill ph-bank text-xl"></i>
+</div>
+</div>
+<div class="marker-shadow"></div>
+</div>
+</div>
+<!-- Marker 3 -->
+<div class="absolute marker-3 pointer-events-auto cursor-pointer group">
+<div class="relative flex flex-col items-center">
+<div class="w-10 h-10 bg-heritage-red rounded-t-full rounded-br-full transform rotate-45 flex items-center justify-center shadow-map-marker transition-transform group-hover:scale-110">
+<div class="transform -rotate-45 text-white">
+<i class="ph-fill ph-bank text-xl"></i>
+</div>
+</div>
+<div class="marker-shadow"></div>
+</div>
+</div>
+<!-- Marker 4 (Selected / Central) -->
+<div class="absolute marker-4 pointer-events-auto cursor-pointer z-20">
+<div class="relative flex flex-col items-center">
+<div class="w-12 h-12 bg-heritage-red rounded-t-full rounded-br-full transform rotate-45 flex items-center justify-center shadow-map-marker ring-4 ring-white/30">
+<div class="transform -rotate-45 text-white">
+<i class="ph-fill ph-bank text-2xl"></i>
+</div>
+</div>
+<div class="marker-shadow !w-16 !bottom--6"></div>
+</div>
+</div>
+<!-- Marker 5 -->
+<div class="absolute marker-5 pointer-events-auto cursor-pointer group">
+<div class="relative flex flex-col items-center">
+<div class="w-10 h-10 bg-heritage-red rounded-t-full rounded-br-full transform rotate-45 flex items-center justify-center shadow-map-marker transition-transform group-hover:scale-110">
+<div class="transform -rotate-45 text-white">
+<i class="ph-fill ph-bank text-xl"></i>
+</div>
+</div>
+<div class="marker-shadow"></div>
+</div>
+</div>
+<!-- Marker 6 -->
+<div class="absolute marker-6 pointer-events-auto cursor-pointer group">
+<div class="relative flex flex-col items-center">
+<div class="w-10 h-10 bg-heritage-red rounded-t-full rounded-br-full transform rotate-45 flex items-center justify-center shadow-map-marker transition-transform group-hover:scale-110">
+<div class="transform -rotate-45 text-white">
+<i class="ph-fill ph-bank text-xl"></i>
+</div>
+</div>
+<div class="marker-shadow"></div>
+</div>
+</div>
+</div>
+</main>
+<!-- END: Map Markers -->
+<!-- BEGIN: Floating Detail Card -->
+<section class="absolute bottom-8 left-0 right-0 px-4 z-40 flex justify-center pointer-events-none">
+<!-- Using generic placeholder for the temple image as requested to follow layout exactly -->
+<div class="bg-card-bg w-full max-w-[90%] md:max-w-md rounded-3xl p-4 shadow-floating-card flex gap-4 items-center pointer-events-auto">
+<!-- Thumbnail Image -->
+<div class="w-24 h-24 flex-shrink-0 rounded-2xl overflow-hidden shadow-sm">
+<img alt="Virupaksha Temple" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTd29eL1cJhb4TU3_XkOn2zE5pmRTd9Btr9lUtZnkERRN4lxlmnaV-oIVaH4C9qkM9h7dEEfjIIKaj9nuYg89WCNpx3WEHLEw8GYFK9tMzuDcodr72cCUQPsqghnUmtOsxZ8mTBWkpVv3RN6vAAaonJmPt3Vps7t9WonuN4NaOt9CqsbsBVYRwRfjuMgCMjY_fWiRMu3Y9UnqNyt2gLrKXWURhj9zLCKeAmdfvMNtt6GQbalAIpmObvhYzV2wOY5ymgTj5Xn_ATYaH"/>
+</div>
+<!-- Content -->
+<div class="flex-1 flex flex-col justify-between h-full py-1">
+<div>
+<h2 class="text-lg font-bold leading-tight mb-1">Virupaksha Temple</h2>
+<p class="text-sm text-text-secondary">500 m away</p>
+</div>
+<div class="flex items-center gap-3 mt-3">
+<!-- View Details Button -->
+<button class="flex-1 bg-heritage-red text-white py-3 px-4 rounded-xl font-medium text-sm hover:bg-red-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-heritage-red">
+            View Details
+          </button>
+<!-- Bookmark Button -->
+<button class="w-12 h-12 flex-shrink-0 border border-heritage-red/20 rounded-xl flex items-center justify-center text-heritage-red hover:bg-heritage-red/5 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-heritage-red/50">
+<i class="ph ph-bookmark-simple text-xl"></i>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Floating Detail Card -->
+</body></html>

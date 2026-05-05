@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Living History - Home Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#dec1ac",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#e2bfb9",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#1b1d0e",
+                        "tertiary-container": "#4c392a",
+                        "surface-tint": "#b22b1d",
+                        "on-secondary-container": "#745c00",
+                        "inverse-primary": "#ffb4a8",
+                        "on-primary-container": "#ff8371",
+                        "on-surface": "#1b1d0e",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#fed65b",
+                        "on-primary-fixed-variant": "#8f0f07",
+                        "on-tertiary-fixed-variant": "#574333",
+                        "tertiary-fixed": "#fbddc7",
+                        "inverse-on-surface": "#f2f2d9",
+                        "on-secondary-fixed": "#241a00",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#bea28f",
+                        "on-primary-fixed": "#410000",
+                        "on-surface-variant": "#5a413d",
+                        "secondary-fixed-dim": "#e9c349",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "background": "#fbfbe2",
+                        "primary-fixed-dim": "#ffb4a8",
+                        "tertiary": "#342416",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#574500",
+                        "surface-container-low": "#f5f5dc",
+                        "primary-fixed": "#ffdad4",
+                        "on-tertiary-fixed": "#28180b",
+                        "surface-dim": "#dbdcc3",
+                        "secondary-fixed": "#ffe088",
+                        "surface-container": "#efefd7",
+                        "outline": "#8e706c",
+                        "surface-bright": "#fbfbe2",
+                        "secondary": "#735c00",
+                        "surface": "#fbfbe2",
+                        "primary": "#570000",
+                        "surface-container-highest": "#e4e4cc",
+                        "primary-container": "#800000",
+                        "inverse-surface": "#303221",
+                        "surface-container-high": "#eaead1",
+                        "surface-variant": "#e4e4cc"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "heritage": "16px"
+                    },
+                    "spacing": {
+                        "lg": "48px",
+                        "base": "8px",
+                        "gutter": "16px",
+                        "xl": "80px",
+                        "container-padding": "20px",
+                        "sm": "12px",
+                        "xs": "4px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Noto Serif", "serif"],
+                        "headline-xl": ["Noto Serif", "serif"],
+                        "body-md": ["Noto Serif", "serif"],
+                        "label-md": ["Noto Serif", "serif"],
+                        "body-lg": ["Noto Serif", "serif"],
+                        "headline-md": ["Noto Serif", "serif"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "1.25", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-xl": ["40px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }]
+                    },
+                    "boxShadow": {
+                        "ambient": "0 4px 20px rgba(74, 55, 40, 0.15)",
+                        "ambient-sm": "0 2px 10px rgba(74, 55, 40, 0.10)"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            /* Subtle parchment texture via gradient for light mode */
+            background-image: radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, rgba(245,245,220,0.4) 100%);
+            background-attachment: fixed;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="antialiased pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-40 bg-surface-container/90 backdrop-blur-md border-b border-outline-variant shadow-ambient-sm px-5 py-4 w-full flex justify-between items-center transition-all">
+<button aria-label="Menu" class="text-primary p-2 hover:bg-surface-variant rounded-full transition-colors scale-95 active:scale-90">
+<span class="material-symbols-outlined text-headline-md">menu</span>
+</button>
+<h1 class="font-headline-lg text-headline-lg text-primary text-center flex-1 truncate">Namaskara! 👋</h1>
+<button aria-label="Notifications" class="text-primary p-2 hover:bg-surface-variant rounded-full transition-colors scale-95 active:scale-90">
+<span class="material-symbols-outlined text-headline-md">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="max-w-7xl mx-auto px-container-padding py-md space-y-lg md:space-y-xl">
+<!-- Search Bar -->
+<section class="relative max-w-2xl mx-auto">
+<div class="relative flex items-center w-full bg-surface-container-low rounded-full shadow-ambient border-b-2 border-outline focus-within:border-primary transition-colors overflow-hidden h-14">
+<span class="material-symbols-outlined text-outline ml-4 mr-2">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-body-md font-body-md text-on-surface placeholder:text-outline py-3 outline-none" placeholder="Discover monuments, eras, or artifacts..." type="text"/>
+<button class="p-2 mr-2 bg-primary text-on-primary rounded-full hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-ambient-sm">
+<span class="material-symbols-outlined text-body-md">tune</span>
+</button>
+</div>
+</section>
+<!-- Featured Banner: Continue Journey -->
+<section class="relative rounded-heritage overflow-hidden shadow-ambient group cursor-pointer border border-outline-variant">
+<div class="absolute inset-0 z-0">
+<img alt="A stunning, wide-angle golden hour photograph of the majestic Mysuru Palace in India. The elaborate Indo-Saracenic architecture is highlighted by warm sunlight, casting soft ambient shadows. The sky is a deep, clear blue, contrasting beautifully with the palace's intricate domes and archways. The overall aesthetic is grand, premium, and evocative of rich cultural heritage." class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A stunning, wide-angle golden hour photograph of the majestic Mysuru Palace in India. The elaborate Indo-Saracenic architecture is highlighted by warm sunlight, casting soft ambient shadows. The sky is a deep, clear blue, contrasting beautifully with the palace's intricate domes and archways. The overall aesthetic is grand, premium, and evocative of rich cultural heritage." src="https://lh3.googleusercontent.com/aida/ADBb0ujJp_wBEQpiH0b_Wz4Lt22_AJg6BtmhP-g-9NqW0AHxYmzRhZd2EcddbqZ8U6L75fQfXLQv9rx3NzKT5QP_QuxTscTY-p_mk-P9-3n-O2ePdqryrmsT05m7ZQNEDUBdbR_bggBraP0z56aMWM74hK-f2gc0m9x6-vmT5Pw-QkbnUYH7RA459fDhrl_x0UKGq0ut1s1tLJxyZq5XIHnVGllRgDzLs-tpZeDMb1lgGhK_pobSkCg9_ABIHV49WG7-yfk67FIF_NXN3IA"/>
+<!-- Gradient overlay for text readability -->
+<div class="absolute inset-0 bg-gradient-to-t from-tertiary-container/90 via-tertiary-container/40 to-transparent mix-blend-multiply"></div>
+</div>
+<div class="relative z-10 p-md md:p-lg flex flex-col justify-end min-h-[320px] md:min-h-[400px]">
+<div class="bg-surface-container-lowest/20 backdrop-blur-md border border-outline-variant/30 inline-block px-3 py-1 rounded-full text-on-primary font-label-md text-xs tracking-widest uppercase mb-sm w-max">
+                    Wodeyar Dynasty
+                </div>
+<h2 class="font-headline-xl text-headline-xl text-on-primary mb-2 drop-shadow-md">Mysuru Palace</h2>
+<p class="font-body-lg text-body-lg text-surface-container-low mb-md max-w-lg drop-shadow-md">Continue Your Journey</p>
+<!-- Progress Indicator -->
+<div class="mt-auto">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-md text-label-md text-secondary-fixed">1 / 4 Sites Explored</span>
+<span class="font-label-md text-label-md text-secondary-fixed">25%</span>
+</div>
+<div class="w-full h-2 bg-tertiary/50 rounded-full overflow-hidden backdrop-blur-sm border border-outline-variant/20">
+<div class="h-full bg-secondary-container rounded-full" style="width: 25%;"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Categories Bento Grid -->
+<section>
+<div class="flex justify-between items-end mb-md">
+<h3 class="font-headline-lg text-headline-lg text-primary">Eras &amp; Epochs</h3>
+<button class="font-label-md text-label-md text-secondary hover:text-primary transition-colors flex items-center gap-1">
+                    View Timeline <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-sm md:gap-md auto-rows-[120px]">
+<!-- Item 1 (Spans 2 cols) -->
+<div class="col-span-2 relative rounded-heritage overflow-hidden shadow-ambient-sm group border border-outline-variant bg-surface-container-low cursor-pointer">
+<img alt="A close-up photograph of ancient, weathered stone carvings depicting intricate mythological figures. The texture of the stone is prominent, bathed in soft, raking natural light that emphasizes depth and history. The color palette features warm sand, deep umber, and soft ochre. The mood is reverent and timeless, fitting a premium heritage design system." class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500 mix-blend-luminosity" data-alt="A close-up photograph of ancient, weathered stone carvings depicting intricate mythological figures. The texture of the stone is prominent, bathed in soft, raking natural light that emphasizes depth and history. The color palette features warm sand, deep umber, and soft ochre. The mood is reverent and timeless, fitting a premium heritage design system." src="https://lh3.googleusercontent.com/aida/ADBb0ugBUJFX1_YPoyMHGCW341f42rNBcxUUacUwtjOJ1N_rM8K4e9-pzkJSoopRxR-FcpcOOaif26rJPh7H_QcB3FBM3def7oU-m1OeNYnDVPfFvPlSNhKACcfGuUosHR2uph_KG0MMtW31Jf-mRGvgWsIW1Z2IMtZBnOuERSDafOUVA50VPbfKjdTJQK3s-e1cZirXLpAsBDRmjz-1QP1yZ2ONnI4Urf2EUqPZmKrS6WH4Hwq3_J1GvTWxwziz"/>
+<div class="absolute inset-0 bg-gradient-to-r from-surface-container-lowest/90 to-surface-container-lowest/20 p-4 flex flex-col justify-center">
+<span class="material-symbols-outlined text-primary text-headline-lg mb-2">temple_hindu</span>
+<h4 class="font-headline-md text-body-lg font-bold text-on-surface">Vedic Period</h4>
+<p class="font-body-md text-sm text-on-surface-variant">1500 – 500 BCE</p>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="col-span-1 relative rounded-heritage overflow-hidden shadow-ambient-sm group border border-outline-variant bg-surface-container cursor-pointer flex flex-col items-center justify-center p-4 text-center hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-secondary text-headline-lg mb-2">account_balance</span>
+<h4 class="font-label-md text-label-md text-on-surface">Mughal</h4>
+</div>
+<!-- Item 3 -->
+<div class="col-span-1 relative rounded-heritage overflow-hidden shadow-ambient-sm group border border-outline-variant bg-surface-container cursor-pointer flex flex-col items-center justify-center p-4 text-center hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-tertiary-container text-headline-lg mb-2">fort</span>
+<h4 class="font-label-md text-label-md text-on-surface">Maratha</h4>
+</div>
+</div>
+</section>
+<!-- Recommendations (Badami Cave Temples) -->
+<section>
+<div class="flex justify-between items-end mb-md">
+<h3 class="font-headline-lg text-headline-lg text-primary">Nearby Curations</h3>
+<span class="font-label-md text-label-md text-on-surface-variant bg-surface-variant px-3 py-1 rounded-full border border-outline-variant shadow-ambient-sm">Based on location</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-md">
+<!-- Primary Card (Badami) -->
+<article class="md:col-span-8 bg-surface-container-lowest rounded-heritage border border-outline-variant shadow-ambient flex flex-col md:flex-row overflow-hidden group">
+<div class="relative md:w-1/2 h-64 md:h-auto overflow-hidden">
+<img alt="A breathtaking shot of the Badami Cave Temples carved out of massive red sandstone cliffs. The rough, tactile texture of the rock is contrasted with the precise, ancient structural carvings. Warm, golden sunlight hits the rust-colored stone, creating deep, dramatic shadows in the cave entrances. The mood is mysterious and grand, reflecting ancient architectural mastery." class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="A breathtaking shot of the Badami Cave Temples carved out of massive red sandstone cliffs. The rough, tactile texture of the rock is contrasted with the precise, ancient structural carvings. Warm, golden sunlight hits the rust-colored stone, creating deep, dramatic shadows in the cave entrances. The mood is mysterious and grand, reflecting ancient architectural mastery." src="https://lh3.googleusercontent.com/aida/ADBb0ugeiUqN_u7pNVELjgs4cx1PZbeVo3os9C57aOnl4qiRn3kCPwt8d0AimYv949t0gSTufbqjZR52GdgsUi4i7u6XIi-n21nHE4qPFWtvNqi2tpPwUdSyPWmR33rQ2nGlVoMqCQIWxjYXu0QB8lnDlPymYahHpqSgpyVUjB5DXNrHG43Zaj2Ej6ZRwZcEgB3d87rZWPe5vo0YEtMGLyujlymdT75U9HpEcZZ5HUOoZU3_vg8nrAe-Dt-C3_HddRZS28SmIAvapBAIpcE"/>
+<div class="absolute top-4 right-4 bg-surface-container-lowest/80 backdrop-blur-sm p-2 rounded-full shadow-ambient-sm cursor-pointer hover:bg-surface-container-lowest transition-colors">
+<span class="material-symbols-outlined text-on-surface text-[20px]">bookmark_border</span>
+</div>
+</div>
+<div class="p-md flex flex-col justify-between md:w-1/2">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary text-[16px] fill-icon">star</span>
+<span class="font-label-md text-label-md text-on-surface">4.5</span>
+<span class="text-outline-variant mx-1">•</span>
+<span class="font-body-md text-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span> 143 km away
+                                </span>
+</div>
+<h4 class="font-headline-md text-headline-md text-primary mb-1">Badami Cave Temples</h4>
+<p class="font-label-md text-label-md text-tertiary-container mb-3 uppercase tracking-wider text-xs">Ancient Rock-cut Temples</p>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-3">
+                                Carved out of vibrant red sandstone cliffs, these ancient cave temples represent some of the earliest and finest examples of Chalukya architecture.
+                            </p>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-md text-sm text-secondary-container bg-secondary-container/10 px-3 py-1 rounded-full border border-secondary-container/20">Chalukya Dynasty</span>
+<button class="bg-primary text-on-primary font-label-md px-4 py-2 rounded-full hover:bg-primary-container transition-colors shadow-ambient-sm flex items-center gap-2">
+                                Explore <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Secondary Card -->
+<article class="md:col-span-4 bg-surface-container rounded-heritage border border-outline-variant shadow-ambient-sm p-4 flex flex-col justify-between group cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="relative h-40 rounded-lg overflow-hidden mb-4">
+<img alt="A serene view of an ancient stepped well (baoli) with perfectly symmetrical geometric stone stairs leading down to dark, still water. The scene is lit by soft, diffused daylight, highlighting the intricate masonry and the mossy patina on the stones. The color palette relies on cool greys and subtle greens, providing a calm, historic atmosphere." class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A serene view of an ancient stepped well (baoli) with perfectly symmetrical geometric stone stairs leading down to dark, still water. The scene is lit by soft, diffused daylight, highlighting the intricate masonry and the mossy patina on the stones. The color palette relies on cool greys and subtle greens, providing a calm, historic atmosphere." src="https://lh3.googleusercontent.com/aida/ADBb0uhea98rZwla0zS8pls4_EmW2Gf2dGdv1GpvOSga1eU84o0MbXUjcwsoeAZ2ekvKQKBQ0uDDwhVKloUS4p7tqdxT6hi4MDYNQv3ES3CL-vDb1QaZtH1Ng7RxdBN9eYvjwX4k_0qK03QeD8CLFXYwjptufsHki6og0SRHIZp-DXUJEOCPPSLtpKQib66u1-Z8Tsq30ZKqCws2VIandiySY5ujlTZKFjby_sJguuE-qsDDoi2ujcw36_r_iK3z"/>
+</div>
+<div>
+<h4 class="font-headline-md text-lg text-primary mb-1">Adalaj Stepwell</h4>
+<p class="font-body-md text-sm text-on-surface-variant line-clamp-2">A magnificent five-story deep stepwell blending Islamic floral patterns with Hindu symbolism.</p>
+</div>
+</article>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest/95 backdrop-blur-md rounded-t-[24px] shadow-[0_-4px_12px_rgba(74,55,40,0.08)] border-t border-outline-variant px-4 py-3 pb-safe flex justify-around items-center">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center text-primary scale-110 transition-all duration-300 ease-in-out group" href="#">
+<span class="material-symbols-outlined mb-1 fill-icon">home</span>
+<span class="font-label-md text-[10px] font-bold uppercase tracking-widest">Home</span>
+</a>
+<!-- Discover -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-300 ease-in-out group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:fill-icon">explore</span>
+<span class="font-label-md text-[10px] font-bold uppercase tracking-widest">Discover</span>
+</a>
+<!-- Passport -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-300 ease-in-out group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:fill-icon">menu_book</span>
+<span class="font-label-md text-[10px] font-bold uppercase tracking-widest">Passport</span>
+</a>
+<!-- Saved -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-300 ease-in-out group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:fill-icon">bookmark</span>
+<span class="font-label-md text-[10px] font-bold uppercase tracking-widest">Saved</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-300 ease-in-out group" href="#">
+<span class="material-symbols-outlined mb-1 group-hover:fill-icon">person</span>
+<span class="font-label-md text-[10px] font-bold uppercase tracking-widest">Profile</span>
+</a>
+</nav>
+<!-- Top Navigation Block for Desktop (Hidden on mobile, injected into Header area logically if needed, but keeping simple structural representation here for full nav cluster concept) -->
+<div class="hidden md:flex fixed top-4 right-20 z-50 gap-6 items-center">
+<a class="font-label-md text-label-md text-primary uppercase tracking-widest border-b-2 border-primary pb-1" href="#">Home</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary uppercase tracking-widest transition-colors pb-1" href="#">Discover</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary uppercase tracking-widest transition-colors pb-1" href="#">Passport</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary uppercase tracking-widest transition-colors pb-1" href="#">Saved</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary uppercase tracking-widest transition-colors pb-1" href="#">Profile</a>
+</div>
+</body></html>

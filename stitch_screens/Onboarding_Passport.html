@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Travel Passport Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Nunito:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              cream: '#f9f3ec',
+              maroon: '#5c191a',
+              gold: '#c19c5c',
+              lightGold: '#e3cfa8',
+              brown: '#4a2c2a'
+            }
+          },
+          fontFamily: {
+            serif: ['"Noto Serif"', 'serif'],
+            sans: ['"Nunito"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-utilities">.bg-wave {
+    background-image: url(https://lh3.googleusercontent.com/aida/ADBb0ujaNJ0f5-zL_QMAXsYyzRBrIqSFX1UgLy17blnu_IFvbETlLkL03NDbjlGGmj-zSz5mWCnCUpWsHGoA9_ltI78vaOsVtSeKF-d-xf73r6KONcS-kZtVWDGfptBYy7VAugapChekXNOWbWUZOTf4ln1KLFOtZCnWTeoc8bUYsWQAg6wrtP1L8xWzt65gh_R2plg_jkSB2Ir5VyTAm2T77WFxvpEwfHIjyfkbGu6KPzPmj2DiJhvaGyRiZtzM);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat
+    }</style>
+</head>
+<body class="bg-brand-cream text-brand-maroon font-sans h-screen w-full flex flex-col relative overflow-hidden bg-wave">
+<!-- BEGIN: Header Section -->
+<header class="flex justify-between items-start w-full p-6 relative z-10" data-purpose="header">
+<div class="w-1/4">
+<!-- Mandala decoration from background image -->
+</div>
+<div class="w-2/4 flex justify-center items-center mt-4">
+<!-- Top icon placeholder -->
+</div>
+<div class="w-1/4 flex justify-end">
+<button class="text-brand-maroon font-semibold text-lg hover:opacity-80 transition-opacity" data-purpose="skip-button">Skip</button>
+</div>
+</header>
+<!-- END: Header Section -->
+<!-- BEGIN: Main Content Area -->
+<main class="flex-grow flex flex-col items-center px-8 text-center relative z-10 pt-12" data-purpose="main-content">
+<h1 class="font-serif text-4xl font-bold text-brand-maroon mb-4 leading-[1.2]" data-purpose="main-heading">Travel Passport / Check-ins</h1>
+<!-- Ornate Divider -->
+<div class="flex items-center justify-center space-x-2 mb-6 text-brand-gold">
+<span class="w-8 h-px bg-brand-gold"></span>
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2L15 8L22 9L17 14L18.5 21L12 17.5L5.5 21L7 14L2 9L9 8L12 2Z"></path>
+</svg>
+<span class="w-8 h-px bg-brand-gold"></span>
+</div>
+<p class="text-brand-brown text-lg font-medium mb-12 max-w-sm leading-snug" data-purpose="sub-heading">Check-in at sites, collect stamps and track your heritage journey.</p>
+<!-- 3D Passport Image Area (Relies on background image for now due to complexity, but leaving a spacer) -->
+<div class="flex-grow flex items-center justify-center w-full" data-purpose="passport-image-container">
+<!-- Spacer to allow background image to show -->
+<div class="h-64 w-full"></div>
+</div>
+</main>
+<!-- END: Main Content Area -->
+<!-- BEGIN: Bottom Navigation Area -->
+<footer class="w-full relative z-10 pb-8 px-6 flex flex-col items-center" data-purpose="bottom-nav">
+<!-- Pagination Dots -->
+<div class="flex space-x-3 mb-8" data-purpose="pagination-dots">
+<div class="w-3 h-3 rounded-full bg-brand-lightGold"></div>
+<div class="w-3 h-3 rounded-full bg-brand-lightGold"></div>
+<div class="w-3 h-3 rounded-full bg-brand-lightGold"></div>
+<div class="w-3 h-3 rounded-full bg-brand-lightGold"></div>
+<div class="w-3 h-3 rounded-full bg-brand-maroon"></div>
+</div>
+<!-- Next Button -->
+<div class="w-full flex justify-end" data-purpose="next-button-container">
+<button aria-label="Next" class="w-16 h-16 bg-brand-lightGold rounded-full flex items-center justify-center shadow-lg hover:bg-brand-gold transition-colors focus:outline-none focus:ring-4 focus:ring-brand-gold focus:ring-opacity-50">
+<svg class="w-8 h-8 text-brand-maroon" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</footer>
+<!-- END: Bottom Navigation Area -->
+</body></html>
