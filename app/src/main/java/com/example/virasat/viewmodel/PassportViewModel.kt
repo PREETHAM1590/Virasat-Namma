@@ -4,11 +4,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.virasat.data.model.CheckIn
-import com.example.virasat.data.repository.HeritageRepository
+import com.example.virasat.data.di.RepositoryProvider
 import kotlinx.coroutines.flow.*
 
 class PassportViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = HeritageRepository(application)
+    private val repository = RepositoryProvider.getRepository(application)
 
     val checkIns: StateFlow<List<CheckIn>> = repository.getAllCheckIns()
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())

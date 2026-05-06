@@ -5,12 +5,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.virasat.data.model.HeritageSite
 import com.example.virasat.data.model.SiteType
-import com.example.virasat.data.repository.HeritageRepository
+import com.example.virasat.data.di.RepositoryProvider
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = HeritageRepository(application)
+    private val repository = RepositoryProvider.getRepository(application)
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()

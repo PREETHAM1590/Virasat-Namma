@@ -1,6 +1,10 @@
 package com.example.virasat.ui.screens
 
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
+import java.util.Locale
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -15,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,6 +29,7 @@ import com.example.virasat.ui.theme.VirasatCream
 import com.example.virasat.ui.theme.VirasatGold
 import com.example.virasat.ui.theme.VirasatMaroon
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 val sampleChapters = listOf(
     AudioChapter("1", "Introduction to the Site", 120, "", "Welcome to this magnificent heritage site. As you walk through these ancient corridors, imagine the centuries of history embedded in every stone."),
@@ -32,6 +39,7 @@ val sampleChapters = listOf(
     AudioChapter("5", "Preservation Efforts", 90, "", "Today, conservationists work tirelessly to preserve these structures for future generations...")
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AudioGuideScreen(
     siteId: String,
@@ -43,17 +51,54 @@ fun AudioGuideScreen(
     var progress by remember { mutableFloatStateOf(0f) }
     val chapter = sampleChapters[currentChapter]
 
+    val context = LocalContext.current
+    var tts by remember { mutableStateOf<TextToSpeech?>(null) }
+
+    LaunchedEffect(Unit) {
+        tts = TextToSpeech(context) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                tts?.language = Locale.ENGLISH
+                tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                    override fun onStart(utteranceId: String?) {
+                        isPlaying = true
+                    }
+                    override fun onDone(utteranceId: String?) {
+                        isPlaying = false
+                        progress = 0f
+                        if (currentChapter < sampleChapters.lastIndex) {
+                            currentChapter++
+                        }
+                    }
+                    override fun onError(utteranceId: String?) {
+                        isPlaying = false
+                    }
+                })
+            }
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            tts?.stop()
+            tts?.shutdown()
+        }
+    }
+
+    LaunchedEffect(currentChapter) {
+        progress = 0f
+        tts?.stop()
+        if (isPlaying) {
+            tts?.speak(chapter.transcript, TextToSpeech.QUEUE_FLUSH, null, null)
+        }
+    }
+
     LaunchedEffect(isPlaying) {
         while (isPlaying && progress < 1f) {
             delay(100)
             progress += 0.001f
         }
         if (progress >= 1f) {
-            isPlaying = false
             progress = 0f
-            if (currentChapter < sampleChapters.lastIndex) {
-                currentChapter++
-            }
         }
     }
 
@@ -92,7 +137,7 @@ fun AudioGuideScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    Icons.Default.Headphones,
+                    Icons.Default.Headset,
                     null,
                     modifier = Modifier.size(80.dp),
                     tint = VirasatMaroon.copy(alpha = 0.3f)
@@ -133,7 +178,14 @@ fun AudioGuideScreen(
                 }
 
                 FilledIconButton(
-                    onClick = { isPlaying = !isPlaying },
+                    onClick = {
+                        isPlaying = !isPlaying
+                        if (isPlaying) {
+                            tts?.speak(chapter.transcript, TextToSpeech.QUEUE_FLUSH, null, null)
+                        } else {
+                            tts?.stop()
+                        }
+                    },
                     modifier = Modifier.size(64.dp),
                     colors = IconButtonDefaults.filledIconButtonColors(containerColor = VirasatMaroon)
                 ) {
@@ -176,7 +228,13 @@ fun AudioGuideScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { currentChapter = index; progress = 0f; isPlaying = false }
+                        .clickable {
+                            tts?.stop()
+                            currentChapter = index
+                            progress = 0f
+                            isPlaying = true
+                            tts?.speak(sampleChapters[index].transcript, TextToSpeech.QUEUE_FLUSH, null, null)
+                        }
                         .padding(vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -200,7 +258,7 @@ fun AudioGuideScreen(
                         Text(formatTime(ch.durationSeconds), fontSize = 12.sp, color = Color.Gray)
                     }
                     if (index == currentChapter && isPlaying) {
-                        Icon(Icons.Default.VolumeUp, null, tint = VirasatMaroon)
+                        Icon(Icons.AutoMirrored.Filled.VolumeUp, null, tint = VirasatMaroon)
                     }
                 }
             }

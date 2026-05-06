@@ -1,11 +1,15 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("org.jetbrains.kotlin.android") version "2.0.0"
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
+    id("com.google.devtools.ksp") version "2.0.0-1.0.22"
+    id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.example.virasat"
-    compileSdk = 36
+    compileSdk = 35
+    buildToolsVersion = "35.0.0"
 
     defaultConfig {
         applicationId = "com.example.virasat"
@@ -22,6 +26,8 @@ android {
     }
 
     buildTypes {
+        debug {
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -30,10 +36,20 @@ android {
             )
         }
     }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+
+kotlin {
+    jvmToolchain(11)
 }
 
 dependencies {
@@ -58,10 +74,13 @@ dependencies {
     // Coil images
     implementation("io.coil-kt:coil-compose:2.6.0")
 
+    // Material icons extended
+    implementation("androidx.compose.material:material-icons-extended")
+
     // Room database
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 
     // ML Kit QR code scanning
     implementation("com.google.mlkit:barcode-scanning:17.2.0")
@@ -75,6 +94,17 @@ dependencies {
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+
+    // Concurrent futures for CameraX
+    implementation("androidx.concurrent:concurrent-futures-ktx:1.1.0")
+
+    // Guava (needed for CameraX ListenableFuture in Kotlin)
+    implementation("com.google.guava:guava:33.2.0-android")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -16,11 +16,11 @@ object KarnatakaSites {
             history = "Founded in 1336 by Harihara I and Bukka Raya I, Hampi became the epicenter of the Vijayanagara Empire. By 1500 CE, it was the world's second-largest medieval-era city after Beijing. The empire fell in 1565 after the Battle of Talikota.",
             architecture = "Hampi showcases Dravidian architecture with elements of Indo-Islamic influence. The Vittala Temple complex features the iconic stone chariot and musical pillars that produce melodic tones when struck.",
             legends = "Legend says that Hampi was the monkey kingdom of Kishkindha from the Ramayana. The boulders are believed to be thrown by Hanuman during the battle between Vali and Sugriva.",
-            imageUrl = "https://images.unsplash.com/photo-1600018448722-e3e9d80d2208?w=800",
+            imageUrl = "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=800",
             galleryImages = listOf(
-                "https://images.unsplash.com/photo-1587135941948-3b6394eb6ae9?w=400",
-                "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=400",
-                "https://images.unsplash.com/photo-1626010448982-0d629a5c0223?w=400"
+                "https://images.unsplash.com/photo-1708067225451-e7fa52d3c014?w=400",
+                "https://images.unsplash.com/photo-1696239105346-4e48185eb001?w=400",
+                "https://images.unsplash.com/photo-1684830235389-60a88c4e626e?w=400"
             ),
             facts = listOf(
                 Fact("hampi-f1", "Stone Chariot Mystery", "The iconic stone chariot in Vittala Temple was built to resemble a wooden chariot and cannot be moved — it's carved from a single granite block."),
@@ -48,7 +48,12 @@ object KarnatakaSites {
             history = "The current palace was commissioned in 1897 after the old palace was destroyed in a fire during the wedding of Princess Jayalakshmi. It was completed in 1912 at a cost of ₹42 lakh (about $30 million today).",
             architecture = "Designed by British architect Henry Irwin, the palace blends Hindu, Muslim, Rajput, and Gothic styles. Features include 145-foot five-story tower, marble domes, stained glass ceilings, and intricate woodwork.",
             legends = "The palace is said to be protected by the goddess Chamundeshwari, whose temple sits atop the Chamundi Hills visible from the palace grounds. The royal family still performs pooja here before major events.",
-            imageUrl = "https://images.unsplash.com/photo-1587135941948-3b6394eb6ae9?w=800",
+            imageUrl = "https://images.unsplash.com/photo-1600112356915-089abb8fc71a?w=800",
+            galleryImages = listOf(
+                "https://images.unsplash.com/photo-1657856855186-7cf4909a4f78?w=400",
+                "https://images.unsplash.com/photo-1659126574791-13313aa424bd?w=400",
+                "https://images.unsplash.com/photo-1647250945832-5b5aa0f6366e?w=400"
+            ),
             facts = listOf(
                 Fact("mysore-f1", "97,000 Light Bulbs", "During Dussehra, the palace is illuminated with 97,000 light bulbs — a sight that attracts millions."),
                 Fact("mysore-f2", "Golden Throne", "The palace houses a golden throne made of 200kg of 24-carat gold, used only during Dussehra."),
@@ -74,7 +79,7 @@ object KarnatakaSites {
             history = "Built between the 6th and 8th centuries by the Chalukya dynasty, these caves represent some of the earliest examples of Deccan temple architecture. The Chalukyas made Badami their capital from 540 to 757 CE.",
             architecture = "The four caves are carved into a sandstone cliff on the edge of a ravine. Caves 1-3 are dedicated to Shiva and Vishnu, while Cave 4 is a Jain temple. The architecture features elaborate pillar formations and ceiling panels.",
             legends = "Local legend says the Agastya Lake below the caves was created when the sage Agastya prayed to Shiva to provide water. The lake never dries up even during severe droughts.",
-            imageUrl = "https://images.unsplash.com/photo-1582510003544-4f00c7879f30?w=800",
+            imageUrl = "https://images.unsplash.com/photo-1695454140232-aee0c9310127?w=800",
             facts = listOf(
                 Fact("badami-f1", "18-Armed Nataraja", "Cave 1 features a rare 18-armed Nataraja statue with 81 dance poses depicted around it."),
                 Fact("badami-f2", "Vishnu on Snake", "Cave 3 contains a massive 6-foot statue of Vishnu seated on Adishesha, carved from a single rock."),
@@ -100,7 +105,7 @@ object KarnatakaSites {
             history = "Built in the 12th century during Hoysala rule, these temples took over 100 years to complete. The Hoysalas were patrons of art and architecture, competing with the Cholas and Chalukyas.",
             architecture = "The temples feature intricate soapstone carvings, with no surface left undecorated. The Darpana Sundari (lady with mirror) and the ceiling panel of Narasimha are world-famous sculptures.",
             legends = "It is said that the sculptors worked with soapstone because it softens when quarried and hardens over time, allowing them to carve impossibly detailed sculptures that last forever.",
-            imageUrl = "https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=800",
+            imageUrl = "https://images.unsplash.com/photo-1673779376455-b203cef903d1?w=800",
             facts = listOf(
                 Fact("belur-f1", "Infinite Pillar", "One of the pillars in Belur temple was turned on a lathe — something considered impossible for the 12th century."),
                 Fact("belur-f2", "No Two Alike", "There are 650 elephant carvings at the base of the Halebidu temple — no two are identical."),
@@ -126,7 +131,7 @@ object KarnatakaSites {
             history = "Completed in 1656, this monument took 20 years to build. The whispering gallery under the dome is famous — even the faintest sound is echoed 7-10 times.",
             architecture = "The cube structure supports a hemispherical dome with a diameter of 38 meters internally. The four minarets at the corners act as staircases to the gallery. The building covers an area of 18,000 sq ft.",
             legends = "The Sultan wanted his tomb to surpass all others. Legend says the architect was buried alive inside the monument so he could never replicate the design elsewhere.",
-            imageUrl = "https://images.unsplash.com/photo-1595658658481-d53d3f999875?w=800",
+            imageUrl = "https://images.unsplash.com/photo-1707063880573-b15e1f533d9f?w=800",
             facts = listOf(
                 Fact("gol-f1", "Whispering Gallery", "A sound made at one side of the gallery echoes 7-10 times, making it one of the finest acoustic marvels in the world."),
                 Fact("gol-f2", "No Wooden Beams", "The massive dome is supported without any wooden or iron beams — pure structural engineering genius."),
@@ -152,7 +157,7 @@ object KarnatakaSites {
             history = "The fort changed hands between the Kodavas, Tipu Sultan, and the British. The British added a church and a museum within its walls. The fort stands as a testament to the region's tumultuous history.",
             architecture = "The fort features a two-story palace inside, a church built by the British, and a museum. The walls offer panoramic views of the misty Western Ghats and coffee plantations.",
             legends = "The nearby Raja's Seat is where kings watched sunsets. Legend says the Kodava kings could communicate with spirits of ancestors during the monsoon mist.",
-            imageUrl = "https://images.unsplash.com/photo-1595658658481-d53d3f999875?w=800",
+            imageUrl = "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=800",
             facts = listOf(
                 Fact("coorg-f1", "Tipu's Secret Tunnel", "A secret tunnel from the fort is believed to lead to the Straits of Malabar, 100km away."),
                 Fact("coorg-f2", "Church in a Mosque", "The British converted Tipu Sultan's mosque inside the fort into a church — still used today."),

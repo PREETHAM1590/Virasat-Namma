@@ -8,6 +8,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,12 +31,16 @@ import com.example.virasat.ui.theme.VirasatCream
 import com.example.virasat.ui.theme.VirasatGold
 import com.example.virasat.ui.theme.VirasatMaroon
 import com.example.virasat.viewmodel.QrScannerViewModel
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
+import java.util.concurrent.Executors
 import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
-import java.util.concurrent.Executors
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QrScannerScreen(
     onBack: () -> Unit,
@@ -198,7 +203,9 @@ fun CameraPreviewWithScanner(
     )
 
     LaunchedEffect(previewView) {
-        val cameraProvider = ProcessCameraProvider.getInstance(context).await()
+        val cameraProvider = withContext(Dispatchers.IO) {
+            ProcessCameraProvider.getInstance(context).get()
+        }
 
         val preview = Preview.Builder().build().also {
             it.setSurfaceProvider(previewView.surfaceProvider)
@@ -241,8 +248,4 @@ fun CameraPreviewWithScanner(
             )
         } catch (_: Exception) { }
     }
-}
-
-private suspend fun <T> com.google.common.util.concurrent.ListenableFuture<T>.await(): T {
-    return androidx.concurrent.futures.await(this)
 }

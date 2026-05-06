@@ -164,7 +164,7 @@ fun SplashScreen(onNavigateToLanguage: () -> Unit) {
 
         // Bottom Karnataka Temple Silhouette
         AsyncImage(
-            model = "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=80&w=800&auto=format&fit=crop",
+            model = "https://images.unsplash.com/photo-1684830235389-60a88c4e626e?w=800",
             contentDescription = "Karnataka Temple",
             contentScale = ContentScale.Crop,
             modifier = Modifier

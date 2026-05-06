@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.virasat.data.model.CheckIn
 import com.example.virasat.data.model.UnlockedFact
 
-@Database(entities = [CheckIn::class, UnlockedFact::class], version = 1, exportSchema = false)
+@Database(entities = [CheckIn::class, UnlockedFact::class], version = 2, exportSchema = false)
 abstract class VirasatDatabase : RoomDatabase() {
     abstract fun checkInDao(): CheckInDao
     abstract fun unlockedFactDao(): UnlockedFactDao
@@ -22,7 +22,7 @@ abstract class VirasatDatabase : RoomDatabase() {
                     context.applicationContext,
                     VirasatDatabase::class.java,
                     "virasat_database"
-                ).build()
+                ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 instance
             }

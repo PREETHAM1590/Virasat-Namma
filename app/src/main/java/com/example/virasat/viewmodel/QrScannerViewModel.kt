@@ -4,13 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.virasat.data.model.HeritageSite
-import com.example.virasat.data.repository.HeritageRepository
+import com.example.virasat.data.di.RepositoryProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class QrScannerViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository = HeritageRepository(application)
+    private val repository = RepositoryProvider.getRepository(application)
 
     private val _scannedSite = MutableStateFlow<HeritageSite?>(null)
     val scannedSite: StateFlow<HeritageSite?> = _scannedSite
@@ -23,7 +23,7 @@ class QrScannerViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun processQrCode(qrData: String) {
         val site = repository.getSiteById(qrData)
-            ?: repository.getAllSites().value.find { it.qrCodeId == qrData }
+            ?: repository.getAllSitesList().find { it.qrCodeId == qrData }
         _scannedSite.value = site
         if (site != null) {
             viewModelScope.launch {

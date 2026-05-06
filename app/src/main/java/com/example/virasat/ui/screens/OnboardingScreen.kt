@@ -28,7 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.virasat.R
-import com.example.virasat.ui.theme.*
+import com.example.virasat.ui.theme.VirasatCream
+import com.example.virasat.ui.theme.VirasatMaroon
+import com.example.virasat.ui.theme.VirasatGold
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -40,7 +42,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppBg)
+            .background(VirasatCream)
     ) {
         // Top Skip Button
         Box(
@@ -51,7 +53,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
         ) {
             Text(
                 text = "Skip",
-                color = AppMaroon,
+                color = VirasatMaroon,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.clickable { onFinish() }
@@ -68,12 +70,12 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                 0 -> OnboardingPage(
                     title = "Discover\nKarnataka\nHeritage",
                     description = "From Hampi's ruins to Mysore Palace grandeur. Explore 750+ heritage sites across Karnataka.",
-                    imageUrl = "https://images.unsplash.com/photo-1587135941948-3b6394eb6ae9?q=80&w=800&auto=format&fit=crop"
+                    imageUrl = "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=800"
                 )
                 1 -> OnboardingPage(
                     title = "Scan QR at\nHeritage Sites",
                     description = "At Hampi, Badami, Belur or Gol Gumbaz — scan QR codes to unlock hidden stories and history.",
-                    imageUrl = "https://images.unsplash.com/photo-1606293926075-69a00febf780?q=80&w=800&auto=format&fit=crop"
+                    imageUrl = "https://images.unsplash.com/photo-1708067225451-e7fa52d3c014?w=800"
                 )
                 2 -> PassportPage()
             }
@@ -101,7 +103,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                         modifier = Modifier
                             .size(10.dp)
                             .background(
-                                color = if (isActive) AppMaroon else Color(0xFFE0CCA9),
+                                color = if (isActive) VirasatMaroon else Color(0xFFE0CCA9),
                                 shape = CircleShape
                             )
                     )
@@ -112,7 +114,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
             Box(
                 modifier = Modifier
                     .size(56.dp)
-                    .background(AppMaroon, CircleShape)
+                    .background(VirasatMaroon, CircleShape)
                     .clip(CircleShape)
                     .clickable {
                         if (pagerState.currentPage < 2) {
@@ -149,7 +151,7 @@ fun OnboardingPage(title: String, description: String, imageUrl: String) {
             fontFamily = FontFamily.Serif,
             fontWeight = FontWeight.Bold,
             fontSize = 36.sp,
-            color = AppMaroon,
+            color = VirasatMaroon,
             textAlign = TextAlign.Center,
             lineHeight = 40.sp
         )
@@ -168,7 +170,7 @@ fun OnboardingPage(title: String, description: String, imageUrl: String) {
         Text(
             text = description,
             fontSize = 15.sp,
-            color = AppText,
+            color = Color(0xFF2A2A2A),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 48.dp),
             lineHeight = 22.sp
@@ -214,7 +216,7 @@ fun PassportPage() {
             fontFamily = FontFamily.Serif,
             fontWeight = FontWeight.Bold,
             fontSize = 32.sp,
-            color = AppMaroon,
+            color = VirasatMaroon,
             textAlign = TextAlign.Center,
             lineHeight = 36.sp
         )
@@ -224,7 +226,7 @@ fun PassportPage() {
         Text(
             text = "Check-in at Karnataka's UNESCO sites and collect heritage stamps from Hampi to Mysore.",
             fontSize = 16.sp,
-            color = AppText,
+            color = Color(0xFF2A2A2A),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 40.dp)
         )

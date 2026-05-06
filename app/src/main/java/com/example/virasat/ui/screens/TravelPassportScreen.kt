@@ -2,6 +2,7 @@ package com.example.virasat.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,24 +21,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.virasat.data.model.CheckIn
 import com.example.virasat.ui.theme.*
 import com.example.virasat.viewmodel.PassportViewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.compose.material3.ExperimentalMaterial3Api
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TravelPassportScreen(
     onBack: () -> Unit,
     onSiteClick: (String) -> Unit,
     viewModel: PassportViewModel = viewModel()
 ) {
-    val checkIns by viewModel.checkIns.collectAsStateWithLifecycle()
-    val checkInCount by viewModel.checkInCount.collectAsStateWithLifecycle()
-    val uniqueSites by viewModel.uniqueSiteCount.collectAsStateWithLifecycle()
-    val factCount by viewModel.unlockedFactCount.collectAsStateWithLifecycle()
+    val checkIns by viewModel.checkIns.collectAsState()
+    val checkInCount by viewModel.checkInCount.collectAsState()
+    val uniqueSites by viewModel.uniqueSiteCount.collectAsState()
+    val factCount by viewModel.unlockedFactCount.collectAsState()
 
     Scaffold(
         topBar = {
@@ -241,7 +244,7 @@ fun StampCard(checkIn: CheckIn, onClick: () -> Unit) {
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    Icons.Default.CheckCircle,
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     null,
                     tint = VirasatMaroon,
                     modifier = Modifier.size(28.dp)
@@ -253,7 +256,7 @@ fun StampCard(checkIn: CheckIn, onClick: () -> Unit) {
                 Text(checkIn.siteLocation, fontSize = 13.sp, color = Color.Gray)
                 Text(dateFormat.format(Date(checkIn.timestamp)), fontSize = 12.sp, color = Color.Gray)
             }
-            Icon(Icons.Default.ChevronRight, null, tint = Color.Gray)
+            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = Color.Gray)
         }
     }
 }
