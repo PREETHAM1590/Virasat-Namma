@@ -12,20 +12,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,13 +40,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.virasat.ui.theme.Primary
+import com.example.virasat.ui.theme.OnSurfaceVariant
+import com.example.virasat.ui.theme.PrimaryContainer
+import com.example.virasat.ui.theme.OnPrimaryContainer
+import com.example.virasat.ui.theme.SurfaceContainerLowest
+import com.example.virasat.ui.theme.OnSurface
+import com.example.virasat.ui.theme.OutlineVariant
+import com.example.virasat.ui.theme.Background
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
     onSignUp: (String, String, String) -> Unit,
@@ -61,30 +72,64 @@ fun SignUpScreen(
     Box(
         Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(Background)
     ) {
         Column(
             Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
         ) {
-            Spacer(Modifier.height(48.dp))
-            IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back",
-                    tint = MaterialTheme.colorScheme.primary)
+            Spacer(Modifier.height(16.dp))
+
+            // Top Navigation
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(
+                    onClick = onBack,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .shadow(2.dp, RoundedCornerShape(999.dp), spotColor = Color.Black.copy(alpha = 0.05f))
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(SurfaceContainerLowest)
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = OnSurfaceVariant)
+                }
+
+                Text(
+                    "Virasat",
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = Primary,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(Modifier.size(48.dp)) // Balance the flex row
             }
-            Spacer(Modifier.height(24.dp))
-            Text("Join Us",
-                style = MaterialTheme.typography.displayLarge,
-                color = MaterialTheme.colorScheme.onSurface)
-            Spacer(Modifier.height(8.dp))
-            Text("Become a custodian of heritage.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+            Spacer(Modifier.height(64.dp))
+
+            // Hero / Greeting
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    "Join Us",
+                    style = MaterialTheme.typography.displayLarge,
+                    color = OnSurface,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    "Become a custodian of heritage.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = OnSurfaceVariant
+                )
+            }
+
             Spacer(Modifier.height(48.dp))
 
-            OutlinedTextField(value = name, onValueChange = { name = it },
+            OutlinedTextField(
+                value = name, onValueChange = { name = it },
                 placeholder = { Text("Full Name", color = MaterialTheme.colorScheme.outline) },
                 leadingIcon = { Icon(Icons.Default.Person, null, tint = MaterialTheme.colorScheme.outline) },
                 modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(999.dp), singleLine = true,
@@ -93,11 +138,13 @@ fun SignUpScreen(
                     unfocusedBorderColor = Color.Transparent,
                     unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                     focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
-                ))
+                )
+            )
             Spacer(Modifier.height(16.dp))
-            OutlinedTextField(value = email, onValueChange = { email = it },
+            OutlinedTextField(
+                value = email, onValueChange = { email = it },
                 placeholder = { Text("Email Address", color = MaterialTheme.colorScheme.outline) },
-                leadingIcon = { Icon(Icons.Default.Email, null, tint = MaterialTheme.colorScheme.outline) },
+                leadingIcon = { Icon(Icons.Default.Mail, null, tint = MaterialTheme.colorScheme.outline) },
                 modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(999.dp), singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 colors = OutlinedTextFieldDefaults.colors(

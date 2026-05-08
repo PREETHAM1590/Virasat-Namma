@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -20,13 +21,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Eco
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ChatBubble
-import androidx.compose.material.icons.filled.QrCodeScanner
-import androidx.compose.material.icons.filled.CardMembership
-import androidx.compose.material.icons.filled.EmojiEvents
-import androidx.compose.material.icons.filled.School
-import androidx.compose.material.icons.filled.ChatBubble
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +30,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -43,21 +41,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.virasat.ui.components.BottomNavItem
-import com.example.virasat.ui.components.VirasatBottomNavBar
 import com.example.virasat.data.source.KarnatakaSites
-
-val categories = listOf(
-    "Hiking" to true,
-    "Temples" to false,
-    "Forts" to false,
-    "Rivers" to false
-)
+import com.example.virasat.ui.components.BottomNavItem
+import com.example.virasat.ui.theme.Primary
+import com.example.virasat.ui.theme.OnSurfaceVariant
+import com.example.virasat.ui.theme.PrimaryContainer
+import com.example.virasat.ui.theme.OnPrimaryContainer
+import com.example.virasat.ui.theme.SurfaceContainerLowest
+import com.example.virasat.ui.theme.OnSurface
+import com.example.virasat.ui.theme.SecondaryContainer
+import com.example.virasat.ui.theme.OutlineVariant
+import com.example.virasat.ui.theme.NavBackground
 
 @Composable
 fun HomeScreen(
     onSiteClick: (String) -> Unit,
-    onSearch: () -> Unit,
     onQrScan: () -> Unit,
     onPassport: () -> Unit,
     onFavourites: () -> Unit,
@@ -66,58 +64,41 @@ fun HomeScreen(
     onQuiz: () -> Unit,
     onAiAssistant: () -> Unit,
     onGuides: () -> Unit,
-    onItinerary: () -> Unit
+    onItinerary: () -> Unit,
+    onSearch: () -> Unit
 ) {
-    val sites = KarnatakaSites.allSites.take(4)
-
-    Box(
-        Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
+    Box(modifier = Modifier.fillMaxSize().background(com.example.virasat.ui.theme.Background)) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 120.dp)
         ) {
-            // Top nav bar
             item {
-                Row(
+                // Top Navigation
+                Box(
                     Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp, vertical = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    contentAlignment = Alignment.CenterEnd
                 ) {
-                    IconButton(onClick = { }) {
+                    IconButton(
+                        onClick = onSearch,
+                        modifier = Modifier.size(40.dp)
+                    ) {
                         Icon(
-                            Icons.Default.Eco,
-                            null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(28.dp)
-                        )
-                    }
-                    Text(
-                        "Virasat",
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    IconButton(onClick = onSearch) {
-                        Icon(
-                            Icons.Default.Search,
-                            null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(28.dp)
+                            Icons.Default.Eco, 
+                            contentDescription = "Search",
+                            tint = Primary
                         )
                     }
                 }
             }
 
-            // Header: Hi Ananya + Weather + Search
             item {
+                // Header Section
                 Row(
-                    Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .padding(bottom = 48.dp),
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Bottom
                 ) {
@@ -125,148 +106,124 @@ fun HomeScreen(
                         Text(
                             "Hi, Ananya 👋",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = OnSurfaceVariant
                         )
                         Text(
                             "Heritage\nPower",
-                            style = MaterialTheme.typography.displayLarge,
-                            color = MaterialTheme.colorScheme.primary,
-                            lineHeight = MaterialTheme.typography.displayLarge.lineHeight
+                            style = MaterialTheme.typography.displayLarge.copy(lineHeight = 48.sp),
+                            color = Primary,
+                            fontWeight = FontWeight.Bold
                         )
                     }
-                    Column(horizontalAlignment = Alignment.End) {
-                        Box(
-                            Modifier
-                                .clip(RoundedCornerShape(999.dp))
-                                .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
-                        ) {
-                            Text(
-                                "☀️ 15°C",
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                        Spacer(Modifier.height(12.dp))
-                        Box(
-                            Modifier
-                                .size(48.dp)
-                                .clip(RoundedCornerShape(999.dp))
-                                .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-                                .clickable { onSearch() },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                Icons.Default.Search,
-                                null,
-                                modifier = Modifier.size(24.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
+                    
+                    // Weather Widget
+                    Row(
+                        modifier = Modifier
+                            .shadow(4.dp, RoundedCornerShape(999.dp), spotColor = Color.Black.copy(alpha = 0.05f))
+                            .clip(RoundedCornerShape(999.dp))
+                            .background(SurfaceContainerLowest)
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text("☀️", fontSize = 20.sp)
+                        Text(
+                            "15°C",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = OnSurface
+                        )
                     }
                 }
             }
 
-            // Categories
             item {
+                // Categories
                 LazyRow(
-                    modifier = Modifier.padding(horizontal = 24.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    contentPadding = PaddingValues(horizontal = 24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.padding(bottom = 32.dp)
                 ) {
-                    items(categories) { (cat, active) ->
-                        Box(
-                            Modifier
+                    item {
+                        Text(
+                            "Hiking",
+                            modifier = Modifier
+                                .shadow(8.dp, RoundedCornerShape(999.dp), spotColor = Primary.copy(alpha = 0.2f))
                                 .clip(RoundedCornerShape(999.dp))
-                                .background(
-                                    if (active) MaterialTheme.colorScheme.primaryContainer
-                                    else MaterialTheme.colorScheme.surfaceContainerLowest
-                                )
-                                .clickable { }
-                                .padding(horizontal = 24.dp, vertical = 12.dp)
-                        ) {
-                            Text(
-                                cat,
-                                style = MaterialTheme.typography.labelLarge,
-                                color = if (active) MaterialTheme.colorScheme.onPrimaryContainer
-                                else MaterialTheme.colorScheme.onSurface
-                            )
-                        }
+                                .background(PrimaryContainer)
+                                .padding(horizontal = 24.dp, vertical = 12.dp),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = OnPrimaryContainer
+                        )
+                    }
+                    item {
+                        Text(
+                            "Rivers",
+                            modifier = Modifier
+                                .shadow(4.dp, RoundedCornerShape(999.dp), spotColor = Color.Black.copy(alpha = 0.05f))
+                                .clip(RoundedCornerShape(999.dp))
+                                .background(SurfaceContainerLowest)
+                                .padding(horizontal = 24.dp, vertical = 12.dp),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = OnSurface
+                        )
                     }
                 }
             }
 
-            // Quick Actions
             item {
-                Spacer(Modifier.height(24.dp))
-                Row(
+                // Main Hero
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                        .padding(horizontal = 24.dp)
+                        .aspectRatio(4f/5f)
+                        .shadow(24.dp, RoundedCornerShape(48.dp), spotColor = Color.Black.copy(alpha = 0.15f))
+                        .clip(RoundedCornerShape(48.dp))
                 ) {
-                    QuickAction("Scan", Icons.Default.QrCodeScanner, onQrScan)
-                    QuickAction("Passport", Icons.Default.CardMembership, onPassport)
-                    QuickAction("Badges", Icons.Default.EmojiEvents, onBadges)
-                    QuickAction("Quiz", Icons.Default.School, onQuiz)
-                    QuickAction("AI Help", Icons.Default.ChatBubble, onAiAssistant)
-                }
-            }
-
-            // Hero
-            item {
-                Spacer(Modifier.height(32.dp))
-                Box(Modifier.padding(horizontal = 24.dp)) {
+                    AsyncImage(
+                        model = "https://lh3.googleusercontent.com/aida-public/AB6AXuCJP-Loh4tzULL7Ziu8cjoozV-a5KLW1IxRMKhKdpQnsUSDaXKfbx8WlZRbmdoXTUx8E2D6Sja-O2kzZYP_s9bprszI_abspgCUsaJoJ5GG1MKlC8iqiidPaaeV2isVmASXpDiofVZ_X2IVGKkkc2j9jsISeZa6aQqDfbcWoh6EPhX2RZGgBG0YgwwqtQNrOFbfufUBeBJhUu36ZEcT9VPmHJC0yjN-yAvMCSrb115mLzPCk2aJrV0TvPYwkLsJ1RX0Akw2tltdycw",
+                        contentDescription = "Lush forest canopy",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    
                     Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(0.8f)
-                            .clip(RoundedCornerShape(48.dp))
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.2f), Color.Black.copy(alpha = 0.6f)),
+                                    startY = 0f
+                                )
+                            )
+                    )
+                    
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(32.dp)
                     ) {
-                        AsyncImage(
-                            model = sites.firstOrNull()?.imageUrl,
-                            contentDescription = null,
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop
+                        Text(
+                            "Featured Audio",
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(999.dp))
+                                .background(Color.White.copy(alpha = 0.2f))
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            color = Color.White,
+                            style = MaterialTheme.typography.labelLarge
                         )
-                        Box(
-                            Modifier
-                                .fillMaxSize()
-                                .background(
-                                    Brush.verticalGradient(
-                                        listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f))
-                                    )
-                                )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            "The Sounds of Nature",
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = Color.White
                         )
-                        Column(
-                            Modifier
-                                .align(Alignment.BottomStart)
-                                .padding(32.dp)
-                        ) {
-                            Box(
-                                Modifier
-                                    .clip(RoundedCornerShape(999.dp))
-                                    .background(Color.White.copy(alpha = 0.2f))
-                                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                            ) {
-                                Text(
-                                    "Featured Audio",
-                                    color = Color.White,
-                                    style = MaterialTheme.typography.labelLarge
-                                )
-                            }
-                            Spacer(Modifier.height(12.dp))
-                            Text(
-                                "The Sounds of Nature",
-                                style = MaterialTheme.typography.headlineLarge,
-                                color = Color.White
-                            )
-                            Spacer(Modifier.height(4.dp))
-                            Text(
-                                "Immerse yourself in the ancient whispers of the forest and the flowing rhythms of hidden rivers.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.White.copy(alpha = 0.9f)
-                            )
-                        }
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            "Immerse yourself in the ancient whispers of the forest and the flowing rhythms of hidden rivers.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White.copy(alpha = 0.9f)
+                        )
                     }
                 }
             }
@@ -339,7 +296,8 @@ fun HomeScreen(
                 }
                 Spacer(Modifier.height(16.dp))
             }
-            items(sites) { site ->
+            
+            items(KarnatakaSites.allSites) { site ->
                 Box(
                     Modifier
                         .padding(horizontal = 24.dp, vertical = 6.dp)
@@ -379,7 +337,7 @@ fun HomeScreen(
 
         // Floating Nav
         Box(Modifier.align(Alignment.BottomCenter)) {
-            VirasatBottomNavBar(currentRoute = "home", onItemClick = onNavItemClick)
+            com.example.virasat.ui.components.VirasatBottomNavBar(currentRoute = "home", onItemClick = onNavItemClick)
         }
     }
 }
