@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Virasat - Heritage Guides</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&amp;family=Be+Vietnam+Pro:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#2e312e",
+                    "tertiary": "#556157",
+                    "on-primary-container": "#4a5800",
+                    "primary-fixed": "#d3ef59",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-dim": "#d9dad6",
+                    "surface-container-high": "#e7e9e4",
+                    "tertiary-container": "#bdcabd",
+                    "secondary-container": "#ceeace",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f3f4ef",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-background": "#1a1c19",
+                    "surface-variant": "#e2e3de",
+                    "surface-tint": "#556500",
+                    "primary-container": "#b7d23f",
+                    "on-surface": "#1a1c19",
+                    "background": "#f9faf5",
+                    "primary": "#556500",
+                    "outline": "#767964",
+                    "secondary-fixed-dim": "#b2ceb3",
+                    "secondary": "#4c644f",
+                    "secondary-fixed": "#ceeace",
+                    "surface-container": "#edeee9",
+                    "surface-bright": "#f9faf5",
+                    "inverse-primary": "#b7d23f",
+                    "on-tertiary-fixed-variant": "#3e4a40",
+                    "surface": "#f9faf5",
+                    "on-tertiary-fixed": "#131e16",
+                    "outline-variant": "#c6c8b0",
+                    "on-surface-variant": "#454836",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#4a554b",
+                    "on-secondary-fixed": "#09200f",
+                    "inverse-on-surface": "#f0f1ec",
+                    "surface-container-highest": "#e2e3de",
+                    "on-primary-fixed-variant": "#3f4c00",
+                    "on-primary-fixed": "#181e00",
+                    "tertiary-fixed": "#d9e6d8",
+                    "primary-fixed-dim": "#b7d23f",
+                    "on-secondary-fixed-variant": "#354c38",
+                    "on-secondary-container": "#526a54",
+                    "tertiary-fixed-dim": "#bdcabd",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "overlap-margin": "-32px",
+                    "container-padding": "24px",
+                    "section-margin": "48px",
+                    "element-gap": "16px",
+                    "unit": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "display-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-lg": [
+                            "Be Vietnam Pro"
+                    ],
+                    "label-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "headline-md": [
+                            "Plus Jakarta Sans"
+                    ]
+            },
+            "fontSize": {
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-[100px] flex flex-col font-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="bg-transparent w-full px-container-padding pt-4 flat no shadows z-40 relative hidden md:flex">
+<div class="flex justify-between items-center w-full max-w-7xl mx-auto">
+<button class="text-primary hover:opacity-80 transition-opacity transition-transform duration-300 active:scale-95 flex items-center justify-center p-2 rounded-full hover:bg-surface-variant/50">
+<span class="material-symbols-outlined" data-icon="eco">eco</span>
+</button>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Virasat</h1>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity transition-transform duration-300 active:scale-95 flex items-center justify-center p-2 rounded-full hover:bg-surface-variant/50">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</div>
+</header>
+<!-- Mobile Header Fallback (Simpler, no nav items) -->
+<header class="bg-transparent w-full px-container-padding pt-4 pb-2 z-40 relative md:hidden flex justify-between items-center">
+<button class="text-primary p-2">
+<span class="material-symbols-outlined" data-icon="eco">eco</span>
+</button>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Virasat</h1>
+<button class="text-on-surface-variant p-2">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</header>
+<main class="flex-grow w-full max-w-7xl mx-auto flex flex-col gap-section-margin pt-element-gap">
+<!-- Hero Section / Title -->
+<section class="px-container-padding pt-8 pb-4 text-center">
+<h2 class="font-display-lg text-display-lg text-on-background mb-4">Local Custodians</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Connect with passionate guides who bring heritage to life through personal stories and deep cultural knowledge.</p>
+</section>
+<!-- Horizontal Guide Cards List -->
+<section class="px-container-padding pb-section-margin w-full overflow-hidden">
+<div class="flex gap-element-gap overflow-x-auto pb-8 pt-16 snap-x snap-mandatory hide-scrollbar" style="scrollbar-width: none; -ms-overflow-style: none;">
+<style>
+                    .hide-scrollbar::-webkit-scrollbar { display: none; }
+                </style>
+<!-- Guide Card 1 -->
+<div class="snap-center shrink-0 w-72 md:w-80 bg-surface-container-lowest rounded-[32px] p-6 pt-16 relative flex flex-col items-center text-center mt-8 shadow-[0px_4px_16px_rgba(0,0,0,0.04),_16px_16px_32px_rgba(85,101,0,0.05)] border border-surface-variant/30">
+<div class="absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full overflow-hidden border-4 border-surface-container-lowest shadow-lg z-10">
+<img alt="Portrait of a smiling male guide" class="w-full h-full object-cover" data-alt="A portrait photo of a smiling, welcoming male tour guide in natural outdoor lighting. He has warm features and looks directly at the camera. The background is a soft, blurred lush green landscape, evoking a sense of connection with nature and heritage. The image uses a light, airy, modern aesthetic complementary to a green and cream color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBildeuXzdVZ0tgZ2Vjq_ovOGEWGcSMUSlqfIXhEPGcSTUZ5B-zJtIm1rbWcNaY-1PXM8UFhFeQnyVFo63V5egiIa7fAQZvg8gXTLJ8unTvRbrdNXwsqyVt_bgyc4mX-F7QPZZ1almvnVCwZ5Yk-Ki6FpxM4ZbqFqVD6ggzT246g3DY5SPglHjAM1iE9CGDJE3wCACxCPmgDYaj5Iq_j13swTizcUlVp5vwaZDKZ3nkqWB71CvH8hsNSeU_wy46FdlE4A7077bBNYs"/>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mt-2 mb-1">Aarav Patel</h3>
+<p class="font-label-md text-label-md text-primary uppercase tracking-widest mb-4">Architecture Specialist</p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-3 flex-grow">Aarav weaves the stories of ancient temple structures with modern conservation techniques. His walks are a journey through stone and spirit.</p>
+<div class="flex items-center justify-between w-full mb-6 text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md">4.9</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-tertiary" data-icon="translate">translate</span>
+<span class="font-label-md text-label-md">EN, HI</span>
+</div>
+</div>
+<button class="w-full bg-primary-container text-[#0B2211] font-label-md text-label-md py-4 rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4)] hover:opacity-90 transition-opacity">Book a Walk</button>
+</div>
+<!-- Guide Card 2 -->
+<div class="snap-center shrink-0 w-72 md:w-80 bg-surface-container-lowest rounded-[32px] p-6 pt-16 relative flex flex-col items-center text-center mt-8 shadow-[0px_4px_16px_rgba(0,0,0,0.04),_16px_16px_32px_rgba(85,101,0,0.05)] border border-surface-variant/30">
+<div class="absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full overflow-hidden border-4 border-surface-container-lowest shadow-lg z-10">
+<img alt="Portrait of a female guide" class="w-full h-full object-cover" data-alt="A bright, engaging portrait of a female cultural guide looking friendly and approachable. She is set against a soft, out-of-focus background of ancient stone ruins and subtle foliage. The lighting is soft and natural, creating a serene, trustworthy mood. The aesthetic is clean, modern, and perfectly suited for a premium travel application with earthy green and cream tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmb8GxADd4oB4R3U5bTQeTMD7RYewXGk1bBc6yjPtGBshBmcdqZCUAuFMNxrOC8aJ4PT4R_3he0uxCanp1Qqu8yWt9Da5qC-YupnFKEyajsrVzHMI1LiscZwJCc_3idXKby2gTu9yusZCoKuJCK7bhbXoVR_DnC5NMHhILevl7V7QJt2039WYaXQ6EynN4BQPJ9fNmqgK7yW30xsVmh-bOnfG8ijgt2eUAyVWvq013nFUYZmSSqrMiVmOYrlNb7vONuxEl2-iAdeQ"/>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mt-2 mb-1">Meera Sharma</h3>
+<p class="font-label-md text-label-md text-primary uppercase tracking-widest mb-4">Botanical Historian</p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-3 flex-grow">Exploring the medicinal and cultural significance of local flora found thriving amidst historical ruins. Discover the living history of the land.</p>
+<div class="flex items-center justify-between w-full mb-6 text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md">5.0</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-tertiary" data-icon="translate">translate</span>
+<span class="font-label-md text-label-md">EN</span>
+</div>
+</div>
+<button class="w-full bg-primary-container text-[#0B2211] font-label-md text-label-md py-4 rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4)] hover:opacity-90 transition-opacity">Book a Walk</button>
+</div>
+<!-- Guide Card 3 -->
+<div class="snap-center shrink-0 w-72 md:w-80 bg-surface-container-lowest rounded-[32px] p-6 pt-16 relative flex flex-col items-center text-center mt-8 shadow-[0px_4px_16px_rgba(0,0,0,0.04),_16px_16px_32px_rgba(85,101,0,0.05)] border border-surface-variant/30">
+<div class="absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full overflow-hidden border-4 border-surface-container-lowest shadow-lg z-10">
+<img alt="Portrait of a male guide" class="w-full h-full object-cover" data-alt="A portrait of an experienced, thoughtful male storyteller and guide. The setting is softly lit with warm, golden hour sunlight. The background features blurred elements of a traditional village or heritage site, emphasizing a connection to cultural roots. The overall mood is authentic, calm, and deeply rooted in the organic, modern-custodian design style with natural greens and earthy colors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBh4H5Z11AohwLd6LQJLQYQIRWaegdiamSq0vfjozQyssGlgpeZOhsD22lKHEvQ3D165cgRByqLdN3f5b1CatP4FMyB0wpLdUrztCSOYoXqLby5nPCxq7SwOw80wuHz79ZXjWIlPGRtLYwb8hn4fOlr0yyOqcl3YXjT-3adgg0MWJM1IVeWJN-s1JzFW7Uj7L6Hi3CMMv_jwKqXjGUcBu2Q0MLEf4NmdSWoIhfar5rJeSiGKlK4diPmwKFEim-fLpBkwpaNFzDsIOY"/>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mt-2 mb-1">Rajan Singh</h3>
+<p class="font-label-md text-label-md text-primary uppercase tracking-widest mb-4">Folklore &amp; Myths</p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-3 flex-grow">Step into the realm of legends. Rajan brings oral traditions to life, connecting ancient myths to the physical landscapes we walk through.</p>
+<div class="flex items-center justify-between w-full mb-6 text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md">4.8</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-tertiary" data-icon="translate">translate</span>
+<span class="font-label-md text-label-md">HI, MR</span>
+</div>
+</div>
+<button class="w-full bg-primary-container text-[#0B2211] font-label-md text-label-md py-4 rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.4)] hover:opacity-90 transition-opacity">Book a Walk</button>
+</div>
+<!-- Spacer for scrolling -->
+<div class="snap-center shrink-0 w-4"></div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden bg-[#0B2211] shadow-xl fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-md rounded-full px-6 py-3 z-50 flex justify-around items-center gap-element-gap">
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="nest_eco_leaf">nest_eco_leaf</span>
+<span class="font-label-md text-label-md mt-1">Explore</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="temple_hindu">temple_hindu</span>
+<span class="font-label-md text-label-md mt-1">Heritage</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="star">star</span>
+<span class="font-label-md text-label-md mt-1">Saved</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md mt-1">Profile</span>
+</button>
+</nav>
+</body></html>

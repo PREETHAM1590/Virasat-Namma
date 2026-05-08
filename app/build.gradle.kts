@@ -13,8 +13,9 @@ android {
 
     defaultConfig {
         applicationId = "com.example.virasat"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
+        buildConfigField("String", "GEMINI_API_KEY", "\"${providers.gradleProperty("geminiApiKey").getOrElse("")}\"")
         versionCode = 1
         versionName = "1.0"
 
@@ -23,6 +24,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     buildTypes {
@@ -40,6 +42,9 @@ android {
     packaging {
         jniLibs {
             useLegacyPackaging = true
+        }
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1,INDEX.LIST,DEPENDENCIES,NOTICE,LICENSE}"
         }
     }
     compileOptions {
@@ -91,6 +96,9 @@ dependencies {
 
     // JSON serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    // Gemini AI SDK
+    implementation("com.google.genai:google-genai:1.0.0")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")

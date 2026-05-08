@@ -8,15 +8,18 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -25,20 +28,16 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.virasat.ui.theme.VirasatCream
-import com.example.virasat.ui.theme.VirasatGold
-import com.example.virasat.ui.theme.VirasatMaroon
 import com.example.virasat.viewmodel.QrScannerViewModel
 import androidx.compose.material3.ExperimentalMaterial3Api
-import java.util.concurrent.Executors
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.concurrent.Executors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +47,7 @@ fun QrScannerScreen(
     viewModel: QrScannerViewModel = viewModel()
 ) {
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleOwner = context as androidx.lifecycle.LifecycleOwner
     var hasCameraPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
@@ -66,114 +65,340 @@ fun QrScannerScreen(
         if (!hasCameraPermission) launcher.launch(Manifest.permission.CAMERA)
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Scan QR Code") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = VirasatCream)
-            )
-        }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-                .padding(padding)
-        ) {
-            if (hasCameraPermission) {
-                CameraPreviewWithScanner(
-                    lifecycleOwner = lifecycleOwner,
-                    onQrDetected = { qrValue ->
-                        if (scannedSite == null) {
-                            viewModel.processQrCode(qrValue)
-                        }
-                    }
-                )
+    val cs = MaterialTheme.colorScheme
+    val type = MaterialTheme.typography
 
-                // Overlay UI
-                if (scannedSite == null) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(cs.inverseSurface)
+    ) {
+        if (hasCameraPermission) {
+            CameraPreviewWithScanner(
+                lifecycleOwner = lifecycleOwner,
+                onQrDetected = { qrValue ->
+                    if (scannedSite == null) {
+                        viewModel.processQrCode(qrValue)
+                    }
+                }
+            )
+
+            // Blurred overlay with cutout (simulated via layered boxes)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(cs.inverseSurface.copy(alpha = 0.4f))
+            ) {
+                // Transparent center cutout - achieved by covering edges only
+                // Top bar area
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .background(cs.inverseSurface.copy(alpha = 0.4f))
+                )
+                // Bottom area
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .align(Alignment.BottomCenter)
+                        .background(cs.inverseSurface.copy(alpha = 0.4f))
+                )
+                // Left area
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(48.dp)
+                        .align(Alignment.CenterStart)
+                        .padding(top = 120.dp, bottom = 120.dp)
+                        .background(cs.inverseSurface.copy(alpha = 0.4f))
+                )
+                // Right area
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(48.dp)
+                        .align(Alignment.CenterEnd)
+                        .padding(top = 120.dp, bottom = 120.dp)
+                        .background(cs.inverseSurface.copy(alpha = 0.4f))
+                )
+            }
+
+            // Viewfinder reticle frame
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(modifier = Modifier.size(280.dp)) {
+                    // Top left bracket
                     Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        modifier = Modifier
+                            .size(48.dp)
+                            .align(Alignment.TopStart)
+                            .clip(RoundedCornerShape(topStart = 32.dp))
+                            .background(Color.Transparent)
+                            .padding(top = 0.dp, start = 0.dp)
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(250.dp)
-                                .background(Color.Transparent)
-                                .border(2.dp, VirasatGold, RoundedCornerShape(16.dp))
+                                .fillMaxWidth(0.7f)
+                                .height(4.dp)
+                                .background(cs.primary)
+                                .align(Alignment.TopStart)
                         )
-                        Text(
-                            "Point camera at QR code",
-                            color = Color.White,
-                            modifier = Modifier.padding(top = 280.dp),
-                            fontSize = 16.sp
+                        Box(
+                            modifier = Modifier
+                                .width(4.dp)
+                                .fillMaxHeight(0.7f)
+                                .background(cs.primary)
+                                .align(Alignment.TopStart)
                         )
                     }
-                }
-            } else {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text("Camera permission required", color = Color.White)
-                    Button(onClick = { launcher.launch(Manifest.permission.CAMERA) }) {
-                        Text("Grant Permission")
+                    // Top right bracket
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .align(Alignment.TopEnd)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .height(4.dp)
+                                .background(cs.primary)
+                                .align(Alignment.TopEnd)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .width(4.dp)
+                                .fillMaxHeight(0.7f)
+                                .background(cs.primary)
+                                .align(Alignment.TopEnd)
+                        )
                     }
+                    // Bottom left bracket
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .align(Alignment.BottomStart)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .height(4.dp)
+                                .background(cs.primary)
+                                .align(Alignment.BottomStart)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .width(4.dp)
+                                .fillMaxHeight(0.7f)
+                                .background(cs.primary)
+                                .align(Alignment.BottomStart)
+                        )
+                    }
+                    // Bottom right bracket
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .align(Alignment.BottomEnd)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .height(4.dp)
+                                .background(cs.primary)
+                                .align(Alignment.BottomEnd)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .width(4.dp)
+                                .fillMaxHeight(0.7f)
+                                .background(cs.primary)
+                                .align(Alignment.BottomEnd)
+                        )
+                    }
+                    // Scanning line
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .height(2.dp)
+                            .background(cs.primary.copy(alpha = 0.8f))
+                            .align(Alignment.Center)
+                    )
                 }
             }
 
-            // Result Bottom Sheet
-            scannedSite?.let { site ->
-                Column(
+            // TopAppBar overlay
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(
+                    onClick = onBack,
                     modifier = Modifier
-                        .align(Alignment.BottomCenter)
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(cs.surfaceContainerLowest.copy(alpha = 0.8f))
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = cs.primary
+                    )
+                }
+                Text(
+                    "Virasat",
+                    style = type.headlineLarge.copy(fontWeight = FontWeight.SemiBold),
+                    color = cs.surfaceContainerLowest
+                )
+                IconButton(
+                    onClick = { },
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(cs.surfaceContainerLowest.copy(alpha = 0.8f))
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Spa,
+                        contentDescription = "Search",
+                        tint = cs.primary
+                    )
+                }
+            }
+
+            // Floating bottom pill
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(start = 24.dp, end = 24.dp, bottom = 64.dp)
+            ) {
+                Row(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .background(VirasatCream, RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                        .padding(24.dp)
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(cs.surfaceContainerLowest)
+                        .padding(horizontal = 24.dp, vertical = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(cs.primary.copy(alpha = 0.2f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.QrCodeScanner,
+                            contentDescription = null,
+                            tint = cs.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    Text(
+                        "Scan QR to unlock history",
+                        style = type.labelMedium.copy(fontWeight = FontWeight.SemiBold, letterSpacing = 0.05.sp),
+                        color = cs.onSurface
+                    )
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    "Camera permission required",
+                    style = type.bodyLarge,
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = { launcher.launch(Manifest.permission.CAMERA) },
+                    shape = RoundedCornerShape(999.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = cs.primaryContainer,
+                        contentColor = cs.onPrimaryContainer
+                    )
+                ) {
+                    Text("Grant Permission", style = type.labelLarge)
+                }
+            }
+        }
+
+        // Result Bottom Sheet
+        scannedSite?.let { site ->
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
+                    .background(cs.surfaceContainerLowest)
+                    .padding(28.dp)
+            ) {
+                Text(
+                    site.name,
+                    style = type.headlineMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = cs.onSurface
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    site.location,
+                    style = type.bodyLarge,
+                    color = cs.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                if (hasCheckedIn) {
+                    Button(
+                        onClick = { onNavigateToSite(site.id) },
+                        modifier = Modifier.fillMaxWidth().height(52.dp),
+                        shape = RoundedCornerShape(999.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = cs.primaryContainer,
+                            contentColor = cs.onPrimaryContainer
+                        )
+                    ) {
+                        Text("View Site Details", style = type.labelLarge)
+                    }
+                } else {
+                    Button(
+                        onClick = { viewModel.checkIn() },
+                        modifier = Modifier.fillMaxWidth().height(52.dp),
+                        shape = RoundedCornerShape(999.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = cs.primaryContainer,
+                            contentColor = cs.onPrimaryContainer
+                        ),
+                        enabled = !isCheckingIn
+                    ) {
+                        if (isCheckingIn) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = cs.onPrimaryContainer
+                            )
+                        } else {
+                            Text("Check In Here", style = type.labelLarge)
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                TextButton(
+                    onClick = { viewModel.reset() },
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        site.name,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
-                        color = VirasatMaroon
+                        "Scan Another QR",
+                        style = type.labelLarge,
+                        color = cs.onSurfaceVariant
                     )
-                    Text(site.location, color = Color.Gray, fontSize = 14.sp)
-                    Spacer(modifier = Modifier.height(12.dp))
-                    if (hasCheckedIn) {
-                        Button(
-                            onClick = { onNavigateToSite(site.id) },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(containerColor = VirasatMaroon)
-                        ) {
-                            Text("View Site Details")
-                        }
-                    } else {
-                        Button(
-                            onClick = { viewModel.checkIn() },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(containerColor = VirasatMaroon),
-                            enabled = !isCheckingIn
-                        ) {
-                            if (isCheckingIn) {
-                                CircularProgressIndicator(modifier = Modifier.size(20.dp), color = Color.White)
-                            } else {
-                                Text("Check In Here")
-                            }
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    TextButton(
-                        onClick = { viewModel.reset() },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Scan Another QR")
-                    }
                 }
             }
         }

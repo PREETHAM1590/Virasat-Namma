@@ -1,26 +1,33 @@
 package com.example.virasat.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.virasat.ui.theme.VirasatCream
-import com.example.virasat.ui.theme.VirasatGold
-import com.example.virasat.ui.theme.VirasatMaroon
+import androidx.compose.ui.unit.em
+import com.example.virasat.ui.theme.BeVietnamPro
+import com.example.virasat.ui.theme.PlusJakartaSans
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedbackScreen(
     onBack: () -> Unit,
@@ -29,95 +36,231 @@ fun FeedbackScreen(
     var rating by remember { mutableIntStateOf(0) }
     var comment by remember { mutableStateOf("") }
     var sent by remember { mutableStateOf(false) }
+    val scheme = MaterialTheme.colorScheme
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Feedback") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = VirasatCream)
-            )
-        }
-    ) { padding ->
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(scheme.background)
+    ) {
+        // Ambient background blobs
+        Box(
+            modifier = Modifier
+                .size(500.dp)
+                .offset(x = 200.dp, y = (-100).dp)
+                .background(
+                    Brush.radialGradient(
+                        listOf(
+                            scheme.secondaryContainer.copy(alpha = 0.2f),
+                            scheme.secondaryContainer.copy(alpha = 0f)
+                        )
+                    ),
+                    CircleShape
+                )
+        )
+        Box(
+            modifier = Modifier
+                .size(600.dp)
+                .offset(x = (-160).dp, y = 400.dp)
+                .background(
+                    Brush.radialGradient(
+                        listOf(
+                            scheme.tertiaryContainer.copy(alpha = 0.15f),
+                            scheme.tertiaryContainer.copy(alpha = 0f)
+                        )
+                    ),
+                    CircleShape
+                )
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(VirasatCream)
-                .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(24.dp),
+                .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (sent) {
-                Card(
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9)),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier.padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(Icons.Default.CheckCircle, null, tint = Color(0xFF2E7D32), modifier = Modifier.size(48.dp))
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text("Thank You!", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            "Thanks for your feedback! Your feedback helps us improve the app.",
-                            color = Color(0xFF2E7D32),
-                            fontWeight = FontWeight.Medium,
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            // Header with close button
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp, bottom = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(
+                            scheme.surfaceContainerLowest,
+                            CircleShape
                         )
-                    }
+                        .clip(CircleShape)
+                        .clickable(onClick = onBack),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Back",
+                        tint = scheme.onSurfaceVariant,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
+            if (sent) {
+                Spacer(modifier = Modifier.height(120.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        tint = scheme.onPrimaryContainer,
+                        modifier = Modifier.size(48.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "Thank You!",
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontFamily = PlusJakartaSans,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = scheme.onPrimaryContainer
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Thanks for your feedback! It helps us improve the app.",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontFamily = BeVietnamPro
+                        ),
+                        color = scheme.onPrimaryContainer.copy(alpha = 0.8f),
+                        textAlign = TextAlign.Center
+                    )
                 }
             } else {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    shape = RoundedCornerShape(12.dp)
+                // Headline
+                Text(
+                    text = "Your Experience",
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontFamily = PlusJakartaSans,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = scheme.primary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 8.dp, bottom = 48.dp)
+                )
+
+                // Floating white card
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            scheme.surfaceContainerLowest,
+                            RoundedCornerShape(48.dp)
+                        )
+                        .padding(horizontal = 32.dp, vertical = 40.dp)
                 ) {
                     Column(
-                        modifier = Modifier.padding(20.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
-                        Text("How is your experience?", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = VirasatMaroon)
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text(
+                            text = "How would you rate your recent journey with us?",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = BeVietnamPro
+                            ),
+                            color = scheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center
+                        )
+
+                        // 5 lime green stars
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             repeat(5) { index ->
-                                IconButton(onClick = { rating = index + 1 }) {
-                                    Icon(
-                                        Icons.Default.Star,
-                                        null,
-                                        tint = if (index < rating) VirasatGold else Color.LightGray,
-                                        modifier = Modifier.size(40.dp)
-                                    )
-                                }
+                                val filled = index < rating
+                                Icon(
+                                    imageVector = Icons.Default.Star,
+                                    contentDescription = "${index + 1} star",
+                                    modifier = Modifier
+                                        .size(48.dp)
+                                        .clickable { rating = index + 1 },
+                                    tint = if (filled) scheme.primaryContainer else scheme.outlineVariant
+                                )
                             }
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Gray pill input
                         OutlinedTextField(
                             value = comment,
                             onValueChange = { comment = it },
-                            label = { Text("Tell us more...") },
-                            modifier = Modifier.fillMaxWidth().height(140.dp),
-                            shape = RoundedCornerShape(12.dp)
+                            placeholder = {
+                                Text(
+                                    "Share more details (optional)...",
+                                    style = MaterialTheme.typography.bodyLarge.copy(
+                                        fontFamily = BeVietnamPro
+                                    ),
+                                    color = scheme.outlineVariant
+                                )
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(999.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                unfocusedContainerColor = scheme.surfaceContainerHigh,
+                                focusedContainerColor = scheme.surfaceContainerHigh,
+                                unfocusedBorderColor = scheme.surfaceContainerHigh,
+                                focusedBorderColor = scheme.primaryContainer.copy(alpha = 0.5f)
+                            ),
+                            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = BeVietnamPro
+                            ),
+                            singleLine = true
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Button(
-                            onClick = { sent = true; onSubmit() },
-                            modifier = Modifier.fillMaxWidth().height(52.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = VirasatMaroon),
-                            shape = RoundedCornerShape(12.dp),
-                            enabled = rating > 0
-                        ) {
-                            Text("Submit Feedback", fontWeight = FontWeight.Bold)
-                        }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(48.dp))
+
+                // Bottom lime green submit pill
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            scheme.primaryContainer,
+                            RoundedCornerShape(999.dp)
+                        )
+                        .clickable(
+                            enabled = rating > 0,
+                            onClick = { sent = true; onSubmit() }
+                        )
+                        .padding(vertical = 18.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "Submit Feedback",
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                fontFamily = BeVietnamPro,
+                                fontWeight = FontWeight.SemiBold,
+                                letterSpacing = (0.05).em
+                            ),
+                            color = scheme.onPrimaryContainer
+                        )
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = null,
+                            tint = scheme.onPrimaryContainer,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(48.dp))
             }
         }
     }

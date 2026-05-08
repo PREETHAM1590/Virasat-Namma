@@ -4,25 +4,23 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.virasat.ui.theme.VirasatCream
-import com.example.virasat.ui.theme.VirasatGold
-import com.example.virasat.ui.theme.VirasatMaroon
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
@@ -35,175 +33,372 @@ fun SettingsScreen(
     onTerms: () -> Unit = {},
     onDataSync: () -> Unit = {}
 ) {
-    var darkModeEnabled by remember { mutableStateOf(false) }
     var notificationsEnabled by remember { mutableStateOf(true) }
-    var autoDownload by remember { mutableStateOf(true) }
+    var locationEnabled by remember { mutableStateOf(true) }
+    var offlineEnabled by remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Settings", color = VirasatMaroon) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = VirasatMaroon)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = VirasatCream)
-            )
-        }
-    ) { padding ->
-        Column(
+    val cs = MaterialTheme.colorScheme
+    val type = MaterialTheme.typography
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(cs.background)
+            .verticalScroll(rememberScrollState())
+    ) {
+        // TopAppBar
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .background(VirasatCream)
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            SettingsGroup("Preferences") {
-                SettingsToggleItem(
-                    label = "Dark Mode",
-                    icon = Icons.Default.DarkMode,
-                    checked = darkModeEnabled,
-                    onCheckedChange = { darkModeEnabled = it; onDarkMode() }
-                )
-                SettingsToggleItem(
-                    label = "Notifications",
-                    icon = Icons.Default.Notifications,
-                    checked = notificationsEnabled,
-                    onCheckedChange = { notificationsEnabled = it; onNotifications() }
-                )
-                SettingsNavItem(
-                    label = "Language",
-                    icon = Icons.Default.Language,
-                    trailing = "English",
-                    onClick = onLanguageSettings
+            Icon(
+                imageVector = Icons.Default.Spa,
+                contentDescription = "Eco",
+                tint = cs.primary,
+                modifier = Modifier.size(28.dp)
+            )
+            Text(
+                text = "Virasat",
+                style = type.headlineLarge.copy(fontWeight = FontWeight.SemiBold),
+                color = cs.primary
+            )
+            IconButton(onClick = { }) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search",
+                    tint = cs.primary,
+                    modifier = Modifier.size(28.dp)
                 )
             }
+        }
 
-            SettingsGroup("Offline") {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+        ) {
+            // Page Title
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Settings",
+                style = type.displayLarge.copy(fontWeight = FontWeight.Bold),
+                color = cs.onBackground
+            )
+            Text(
+                text = "Manage your preferences and account.",
+                style = type.bodyLarge,
+                color = cs.onSurfaceVariant,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Account Section
+            SettingsSectionCard {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.TopEnd
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(128.dp)
+                            .background(cs.primaryContainer.copy(alpha = 0.1f), CircleShape)
+                            .offset(x = 32.dp, y = (-32).dp)
+                    )
+                }
+                Text(
+                    text = "Account",
+                    style = type.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = cs.primary,
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
+
+                // Profile row
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White, RoundedCornerShape(12.dp))
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(bottom = 24.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Icon(Icons.Default.Download, null, tint = VirasatMaroon)
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text("Auto-Download Audio", fontSize = 16.sp, color = VirasatMaroon)
-                        Text("Download guides over Wi-Fi", fontSize = 12.sp, color = Color.Gray)
-                    }
-                    Switch(
-                        checked = autoDownload,
-                        onCheckedChange = { autoDownload = it },
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = VirasatMaroon,
-                            checkedTrackColor = VirasatMaroon.copy(alpha = 0.5f)
+                    Box(
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
+                            .background(cs.tertiaryContainer),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Profile",
+                            tint = cs.onTertiaryContainer,
+                            modifier = Modifier.size(40.dp)
                         )
-                    )
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Aria Solis",
+                            style = type.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+                            color = cs.onBackground
+                        )
+                        Text(
+                            text = "aria.solis@example.com",
+                            style = type.bodyMedium,
+                            color = cs.onSurfaceVariant
+                        )
+                    }
+                    Button(
+                        onClick = { },
+                        shape = RoundedCornerShape(999.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = cs.primaryContainer,
+                            contentColor = cs.onPrimaryContainer
+                        )
+                    ) {
+                        Text("Edit", style = type.labelMedium.copy(fontWeight = FontWeight.SemiBold))
+                    }
                 }
+
+                HorizontalDivider(color = cs.surfaceVariant.copy(alpha = 0.5f))
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Privacy & Security
+                SettingsNavRow(
+                    icon = Icons.Default.Lock,
+                    iconBg = cs.secondaryContainer.copy(alpha = 0.5f),
+                    iconTint = cs.secondary,
+                    label = "Privacy & Security",
+                    onClick = onPrivacy
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                // Payment Methods
+                SettingsNavRow(
+                    icon = Icons.Default.CreditCard,
+                    iconBg = cs.secondaryContainer.copy(alpha = 0.5f),
+                    iconTint = cs.secondary,
+                    label = "Payment Methods",
+                    onClick = onTerms
+                )
             }
 
-            SettingsGroup("App Info") {
-                SettingsNavItem("About Virasat", Icons.Default.Info, null, onAbout)
-                SettingsNavItem("Privacy Policy", Icons.Default.Lock, null, onPrivacy)
-                SettingsNavItem("Terms of Service", Icons.Default.Description, null, onTerms)
-                SettingsNavItem("Data Sync", Icons.Default.Sync, null, onDataSync)
-                SettingsNavItem("Help & Support", Icons.Default.HelpOutline, null, onHelp)
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Preferences Section
+            SettingsSectionCard {
+                Text(
+                    text = "Preferences",
+                    style = type.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = cs.primary,
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
+
+                SettingsToggleRow(
+                    icon = Icons.Default.NotificationsActive,
+                    iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
+                    iconTint = cs.tertiary,
+                    label = "Push Notifications",
+                    subtitle = "Updates on heritage sites near you",
+                    checked = notificationsEnabled,
+                    onCheckedChange = {
+                        notificationsEnabled = it
+                        onNotifications()
+                    }
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                SettingsToggleRow(
+                    icon = Icons.Default.LocationOn,
+                    iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
+                    iconTint = cs.tertiary,
+                    label = "Location Services",
+                    subtitle = "Required for local discovery",
+                    checked = locationEnabled,
+                    onCheckedChange = { locationEnabled = it }
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                SettingsToggleRow(
+                    icon = Icons.Default.DarkMode,
+                    iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
+                    iconTint = cs.tertiary,
+                    label = "Offline Mode",
+                    subtitle = "Download maps and guides",
+                    checked = offlineEnabled,
+                    onCheckedChange = {
+                        offlineEnabled = it
+                        onDarkMode()
+                    }
+                )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                "Version 1.0.0",
-                fontSize = 12.sp,
-                color = Color.Gray,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Support & About Section
+            SettingsSectionCard {
+                Text(
+                    text = "Support & About",
+                    style = type.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = cs.primary,
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
+
+                SettingsNavRow(
+                    icon = Icons.Default.Help,
+                    iconBg = cs.tertiaryContainer.copy(alpha = 0.3f),
+                    iconTint = cs.tertiary,
+                    label = "Help Center",
+                    onClick = onHelp
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                SettingsNavRow(
+                    icon = Icons.Default.Info,
+                    iconBg = cs.tertiaryContainer.copy(alpha = 0.3f),
+                    iconTint = cs.tertiary,
+                    label = "About Virasat",
+                    onClick = onAbout
+                )
+            }
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Log Out Button
+            Button(
+                onClick = { },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(999.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = cs.errorContainer,
+                    contentColor = cs.onErrorContainer
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Logout,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    "Log Out",
+                    style = type.labelMedium.copy(fontWeight = FontWeight.SemiBold, letterSpacing = 0.05.sp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
 
 @Composable
-fun SettingsGroup(title: String, content: @Composable () -> Unit) {
-    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+private fun SettingsSectionCard(content: @Composable ColumnScope.() -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+            .padding(24.dp),
+        content = content
+    )
+}
+
+@Composable
+private fun SettingsNavRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    iconBg: Color,
+    iconTint: Color,
+    label: String,
+    onClick: () -> Unit
+) {
+    val cs = MaterialTheme.colorScheme
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(iconBg),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = iconTint,
+                modifier = Modifier.size(22.dp)
+            )
+        }
         Text(
-            title,
-            fontSize = 14.sp,
-            color = VirasatGold,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = cs.onSurface,
+            modifier = Modifier.weight(1f)
         )
-        content()
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = cs.outline,
+            modifier = Modifier.size(20.dp)
+        )
     }
 }
 
 @Composable
-fun SettingsToggleItem(
-    label: String,
+private fun SettingsToggleRow(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
+    iconBg: Color,
+    iconTint: Color,
+    label: String,
+    subtitle: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(12.dp)
+    val cs = MaterialTheme.colorScheme
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(iconBg),
+            contentAlignment = Alignment.Center
         ) {
-            Icon(icon, null, tint = VirasatMaroon, modifier = Modifier.size(24.dp))
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(label, fontSize = 16.sp, color = VirasatMaroon, modifier = Modifier.weight(1f))
-            Switch(
-                checked = checked,
-                onCheckedChange = onCheckedChange,
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = VirasatMaroon,
-                    checkedTrackColor = VirasatMaroon.copy(alpha = 0.5f)
-                )
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = iconTint,
+                modifier = Modifier.size(22.dp)
             )
         }
-    }
-}
-
-@Composable
-fun SettingsNavItem(
-    label: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    trailing: String?,
-    onClick: () -> Unit
-) {
-    Card(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(icon, null, tint = VirasatMaroon, modifier = Modifier.size(24.dp))
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(label, fontSize = 16.sp, color = VirasatMaroon, modifier = Modifier.weight(1f))
-            if (trailing != null) {
-                Text(trailing, fontSize = 14.sp, color = Color.Gray)
-                Spacer(modifier = Modifier.width(8.dp))
-            }
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, tint = Color.Gray, modifier = Modifier.size(20.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyLarge,
+                color = cs.onSurface
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = cs.onSurfaceVariant
+            )
         }
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = cs.surfaceContainerLowest,
+                checkedTrackColor = cs.primaryContainer,
+                uncheckedThumbColor = cs.surfaceContainerLowest,
+                uncheckedTrackColor = cs.surfaceVariant
+            )
+        )
     }
 }

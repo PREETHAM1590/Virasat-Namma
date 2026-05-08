@@ -1,39 +1,56 @@
 package com.example.virasat.ui.screens
 
-import android.content.Intent
-import android.net.Uri
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.ChatBubble
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.virasat.data.model.Fact
-import com.example.virasat.data.model.HeritageSite
-import com.example.virasat.ui.theme.*
-import com.example.virasat.viewmodel.DetailViewModel
+import com.example.virasat.data.source.KarnatakaSites
 
-enum class DetailTab { OVERVIEW, HISTORY, ARCHITECTURE, LEGENDS, FACTS }
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SiteDetailScreen(
     siteId: String,
@@ -41,339 +58,312 @@ fun SiteDetailScreen(
     onAudioGuide: (String) -> Unit,
     onCheckIn: () -> Unit,
     onImmersiveView: (String) -> Unit,
-    onGallery: (String) -> Unit = {},
-    onReviews: (String) -> Unit = {},
-    viewModel: DetailViewModel = viewModel()
+    onGallery: (String) -> Unit,
+    onReviews: (String) -> Unit,
+    onAiTour: (String) -> Unit
 ) {
-    val context = LocalContext.current
-    LaunchedEffect(siteId) { viewModel.loadSite(siteId) }
+    val site = KarnatakaSites.allSites.find { it.id == siteId }
+    var isFav by remember { mutableStateOf(false) }
 
-    val site by viewModel.site.collectAsState()
-    val hasCheckedIn by viewModel.hasCheckedIn.collectAsState()
-    val unlockedFacts by viewModel.unlockedFacts.collectAsState()
-    var selectedTab by remember { mutableStateOf(DetailTab.OVERVIEW) }
+    if (site == null) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("Site not found", style = MaterialTheme.typography.bodyLarge)
+        }
+        return
+    }
 
-    site?.let { s ->
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(s.name) },
-                    navigationIcon = {
-                        IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = VirasatCream)
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+            // Hero Section
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(442.dp)
+            ) {
+                AsyncImage(
+                    model = site.imageUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp)),
+                    contentScale = ContentScale.Crop
                 )
-            },
-            floatingActionButton = {
-                if (!hasCheckedIn) {
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            viewModel.checkIn()
-                            onCheckIn()
-                        },
-                        containerColor = VirasatMaroon,
-                        contentColor = Color.White,
-                        icon = { Icon(Icons.Default.QrCodeScanner, null) },
-                        text = { Text("Check In") }
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp))
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(Color.Transparent, Color.Black.copy(alpha = 0.4f))
+                            )
+                        )
+                )
+                // Top nav
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 16.dp)
+                        .align(Alignment.TopCenter),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            "Back",
+                            tint = Color.White
+                        )
+                    }
+                    IconButton(onClick = { }) {
+                        Icon(
+                            Icons.Default.Share,
+                            "Share",
+                            tint = Color.White
+                        )
+                    }
+                }
+                // Floating Fav FAB overlapping bottom right
+                Box(
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(end = 32.dp)
+                        .offset(y = 32.dp)
+                        .size(64.dp)
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+                        .clickable { isFav = !isFav },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        if (isFav) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        "Favorite",
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }
-        ) { padding ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(VirasatCream)
-                    .padding(padding)
-            ) {
-                // Hero Image with immersive button overlay
-                item {
-                    Box {
-                        AsyncImage(
-                            model = s.imageUrl,
-                            contentDescription = s.name,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(280.dp)
-                                .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
+
+            Spacer(Modifier.height(48.dp))
+            Column(Modifier.padding(horizontal = 24.dp)) {
+                // Location tag
+                Box(
+                    Modifier
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(MaterialTheme.colorScheme.errorContainer)
+                        .padding(horizontal = 16.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        site.district.uppercase(),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                }
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    "Discovering the Magic of ${site.name}",
+                    style = MaterialTheme.typography.displayLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(Modifier.height(24.dp))
+
+                // Stats Pill
+                Row(
+                    Modifier
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+                        .padding(horizontal = 24.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.CalendarToday,
+                            null,
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.secondary
                         )
-                        // Gradient overlay for readability
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(280.dp)
-                                .background(
-                                    androidx.compose.ui.graphics.Brush.verticalGradient(
-                                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.3f)),
-                                        startY = 200f
-                                    )
-                                )
-                                .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            "Est. 14th Century",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        // Immersive view button
-                        IconButton(
-                            onClick = { onImmersiveView(s.id) },
-                            modifier = Modifier
-                                .align(Alignment.BottomEnd)
-                                .padding(12.dp)
-                                .background(Color.Black.copy(alpha = 0.6f), CircleShape)
-                        ) {
-                            Icon(Icons.Default.ViewInAr, "360 View", tint = Color.White)
-                        }
+                    }
+                    Box(
+                        Modifier
+                            .width(1.dp)
+                            .height(16.dp)
+                            .background(MaterialTheme.colorScheme.outlineVariant))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.LocationOn,
+                            null,
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            "350 km away",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Box(
+                        Modifier
+                            .width(1.dp)
+                            .height(16.dp)
+                            .background(MaterialTheme.colorScheme.outlineVariant))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Star,
+                            null,
+                            modifier = Modifier.size(16.dp),
+                            tint = Color(0xFFF59E0B)
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            "${site.rating} (${formatCount(site.reviews)})",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
+                Spacer(Modifier.height(32.dp))
 
-                // Title Section
-                item {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(s.name, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, color = VirasatMaroon)
-                                Text(s.nameLocal, style = MaterialTheme.typography.titleMedium, color = Color.Gray)
-                            }
-                            AssistChip(
-                                onClick = {},
-                                label = { Text(s.type.name.replaceFirstChar { it.uppercase() }) },
-                                colors = AssistChipDefaults.assistChipColors(containerColor = VirasatGold.copy(alpha = 0.2f))
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        // Info chips row
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            InfoChip(Icons.Default.LocationOn, s.location)
-                        }
-
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            InfoChip(Icons.Default.AccessTime, s.visitingHours)
-                            InfoChip(Icons.Default.AttachMoney, s.entryFee)
-                        }
-
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.Star, null, tint = VirasatGold, modifier = Modifier.size(16.dp))
-                                Text("${s.rating} (${formatReviews(s.reviews)})", fontSize = 14.sp, color = Color.Gray)
-                            }
-                            if (hasCheckedIn) {
-                                Spacer(modifier = Modifier.width(8.dp))
-                                AssistChip(
-                                    onClick = {},
-                                    label = { Text("Checked In", fontSize = 11.sp) },
-                                    leadingIcon = { Icon(Icons.Default.CheckCircle, null, modifier = Modifier.size(14.dp)) },
-                                    colors = AssistChipDefaults.assistChipColors(containerColor = Color(0xFFC8E6C9))
-                                )
-                            }
-                        }
+                // Description Card
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+                        .padding(32.dp)
+                ) {
+                    Column {
+                        Text(
+                            "About this Heritage Site",
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            site.description,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            site.history,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 }
+                Spacer(Modifier.height(32.dp))
 
                 // Action Buttons Row
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    ActionChip("Gallery", Icons.Default.Image) { onGallery(siteId) }
+                    ActionChip("Check In", Icons.Default.QrCodeScanner) { onCheckIn() }
+                    ActionChip("AI Tour", Icons.Default.ChatBubble) { onAiTour(siteId) }
+                }
+                Spacer(Modifier.height(32.dp))
+
+                // Action Area
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                        .padding(24.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(
+                            "Audio Guide",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            "Free",
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            "narrated tour",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Button(
+                        onClick = { onAudioGuide(siteId) },
+                        shape = RoundedCornerShape(999.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
                     ) {
-                        ActionButton("Audio Guide", Icons.Outlined.Headset) { onAudioGuide(s.id) }
-                        ActionButton("Directions", Icons.Outlined.Directions) {
-                            val uri = "google.navigation:q=${s.latitude},${s.longitude}"
-                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uri)))
-                        }
-                        ActionButton("Gallery", Icons.Outlined.PhotoLibrary) { onGallery(s.id) }
-                        ActionButton("Reviews", Icons.Outlined.RateReview) { onReviews(s.id) }
-                        ActionButton("Share", Icons.Outlined.Share) {
-                            val text = "Check out ${s.name} — a magnificent heritage site in Karnataka!\n${s.shortDescription}"
-                            val sendIntent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, text)
-                                type = "text/plain"
-                            }
-                            context.startActivity(Intent.createChooser(sendIntent, "Share via"))
-                        }
-                        ActionButton("Listen", Icons.Outlined.VolumeUp) { onAudioGuide(s.id) }
+                        Text("Listen", style = MaterialTheme.typography.labelLarge)
+                        Icon(
+                            Icons.Default.PlayArrow,
+                            null,
+                            modifier = Modifier.padding(start = 4.dp).size(18.dp)
+                        )
                     }
                 }
-
-                // Gallery
-                if (s.galleryImages.isNotEmpty()) {
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text("Gallery", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = VirasatMaroon)
-                            TextButton(onClick = { onImmersiveView(s.id) }) {
-                                Text("View All", color = VirasatGold)
-                            }
-                        }
-                        LazyRow(
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            items(s.galleryImages) { img ->
-                                AsyncImage(
-                                    model = img,
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(120.dp)
-                                        .clip(RoundedCornerShape(12.dp))
-                                )
-                            }
-                        }
-                    }
-                }
-
-                // Tabs
-                item {
-                    ScrollableTabRow(
-                        selectedTabIndex = selectedTab.ordinal,
-                        containerColor = Color.Transparent,
-                        contentColor = VirasatMaroon,
-                        modifier = Modifier.padding(top = 16.dp)
-                    ) {
-                        DetailTab.values().forEach { tab ->
-                            Tab(
-                                selected = selectedTab == tab,
-                                onClick = { selectedTab = tab },
-                                text = { Text(tab.name.replaceFirstChar { it.uppercase() }) }
-                            )
-                        }
-                    }
-                }
-
-                // Tab Content
-                item {
-                    when (selectedTab) {
-                        DetailTab.OVERVIEW -> TabContent(s.shortDescription + "\n\n" + s.description)
-                        DetailTab.HISTORY -> TabContent(s.history)
-                        DetailTab.ARCHITECTURE -> TabContent(s.architecture)
-                        DetailTab.LEGENDS -> TabContent(s.legends)
-                        DetailTab.FACTS -> FactsContent(s, unlockedFacts, viewModel)
-                    }
-                }
-
-                // Bottom padding
-                item { Spacer(modifier = Modifier.height(80.dp)) }
+                Spacer(Modifier.height(32.dp))
             }
         }
     }
 }
 
-@Composable
-private fun InfoChip(icon: androidx.compose.ui.graphics.vector.ImageVector, text: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(icon, null, tint = VirasatMaroon, modifier = Modifier.size(14.dp))
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(text, fontSize = 13.sp, color = Color.Gray, maxLines = 1)
+private fun formatCount(count: Int): String {
+    return when {
+        count >= 1000 -> "${count / 1000}.${(count % 1000) / 100}k"
+        else -> count.toString()
     }
 }
 
 @Composable
-fun ActionButton(label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        FilledTonalIconButton(
-            onClick = onClick,
-            colors = IconButtonDefaults.filledTonalIconButtonColors(containerColor = Color.White)
-        ) {
-            Icon(icon, null, tint = VirasatMaroon)
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(label, fontSize = 11.sp, color = Color.Gray)
-    }
-}
-
-@Composable
-fun TabContent(text: String) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(12.dp)
+private fun ActionChip(
+    label: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    onClick: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable { onClick() }
     ) {
+        Box(
+            Modifier
+                .size(56.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainerLowest),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                icon,
+                null,
+                modifier = Modifier.size(24.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+        Spacer(Modifier.height(6.dp))
         Text(
-            text,
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.bodyLarge,
-            lineHeight = 24.sp
+            label,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
-}
-
-@Composable
-fun FactsContent(site: HeritageSite, unlockedFacts: List<String>, viewModel: DetailViewModel) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        site.facts.forEach { fact ->
-            val isUnlocked = unlockedFacts.contains(fact.id)
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (isUnlocked) Color.White else Color(0xFFEEEEEE)
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    if (isUnlocked) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(fact.title, fontWeight = FontWeight.Bold, color = VirasatMaroon, fontSize = 16.sp)
-                            Icon(Icons.Default.LockOpen, null, tint = VirasatGold, modifier = Modifier.size(20.dp))
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(fact.description, style = MaterialTheme.typography.bodyMedium)
-                    } else {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.Lock, null, tint = Color.Gray, modifier = Modifier.size(20.dp))
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Hidden Fact", fontWeight = FontWeight.Bold, color = Color.Gray)
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text("Check in at this site to unlock this secret fact!", color = Color.Gray, fontSize = 14.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(
-                            onClick = { viewModel.unlockFact(fact.id) },
-                            colors = ButtonDefaults.buttonColors(containerColor = VirasatMaroon)
-                        ) {
-                            Icon(Icons.Default.FlashOn, null, modifier = Modifier.size(16.dp))
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("Unlock")
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-private fun formatReviews(count: Int): String = when {
-    count >= 1000 -> "${count / 1000}k"
-    else -> count.toString()
 }

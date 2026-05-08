@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Audio Experience</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&amp;family=Be+Vietnam+Pro:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#f0f1ec",
+                    "outline-variant": "#c6c8b0",
+                    "tertiary-container": "#bdcabd",
+                    "surface-variant": "#e2e3de",
+                    "on-tertiary-fixed-variant": "#3e4a40",
+                    "outline": "#767964",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-surface": "#1a1c19",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed-dim": "#b7d23f",
+                    "inverse-surface": "#2e312e",
+                    "on-secondary-container": "#526a54",
+                    "surface-container": "#edeee9",
+                    "on-background": "#1a1c19",
+                    "surface-container-high": "#e7e9e4",
+                    "surface-container-low": "#f3f4ef",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed-variant": "#3f4c00",
+                    "secondary-fixed": "#ceeace",
+                    "on-tertiary": "#ffffff",
+                    "surface": "#f9faf5",
+                    "on-tertiary-container": "#4a554b",
+                    "inverse-primary": "#b7d23f",
+                    "on-surface-variant": "#454836",
+                    "on-primary-container": "#4a5800",
+                    "primary-container": "#b7d23f",
+                    "on-secondary-fixed-variant": "#354c38",
+                    "surface-tint": "#556500",
+                    "tertiary": "#556157",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#bdcabd",
+                    "secondary-container": "#ceeace",
+                    "surface-bright": "#f9faf5",
+                    "primary-fixed": "#d3ef59",
+                    "secondary": "#4c644f",
+                    "surface-container-highest": "#e2e3de",
+                    "surface-dim": "#d9dad6",
+                    "on-primary-fixed": "#181e00",
+                    "on-secondary-fixed": "#09200f",
+                    "error": "#ba1a1a",
+                    "secondary-fixed-dim": "#b2ceb3",
+                    "tertiary-fixed": "#d9e6d8",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed": "#131e16",
+                    "primary": "#556500",
+                    "background": "#f9faf5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "overlap-margin": "-32px",
+                    "section-margin": "48px",
+                    "unit": "8px",
+                    "element-gap": "16px",
+                    "container-padding": "24px"
+            },
+            "fontFamily": {
+                    "body-lg": [
+                            "Be Vietnam Pro"
+                    ],
+                    "headline-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "headline-md": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "display-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "label-md": [
+                            "Be Vietnam Pro"
+                    ]
+            },
+            "fontSize": {
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-[#E2EFE1] text-on-surface min-h-screen font-body-md pb-[120px]">
+<!-- TopAppBar -->
+<header class="bg-transparent w-full px-container-padding pt-4 flex justify-between items-center max-w-7xl mx-auto z-40 relative">
+<button class="text-primary hover:opacity-80 transition-opacity active:scale-95 duration-300">
+<span aria-label="Menu" class="material-symbols-outlined text-[28px]">eco</span>
+</button>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Virasat</h1>
+<button class="text-primary hover:opacity-80 transition-opacity active:scale-95 duration-300">
+<span aria-label="Search" class="material-symbols-outlined text-[28px]">search</span>
+</button>
+</header>
+<main class="relative mt-8">
+<!-- Hero Section: Massive Circle -->
+<section class="relative w-full flex justify-center px-container-padding">
+<div class="w-full max-w-lg aspect-square rounded-full overflow-hidden shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] relative">
+<img alt="Ancient forest floor" class="w-full h-full object-cover" data-alt="A macro shot of a lush, ancient forest floor covered in vibrant green moss and small ferns. Soft, dappled sunlight filters through the canopy above, highlighting the rich textures of the organic matter. The color palette is dominated by deep forest greens and pale mint highlights. The mood is serene, timeless, and deeply connected to nature, reflecting a neumorphic-organic aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDW7Xouz2cpew0PzxyKp2-s-cRcph1wZxBuG_htwDRZmpEkf6Kilo0TfC414-Z6nkxbxdszY87FRrVLqjJSuIIxFn3OcrnQ3KzJ0VODcuKLRdsdpX2XUh5Lyp1Ycv_R40gznito_3Z8ETRRyAKcK29StW2ct53MxxfqQEF8V3FuFUO1O4h_1gRHlLOy4_LesE84zSz5-YU3ktpTPZmuNtn-ewCTBFHAB4mnfBZmUcHmBibSiZIzOqgMnQvfLC3IeSLm6YBWHzlow1s"/>
+<!-- Neumorphic inner shadow overlay -->
+<div class="absolute inset-0 rounded-full shadow-[inset_0_4px_24px_rgba(0,0,0,0.2)] pointer-events-none"></div>
+</div>
+<!-- Floating Playback Controls -->
+<div class="absolute -bottom-16 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-sm bg-[#0B2211] rounded-[2rem] p-6 shadow-[0_24px_48px_-12px_rgba(11,34,17,0.4)] z-10 flex flex-col gap-4">
+<div class="flex justify-between items-center text-white/80 font-label-md text-label-md">
+<span>12:45</span>
+<span class="font-headline-md text-headline-md text-white">The Sacred Grove</span>
+<span>45:20</span>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-2 bg-white/20 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[30%] rounded-full shadow-[0_0_10px_rgba(183,210,63,0.5)]"></div>
+</div>
+<!-- Controls -->
+<div class="flex justify-center items-center gap-8 mt-2 text-[#E2EFE1]">
+<button class="hover:text-primary-container transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined text-3xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">replay_10</span>
+</button>
+<button class="w-16 h-16 bg-primary-container text-[#0B2211] rounded-full flex items-center justify-center shadow-[inset_0_2px_8px_rgba(255,255,255,0.4),0_8px_16px_rgba(183,210,63,0.3)] hover:scale-105 active:scale-95 transition-all duration-300">
+<span class="material-symbols-outlined text-4xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">pause</span>
+</button>
+<button class="hover:text-primary-container transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined text-3xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">forward_10</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Chapter Cards -->
+<section class="mt-32 px-container-padding flex flex-col gap-element-gap max-w-2xl mx-auto pb-8">
+<h2 class="font-headline-md text-headline-md text-on-surface-variant mb-4 ml-4">Chapters</h2>
+<!-- Card 1 (Active) -->
+<div class="bg-surface-container-lowest rounded-xl p-6 flex gap-4 items-center shadow-[4px_4px_16px_rgba(11,34,17,0.05),-4px_-4px_16px_rgba(255,255,255,0.8)] border border-white/50 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-2 bg-primary-container"></div>
+<div class="w-12 h-12 bg-primary-container/20 rounded-full flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">volume_up</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-body-lg text-body-lg text-on-surface mb-1">01. The Origins</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Exploring the ancient roots of the grove.</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Now Playing</span>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 flex gap-4 items-center shadow-[4px_4px_16px_rgba(11,34,17,0.05),-4px_-4px_16px_rgba(255,255,255,0.8)] border border-white/50 opacity-80 hover:opacity-100 transition-opacity cursor-pointer">
+<div class="w-12 h-12 bg-surface-variant rounded-full flex items-center justify-center text-on-surface-variant flex-shrink-0">
+<span class="font-label-md text-label-md">02</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-body-lg text-body-lg text-on-surface mb-1">02. Flora &amp; Fauna</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">The symbiotic relationships within the ecosystem.</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">14:05</span>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 flex gap-4 items-center shadow-[4px_4px_16px_rgba(11,34,17,0.05),-4px_-4px_16px_rgba(255,255,255,0.8)] border border-white/50 opacity-80 hover:opacity-100 transition-opacity cursor-pointer">
+<div class="w-12 h-12 bg-surface-variant rounded-full flex items-center justify-center text-on-surface-variant flex-shrink-0">
+<span class="font-label-md text-label-md">03</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-body-lg text-body-lg text-on-surface mb-1">03. Cultural Significance</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Rituals and myths passed down through generations.</p>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">18:30</span>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden bg-[#0B2211] shadow-[0_8px_32px_rgba(0,0,0,0.24)] fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-md rounded-full px-6 py-3 z-50 flex justify-around items-center gap-element-gap">
+<button class="flex flex-col items-center justify-center text-primary-fixed bg-on-secondary-fixed-variant/20 rounded-full px-4 py-1 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 duration-200">
+<span class="material-symbols-outlined text-[24px] mb-1" data-icon="nest_eco_leaf" data-weight="fill" style="font-variation-settings: 'FILL' 1;">nest_eco_leaf</span>
+<span class="font-label-md text-label-md">Explore</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 duration-200">
+<span class="material-symbols-outlined text-[24px] mb-1" data-icon="temple_hindu">temple_hindu</span>
+<span class="font-label-md text-label-md">Heritage</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 duration-200">
+<span class="material-symbols-outlined text-[24px] mb-1" data-icon="star">star</span>
+<span class="font-label-md text-label-md">Saved</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 duration-200">
+<span class="material-symbols-outlined text-[24px] mb-1" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</button>
+</nav>
+<!-- Web Navigation Cluster (Hidden on Mobile) -->
+<nav class="hidden md:flex fixed top-4 right-8 bg-[#0B2211] rounded-full px-6 py-2 shadow-xl z-50 items-center gap-8">
+<button class="flex items-center gap-2 text-primary-fixed bg-on-secondary-fixed-variant/20 rounded-full px-4 py-2 hover:text-secondary-fixed transition-colors">
+<span class="material-symbols-outlined" data-icon="nest_eco_leaf" data-weight="fill" style="font-variation-settings: 'FILL' 1;">nest_eco_leaf</span>
+<span class="font-label-md text-label-md">Explore</span>
+</button>
+<button class="flex items-center gap-2 text-secondary-fixed/60 hover:text-secondary-fixed transition-colors">
+<span class="material-symbols-outlined" data-icon="temple_hindu">temple_hindu</span>
+<span class="font-label-md text-label-md">Heritage</span>
+</button>
+<button class="flex items-center gap-2 text-secondary-fixed/60 hover:text-secondary-fixed transition-colors">
+<span class="material-symbols-outlined" data-icon="star">star</span>
+<span class="font-label-md text-label-md">Saved</span>
+</button>
+<button class="flex items-center gap-2 text-secondary-fixed/60 hover:text-secondary-fixed transition-colors">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</button>
+</nav>
+</body></html>

@@ -21,9 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.virasat.data.source.KarnatakaSites
-import com.example.virasat.ui.theme.VirasatCream
-import com.example.virasat.ui.theme.VirasatGold
-import com.example.virasat.ui.theme.VirasatMaroon
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +31,7 @@ fun CheckInSuccessScreen(
     onViewPassport: () -> Unit,
     onShare: () -> Unit
 ) {
-    val site = KarnatakaSites.allSites.find { it.id == siteId } ?: return
+    val site = KarnatakaSites.allSites.find { it.id == siteId }
 
     var showConfetti by remember { mutableStateOf(false) }
     var showBadge by remember { mutableStateOf(false) }
@@ -49,214 +46,124 @@ fun CheckInSuccessScreen(
         showBadge = true
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Check-In Successful") },
-                navigationIcon = {
-                    IconButton(onClick = onViewSite) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = VirasatCream)
-            )
-        }
-    ) { padding ->
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+    ) {
+        // Ambient background blobs
         Box(
             modifier = Modifier
+                .size(400.dp)
+                .offset(x = (-100).dp, y = (-100).dp)
+                .background(
+                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                    CircleShape
+                )
+        )
+        Box(
+            modifier = Modifier
+                .size(300.dp)
+                .align(Alignment.BottomEnd)
+                .offset(x = 70.dp, y = 70.dp)
+                .background(
+                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f),
+                    CircleShape
+                )
+        )
+
+        Column(
+            modifier = Modifier
                 .fillMaxSize()
-                .background(VirasatCream)
-                .padding(padding)
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            if (showConfetti) {
-                ConfettiOverlay()
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Massive floating circle with checkmark
+            Box(
+                modifier = Modifier
+                    .scale(scaleAnim.value)
+                    .size(192.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                    shadowElevation = 8.dp,
+                    tonalElevation = 2.dp
+                ) {
+                    Box(
+                        modifier = Modifier.size(192.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                            modifier = Modifier.size(100.dp),
+                            tint = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    }
+                }
             }
 
-            Column(
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                "Check-in Successful!",
+                style = MaterialTheme.typography.displayLarge.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                "Your visit to ${site?.name ?: "the heritage site"} has been officially recorded.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.secondary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Continue Exploring button
+            Button(
+                onClick = onViewSite,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .fillMaxWidth()
+                    .height(56.dp),
+                shape = RoundedCornerShape(999.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .scale(scaleAnim.value)
-                        .size(140.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFFE8F5E9)),
-                    contentAlignment = Alignment.Center
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    Text(
+                        "Continue Exploring",
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
+                    )
                     Icon(
-                        Icons.Default.CheckCircle,
-                        null,
-                        modifier = Modifier.size(80.dp),
-                        tint = Color(0xFF2E7D32)
+                        imageVector = Icons.Default.ArrowForward,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
-                Spacer(modifier = Modifier.height(24.dp))
-                Text(
-                    "Checked In!",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = VirasatMaroon
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    "You have successfully checked in at ${site.name}.",
-                    fontSize = 16.sp,
-                    color = Color.Gray,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-
-                AnimatedVisibility(
-                    visible = alphaAnim.value > 0.5f,
-                    enter = fadeIn(tween(600)) + slideInVertically(tween(600)) { it / 2 }
-                ) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF8E1)),
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(20.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(56.dp)
-                                    .clip(CircleShape)
-                                    .background(VirasatGold.copy(alpha = 0.2f)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    Icons.Default.EmojiEvents,
-                                    null,
-                                    tint = VirasatGold,
-                                    modifier = Modifier.size(32.dp)
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Column {
-                                Text(
-                                    "+250 XP Earned!",
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = VirasatMaroon
-                                )
-                                Text(
-                                    "Keep exploring to level up",
-                                    fontSize = 13.sp,
-                                    color = Color.Gray
-                                )
-                            }
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                AnimatedVisibility(
-                    visible = showBadge,
-                    enter = fadeIn(tween(500)) + expandVertically(tween(500))
-                ) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(20.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(56.dp)
-                                    .clip(CircleShape)
-                                    .background(VirasatMaroon.copy(alpha = 0.1f)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    Icons.Default.LockOpen,
-                                    null,
-                                    tint = VirasatMaroon,
-                                    modifier = Modifier.size(28.dp)
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Column {
-                                Text(
-                                    "Badge Unlocked!",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = VirasatMaroon
-                                )
-                                Text(
-                                    "Heritage Hunter — Visit 5 different sites",
-                                    fontSize = 13.sp,
-                                    color = Color.Gray
-                                )
-                            }
-                        }
-                    }
-                }
-
-                if (site.facts.any { it.isUnlocked }) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF8E1)),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(Icons.Default.LockOpen, null, tint = VirasatGold)
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Text(
-                                "Hidden fact unlocked!",
-                                color = VirasatMaroon,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(32.dp))
-                Button(
-                    onClick = onViewPassport,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = VirasatMaroon),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Icon(Icons.Default.Bookmark, null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("View Passport", fontWeight = FontWeight.Bold)
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-                OutlinedButton(
-                    onClick = onShare,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Icon(Icons.Default.Share, null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Share Check-In")
-                }
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
 
 @Composable
 fun ConfettiOverlay() {
-    val colors = listOf(VirasatGold, VirasatMaroon, Color(0xFF4CAF50), Color(0xFF2196F3), Color(0xFFE91E63))
+    val colors = listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.primary)
     val particles = remember {
         List(30) {
             ConfettiParticle(

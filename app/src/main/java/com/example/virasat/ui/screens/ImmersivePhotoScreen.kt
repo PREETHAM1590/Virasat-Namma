@@ -4,24 +4,24 @@ import android.annotation.SuppressLint
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.RotateRight
+import androidx.compose.material.icons.filled.ZoomIn
+import androidx.compose.material.icons.filled.ZoomOut
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.example.virasat.ui.theme.VirasatCream
-import com.example.virasat.ui.theme.VirasatGold
-import com.example.virasat.ui.theme.VirasatMaroon
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun ImmersivePhotoScreen(
@@ -32,10 +32,17 @@ fun ImmersivePhotoScreen(
 ) {
     var currentImageIndex by remember { mutableIntStateOf(0) }
     var autoRotate by remember { mutableStateOf(true) }
-    val images = if (galleryImages.isNotEmpty()) galleryImages else emptyList()
+
+    val images = galleryImages.ifEmpty {
+        listOf(
+            "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=1200",
+            "https://images.unsplash.com/photo-1548013146-72479768bada?w=1200",
+            "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1200"
+        )
+    }
 
     val panoramaHtml = remember(images, currentImageIndex, autoRotate) {
-        val imgUrl = if (images.isNotEmpty()) images[currentImageIndex] else ""
+        val imgUrl = images[currentImageIndex]
         """
 <!DOCTYPE html>
 <html>
@@ -58,13 +65,8 @@ pannellum.viewer('panorama', {
     "autoRotate": ${if (autoRotate) "-2" else "0"},
     "compass": false,
     "showZoomCtrl": true,
-    "showFullscreenCtrl": true,
-    "hotSpotDebug": false,
-    "showControls": true,
-    "showToolbar": true,
-    "strings": {
-        "loadButtonLabel": "Tap to Load 360° View"
-    }
+    "showFullscreenCtrl": false,
+    "hotSpotDebug": false
 });
 </script>
 </body>
@@ -72,115 +74,134 @@ pannellum.viewer('panorama', {
         """.trimIndent()
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(siteName, fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = VirasatCream)
-            )
-        },
-        bottomBar = {
-            if (images.isNotEmpty()) {
-                Surface(
-                    color = VirasatCream,
-                    tonalElevation = 4.dp
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        // Previous
-                        IconButton(
-                            onClick = {
-                                if (currentImageIndex > 0) currentImageIndex--
-                            },
-                            enabled = currentImageIndex > 0
-                        ) {
-                            Icon(Icons.Default.ChevronLeft, "Previous", tint = if (currentImageIndex > 0) VirasatMaroon else Color.Gray)
-                        }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        // Main 360 content
+        AndroidView(
+            factory = { context ->
+                WebView(context).apply {
+                    webViewClient = WebViewClient()
+                    settings.javaScriptEnabled = true
+                    settings.loadWithOverviewMode = true
+                    settings.useWideViewPort = true
+                    settings.domStorageEnabled = true
+                    setBackgroundColor(android.graphics.Color.BLACK)
+                    loadDataWithBaseURL(null, panoramaHtml, "text/html", "UTF-8", null)
+                }
+            },
+            modifier = Modifier.fillMaxSize(),
+            update = { webView ->
+                webView.loadDataWithBaseURL(null, panoramaHtml, "text/html", "UTF-8", null)
+            }
+        )
 
-                        // Image counter
-                        Text(
-                            "${currentImageIndex + 1} / ${images.size}",
-                            fontWeight = FontWeight.Bold,
-                            color = VirasatMaroon
-                        )
-
-                        // Auto-rotate toggle
-                        IconButton(onClick = { autoRotate = !autoRotate }) {
-                            Icon(
-                                if (autoRotate) Icons.Default.RotateRight else Icons.Default.RotateLeft,
-                                "Auto-rotate",
-                                tint = if (autoRotate) VirasatGold else Color.Gray
-                            )
-                        }
-
-                        // Next
-                        IconButton(
-                            onClick = {
-                                if (currentImageIndex < images.size - 1) currentImageIndex++
-                            },
-                            enabled = currentImageIndex < images.size - 1
-                        ) {
-                            Icon(Icons.Default.ChevronRight, "Next", tint = if (currentImageIndex < images.size - 1) VirasatMaroon else Color.Gray)
-                        }
-                    }
+        // Semi-transparent top bar with back arrow
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(horizontal = 24.dp, vertical = 8.dp)
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.8f),
+                tonalElevation = 1.dp,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable(onClick = onBack)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
         }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(Color.Black)
-        ) {
-            if (images.isEmpty()) {
-                // No images fallback
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Icon(Icons.Default.Image, null, modifier = Modifier.size(64.dp), tint = Color.Gray)
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text("No images available for 360° view", color = Color.Gray)
-                }
-            } else {
-                AndroidView(
-                    factory = { context ->
-                        WebView(context).apply {
-                            webViewClient = WebViewClient()
-                            settings.javaScriptEnabled = true
-                            settings.loadWithOverviewMode = true
-                            settings.useWideViewPort = true
-                            settings.domStorageEnabled = true
-                            settings.allowFileAccess = false
-                            settings.allowContentAccess = false
-                            setBackgroundColor(android.graphics.Color.BLACK)
-                            loadDataWithBaseURL(null, panoramaHtml, "text/html", "UTF-8", null)
-                        }
-                    },
-                    modifier = Modifier.fillMaxSize(),
-                    update = { webView ->
-                        webView.loadDataWithBaseURL(null, panoramaHtml, "text/html", "UTF-8", null)
-                    }
-                )
 
-                // Loading overlay
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = VirasatGold)
+        // Title at bottom
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 120.dp, start = 24.dp, end = 24.dp)
+        ) {
+            Text(
+                siteName,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.surfaceContainerLowest
+            )
+        }
+
+        // Floating control pills (center-right)
+        Column(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.9f),
+                tonalElevation = 2.dp,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable(onClick = { })
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Default.ZoomIn,
+                        contentDescription = "Zoom In",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.9f),
+                tonalElevation = 2.dp,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable(onClick = { })
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Default.ZoomOut,
+                        contentDescription = "Zoom Out",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
+            Surface(
+                shape = CircleShape,
+                color = if (autoRotate)
+                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.9f)
+                else
+                    MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.9f),
+                tonalElevation = 2.dp,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable(onClick = { autoRotate = !autoRotate })
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Default.RotateRight,
+                        contentDescription = "Auto Rotate",
+                        tint = if (autoRotate)
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        else
+                            MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
         }

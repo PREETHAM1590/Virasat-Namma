@@ -1,30 +1,35 @@
 package com.example.virasat.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Spa
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.virasat.data.source.ImageUrls
-import com.example.virasat.ui.theme.VirasatCream
-import com.example.virasat.ui.theme.VirasatGold
-import com.example.virasat.ui.theme.VirasatMaroon
+import com.example.virasat.ui.theme.PlusJakartaSans
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeritageGuidesScreen(
     onBack: () -> Unit,
@@ -33,64 +38,110 @@ fun HeritageGuidesScreen(
 ) {
     val guides = remember {
         listOf(
-            GuideData("Raju Gowda", "Hampi Expert", ImageUrls.HAMPI, "Kannada, English, Hindi", 4.8f, "15 years experience"),
-            GuideData("Lakshmi Devi", "Palace Historian", ImageUrls.MYSORE_PALACE, "English, Kannada", 4.9f, "20 years experience"),
-            GuideData("Krishna Rao", "Architecture Specialist", ImageUrls.BELUR_HALEBIDU, "Kannada, English", 4.7f, "12 years experience"),
-            GuideData("Anita Sharma", "Archaeology PhD", ImageUrls.BADAMI, "English, Hindi", 4.6f, "8 years experience"),
-            GuideData("Mohammed Ali", "Cultural Expert", ImageUrls.GOL_GUMBAZ, "Kannada, Urdu, English", 4.9f, "18 years experience")
+            GuideData("Aarav Patel", "Architecture Specialist", ImageUrls.HAMPI, 4.9f, "EN, HI"),
+            GuideData("Meera Sharma", "Botanical Historian", ImageUrls.MYSORE_PALACE, 5.0f, "EN"),
+            GuideData("Rajan Singh", "Folklore & Myths", ImageUrls.BELUR_HALEBIDU, 4.8f, "HI, MR"),
+            GuideData("Anita Sharma", "Archaeology PhD", ImageUrls.BADAMI, 4.6f, "EN"),
+            GuideData("Mohammed Ali", "Cultural Expert", ImageUrls.GOL_GUMBAZ, 4.9f, "EN, UR"),
+            GuideData("Saraswati Iyer", "Art Historian", ImageUrls.HERITAGE_LAKE, 4.8f, "EN, TA")
         )
     }
-    var searchQuery by remember { mutableStateOf("") }
-    val filtered = guides.filter { it.name.contains(searchQuery, true) || it.specialty.contains(searchQuery, true) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Heritage Guides") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = VirasatCream)
-            )
-        }
-    ) { padding ->
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState())
+    ) {
+        // TopAppBar
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .background(VirasatCream)
-                .padding(padding)
-                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .statusBarsPadding()
+                .padding(top = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.height(12.dp))
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                label = { Text("Search guides...") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                leadingIcon = { Icon(Icons.Default.Search, null, tint = VirasatMaroon) }
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            if (filtered.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(Icons.Default.PersonSearch, null, tint = Color.Gray, modifier = Modifier.size(64.dp))
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text("No guides found", fontSize = 16.sp, color = Color.Gray)
-                    }
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.9f),
+                tonalElevation = 1.dp,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable(onClick = onBack)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Default.Spa,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
-            } else {
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    items(filtered) { guide ->
-                        GuideCard(guide = guide, onClick = { onGuideClick(guide.name) }, onBook = { onBookGuide(guide.name) })
-                    }
-                    item { Spacer(modifier = Modifier.height(16.dp)) }
+            }
+
+            Text(
+                "Virasat",
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontFamily = PlusJakartaSans,
+                    fontWeight = FontWeight.SemiBold
+                ),
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.9f),
+                tonalElevation = 1.dp,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable(onClick = { })
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
         }
+
+        // Header
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                "Local Custodians",
+                style = MaterialTheme.typography.displayLarge.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                "Connect with passionate guides who bring heritage to life through personal stories and deep cultural knowledge.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
+
+        // Horizontal scrolling guide cards
+        LazyRow(
+            modifier = Modifier.padding(vertical = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(horizontal = 24.dp)
+        ) {
+            items(guides) { guide ->
+                GuideCard(guide, onClick = { onGuideClick(guide.name) }, onBook = { onBookGuide(guide.name) })
+            }
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
@@ -98,73 +149,122 @@ data class GuideData(
     val name: String,
     val specialty: String,
     val photoUrl: String,
-    val languages: String,
     val rating: Float,
-    val experience: String
+    val languages: String = "EN"
 )
 
 @Composable
 fun GuideCard(guide: GuideData, onClick: () -> Unit, onBook: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(16.dp)
+    Surface(
+        modifier = Modifier.width(280.dp),
+        shape = RoundedCornerShape(32.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerLowest,
+        shadowElevation = 4.dp,
+        border = BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+        )
     ) {
-        Column {
-            AsyncImage(
-                model = guide.photoUrl,
-                contentDescription = guide.name,
-                contentScale = ContentScale.Crop,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(24.dp)
+        ) {
+            // Avatar
+            Surface(
+                shape = CircleShape,
+                modifier = Modifier.size(128.dp),
+                shadowElevation = 4.dp
+            ) {
+                AsyncImage(
+                    model = guide.photoUrl,
+                    contentDescription = guide.name,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                guide.name,
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                guide.specialty.uppercase(),
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 1.sp
+                ),
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                "Connect with passionate guides who bring heritage to life through personal stories.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                maxLines = 3
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Rating and language
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        "${guide.rating}",
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Translate,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.tertiary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        guide.languages,
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = onBook,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-            )
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(guide.name, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = VirasatMaroon)
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Star, null, tint = VirasatGold, modifier = Modifier.size(18.dp))
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("${guide.rating}", fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color.DarkGray)
-                    }
-                }
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(guide.specialty, fontSize = 14.sp, color = Color.Gray)
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Language, null, tint = VirasatMaroon, modifier = Modifier.size(16.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(guide.languages, fontSize = 13.sp, color = Color.DarkGray)
-                }
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Work, null, tint = VirasatMaroon, modifier = Modifier.size(16.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(guide.experience, fontSize = 13.sp, color = Color.DarkGray)
-                }
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(
-                        onClick = onClick,
-                        modifier = Modifier.weight(1f).height(40.dp),
-                        shape = RoundedCornerShape(10.dp)
-                    ) {
-                        Text("View Profile", fontSize = 13.sp)
-                    }
-                    Button(
-                        onClick = onBook,
-                        modifier = Modifier.weight(1f).height(40.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = VirasatMaroon),
-                        shape = RoundedCornerShape(10.dp)
-                    ) {
-                        Text("Book", fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                    }
-                }
+                    .height(52.dp),
+                shape = RoundedCornerShape(999.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            ) {
+                Text(
+                    "Book a Walk",
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
+                )
             }
         }
     }

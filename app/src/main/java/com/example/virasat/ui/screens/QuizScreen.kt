@@ -1,27 +1,26 @@
 package com.example.virasat.ui.screens
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.virasat.ui.theme.VirasatCream
-import com.example.virasat.ui.theme.VirasatGold
-import com.example.virasat.ui.theme.VirasatMaroon
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuizScreen(onBack: () -> Unit) {
     var currentQuestion by remember { mutableIntStateOf(0) }
@@ -40,160 +39,333 @@ fun QuizScreen(onBack: () -> Unit) {
         )
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Heritage Challenge") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = VirasatCream)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        MaterialTheme.colorScheme.surfaceContainerLowest,
+                        RoundedCornerShape(999.dp)
+                    )
+                    .clickable(onClick = onBack)
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = "Heritage Quiz",
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
-    ) { padding ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(VirasatCream)
-                .padding(padding)
-                .padding(24.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
         ) {
             if (showResult) {
-                QuizResult(score = score, total = questions.size, onRetry = {
-                    currentQuestion = 0; score = 0; selectedAnswer = null; answered = false; showResult = false
-                }, onBack = onBack)
+                QuizResult(
+                    score = score,
+                    total = questions.size,
+                    onRetry = {
+                        currentQuestion = 0; score = 0; selectedAnswer = null; answered = false; showResult = false
+                    },
+                    onBack = onBack
+                )
             } else {
                 val q = questions[currentQuestion]
-                Text("Question ${currentQuestion + 1} of ${questions.size}", fontSize = 14.sp, color = Color.Gray)
-                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Question ${currentQuestion + 1} / ${questions.size}",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = "Score: $score",
+                        style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
                 LinearProgressIndicator(
                     progress = { (currentQuestion + 1).toFloat() / questions.size },
-                    modifier = Modifier.fillMaxWidth(),
-                    color = VirasatMaroon
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(8.dp)
+                        .clip(RoundedCornerShape(999.dp)),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
                 )
+
                 Spacer(modifier = Modifier.height(24.dp))
-                Text(q.question, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = VirasatMaroon)
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+                    ),
+                    shape = RoundedCornerShape(24.dp)
+                ) {
+                    Column(modifier = Modifier.padding(24.dp)) {
+                        Text(
+                            text = q.question,
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(24.dp))
+
                 q.options.forEachIndexed { index, option ->
-                    val isSelected = selectedAnswer == index
-                    val isCorrect = index == q.correctAnswer
-                    val bgColor = when {
-                        !answered -> if (isSelected) VirasatMaroon.copy(alpha = 0.1f) else Color.White
-                        isCorrect -> Color(0xFFE8F5E9)
-                        isSelected -> Color(0xFFFFEBEE)
-                        else -> Color.White
-                    }
-                    val borderColor = when {
-                        !answered && isSelected -> VirasatMaroon
-                        answered && isCorrect -> Color(0xFF2E7D32)
-                        answered && isSelected -> Color(0xFFB00020)
-                        else -> Color.LightGray
-                    }
-                    Card(
-                        onClick = { if (!answered) selectedAnswer = index },
+                    AnswerPill(
+                        index = index,
+                        option = option,
+                        isSelected = selectedAnswer == index,
+                        isCorrect = index == q.correctAnswer,
+                        answered = answered,
+                        enabled = !answered,
+                        onClick = { selectedAnswer = index }
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                if (!answered) {
+                    val active = selectedAnswer != null
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 6.dp),
-                        colors = CardDefaults.cardColors(containerColor = bgColor),
-                        border = androidx.compose.foundation.BorderStroke(1.dp, borderColor),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .clip(CircleShape)
-                                    .background(if (isSelected) VirasatMaroon else Color.LightGray.copy(alpha = 0.3f)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    "${('A'.code + index).toChar()}",
-                                    color = if (isSelected) Color.White else Color.DarkGray,
-                                    fontWeight = FontWeight.Bold
-                                )
+                            .background(
+                                if (active) MaterialTheme.colorScheme.primaryContainer
+                                else MaterialTheme.colorScheme.surfaceContainerHighest,
+                                RoundedCornerShape(999.dp)
+                            )
+                            .clickable(enabled = active) {
+                                answered = true
+                                if (selectedAnswer == q.correctAnswer) score++
                             }
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Text(option, fontSize = 15.sp, color = Color.DarkGray, modifier = Modifier.weight(1f))
-                            if (answered && isCorrect) {
-                                Icon(Icons.Default.Check, null, tint = Color(0xFF2E7D32))
-                            } else if (answered && isSelected && !isCorrect) {
-                                Icon(Icons.Default.Close, null, tint = Color(0xFFB00020))
-                            }
-                        }
-                    }
-                }
-                Spacer(modifier = Modifier.height(24.dp))
-                if (!answered) {
-                    Button(
-                        onClick = {
-                            answered = true
-                            if (selectedAnswer == q.correctAnswer) score++
-                        },
-                        modifier = Modifier.fillMaxWidth().height(52.dp),
-                        enabled = selectedAnswer != null,
-                        colors = ButtonDefaults.buttonColors(containerColor = VirasatMaroon),
-                        shape = RoundedCornerShape(12.dp)
+                            .padding(vertical = 16.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text("Check Answer", fontWeight = FontWeight.Bold)
+                        Text(
+                            text = "Check Answer",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                            color = if (active) MaterialTheme.colorScheme.onPrimaryContainer
+                            else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
                 } else {
-                    Button(
-                        onClick = {
-                            if (currentQuestion < questions.size - 1) {
-                                currentQuestion++
-                                selectedAnswer = null
-                                answered = false
-                            } else {
-                                showResult = true
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                MaterialTheme.colorScheme.primaryContainer,
+                                RoundedCornerShape(999.dp)
+                            )
+                            .clickable {
+                                if (currentQuestion < questions.size - 1) {
+                                    currentQuestion++
+                                    selectedAnswer = null
+                                    answered = false
+                                } else {
+                                    showResult = true
+                                }
                             }
-                        },
-                        modifier = Modifier.fillMaxWidth().height(52.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = VirasatMaroon),
-                        shape = RoundedCornerShape(12.dp)
+                            .padding(vertical = 16.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text(if (currentQuestion < questions.size - 1) "Next Question" else "See Results", fontWeight = FontWeight.Bold)
+                        Text(
+                            text = if (currentQuestion < questions.size - 1) "Next Question" else "See Results",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }
 }
 
 @Composable
-fun QuizResult(score: Int, total: Int, onRetry: () -> Unit, onBack: () -> Unit) {
+private fun AnswerPill(
+    index: Int,
+    option: String,
+    isSelected: Boolean,
+    isCorrect: Boolean,
+    answered: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit
+) {
+    val bg by animateColorAsState(
+        targetValue = when {
+            answered && isCorrect -> MaterialTheme.colorScheme.primaryContainer
+            answered && isSelected && !isCorrect -> MaterialTheme.colorScheme.errorContainer
+            isSelected -> MaterialTheme.colorScheme.primaryContainer
+            else -> MaterialTheme.colorScheme.surfaceContainerLowest
+        },
+        label = "pill_bg"
+    )
+    val content by animateColorAsState(
+        targetValue = when {
+            answered && isCorrect -> MaterialTheme.colorScheme.onPrimaryContainer
+            answered && isSelected && !isCorrect -> MaterialTheme.colorScheme.onErrorContainer
+            isSelected -> MaterialTheme.colorScheme.onPrimaryContainer
+            else -> MaterialTheme.colorScheme.onSurface
+        },
+        label = "pill_content"
+    )
+    val letterBg by animateColorAsState(
+        targetValue = when {
+            answered && isCorrect -> MaterialTheme.colorScheme.primary
+            answered && isSelected && !isCorrect -> MaterialTheme.colorScheme.error
+            isSelected -> MaterialTheme.colorScheme.primary
+            else -> MaterialTheme.colorScheme.outlineVariant
+        },
+        label = "letter_bg"
+    )
+    val letterContent by animateColorAsState(
+        targetValue = when {
+            answered && isCorrect -> MaterialTheme.colorScheme.onPrimary
+            answered && isSelected && !isCorrect -> MaterialTheme.colorScheme.onError
+            isSelected -> MaterialTheme.colorScheme.onPrimary
+            else -> MaterialTheme.colorScheme.onSurfaceVariant
+        },
+        label = "letter_content"
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(bg, RoundedCornerShape(999.dp))
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(horizontal = 20.dp, vertical = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .background(letterBg, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "${('A'.code + index).toChar()}",
+                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                    color = letterContent
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = option,
+                style = MaterialTheme.typography.bodyLarge,
+                color = content,
+                modifier = Modifier.weight(1f)
+            )
+            if (answered && isCorrect) {
+                Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary)
+            } else if (answered && isSelected && !isCorrect) {
+                Icon(Icons.Default.Close, null, tint = MaterialTheme.colorScheme.error)
+            }
+        }
+    }
+}
+
+@Composable
+private fun QuizResult(
+    score: Int,
+    total: Int,
+    onRetry: () -> Unit,
+    onBack: () -> Unit
+) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         val isExcellent = score >= total * 0.8
-        Icon(
-            if (isExcellent) Icons.Default.EmojiEvents else Icons.Default.Star,
-            null,
-            modifier = Modifier.size(80.dp),
-            tint = VirasatGold
+
+        Text(
+            text = if (isExcellent) "Excellent!" else "Quiz Complete",
+            style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text("Quiz Complete!", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = VirasatMaroon)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("You scored $score out of $total", fontSize = 18.sp, color = Color.Gray)
-        Spacer(modifier = Modifier.height(24.dp))
-        Button(
-            onClick = onRetry,
-            modifier = Modifier.fillMaxWidth().height(52.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = VirasatMaroon),
-            shape = RoundedCornerShape(12.dp)
+        Text(
+            text = "You scored $score out of $total",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.height(48.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    MaterialTheme.colorScheme.primaryContainer,
+                    RoundedCornerShape(999.dp)
+                )
+                .clickable(onClick = onRetry)
+                .padding(vertical = 16.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Text("Try Again", fontWeight = FontWeight.Bold)
+            Text(
+                text = "Try Again",
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
         }
+
         Spacer(modifier = Modifier.height(12.dp))
-        OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth().height(52.dp), shape = RoundedCornerShape(12.dp)) {
-            Text("Back to Home")
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    MaterialTheme.colorScheme.surfaceContainerLowest,
+                    RoundedCornerShape(999.dp)
+                )
+                .clickable(onClick = onBack)
+                .padding(vertical = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Back to Home",
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }

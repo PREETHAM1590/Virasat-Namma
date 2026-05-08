@@ -1,113 +1,334 @@
 package com.example.virasat.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.virasat.data.source.ImageUrls
-import com.example.virasat.ui.theme.VirasatCream
-import com.example.virasat.ui.theme.VirasatGold
-import com.example.virasat.ui.theme.VirasatMaroon
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunityScreen(onBack: () -> Unit) {
+    val colorScheme = MaterialTheme.colorScheme
+    val typography = MaterialTheme.typography
+
     val posts = listOf(
-        CommunityPost("Priya Sharma", "Just returned from Hampi! The sunset at Hemakuta Hill is magical.", ImageUrls.HAMPI, "3h ago", 24),
-        CommunityPost("Ravi Kumar", "Badami caves are underrated. The climb is worth every step.", ImageUrls.BADAMI, "5h ago", 18),
-        CommunityPost("Ananya Rao", "Loved the audio guide at Mysore Palace. Learned so much!", ImageUrls.MYSORE_PALACE, "1d ago", 42),
-        CommunityPost("Vikram Patil", "Quiz challenge was fun. Scored 4/5 on Hampi trivia!", ImageUrls.QUIZ_THUMBNAIL, "2d ago", 12)
+        CommunityPost(
+            author = "Priya Sharma",
+            category = "Heritage Walk",
+            title = "Restoring the Sacred Grove",
+            body = "Join us this weekend as we gather to document the indigenous flora surrounding the 14th-century ruins. We have uncovered three new species of medicinal moss that haven't been recorded in this area for decades.",
+            imageUrl = ImageUrls.HAMPI,
+            time = "2h ago",
+            likes = 24,
+            actionLabel = "Join Event",
+            actionIcon = Icons.Default.NaturePeople
+        ),
+        CommunityPost(
+            author = "Ravi Kumar",
+            category = "Craftsmanship",
+            title = "The Terracotta Revival",
+            body = "A beautiful deep dive into the traditional methods of clay sourcing along the riverbanks. The tactile connection between the maker and the earth is something we must fight to preserve in the digital age.",
+            imageUrl = ImageUrls.BADAMI,
+            time = "5h ago",
+            likes = 18,
+            actionLabel = "12 Comments",
+            actionIcon = Icons.Default.Forum
+        )
     )
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Community") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = VirasatCream)
-            )
-        }
-    ) { padding ->
-        LazyColumn(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorScheme.background)
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(VirasatCream)
-                .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            items(posts) { post ->
-                PostCard(post = post)
+            // Header bar
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .statusBarsPadding()
+                    .padding(top = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(
+                    shape = CircleShape,
+                    color = colorScheme.surfaceContainerLowest.copy(alpha = 0.9f),
+                    tonalElevation = 1.dp,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clickable(onClick = onBack)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.Eco,
+                            contentDescription = null,
+                            tint = colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+
+                Text(
+                    text = "Virasat",
+                    style = typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
+                    color = colorScheme.primary
+                )
+
+                Surface(
+                    shape = CircleShape,
+                    color = colorScheme.surfaceContainerLowest.copy(alpha = 0.9f),
+                    tonalElevation = 1.dp,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clickable(onClick = { })
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null,
+                            tint = colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
             }
+
+            // Header Text
+            Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
+                Text(
+                    text = "Community",
+                    style = typography.displayLarge.copy(fontWeight = FontWeight.Bold),
+                    color = colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Discover stories, heritage walks, and preservation efforts from local custodians.",
+                    style = typography.bodyLarge,
+                    color = colorScheme.onSurfaceVariant
+                )
+            }
+
+            // Feed cards
+            posts.forEach { post ->
+                CommunityFeedCard(post = post)
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+
+            Spacer(modifier = Modifier.height(100.dp))
         }
     }
 }
 
 @Composable
-fun PostCard(post: CommunityPost) {
+private fun CommunityFeedCard(post: CommunityPost) {
+    val colorScheme = MaterialTheme.colorScheme
+    val typography = MaterialTheme.typography
+
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(16.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp),
+        colors = CardDefaults.cardColors(containerColor = colorScheme.surfaceContainerLowest),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(VirasatMaroon, CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(post.author.take(1).uppercase(), color = Color.White, fontWeight = FontWeight.Bold)
-                }
-                Spacer(modifier = Modifier.width(12.dp))
-                Column {
-                    Text(post.author, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = VirasatMaroon)
-                    Text(post.time, fontSize = 12.sp, color = Color.Gray)
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(post.body, fontSize = 14.sp, color = Color.DarkGray)
-            if (post.imageUrl.isNotBlank()) {
-                Spacer(modifier = Modifier.height(8.dp))
+        Column {
+            // Image with overlapping avatar
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            ) {
                 AsyncImage(
                     model = post.imageUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp)
-                        .clip(RoundedCornerShape(12.dp))
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                 )
+                // Bottom gradient
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .align(Alignment.BottomCenter)
+                        .background(
+                            androidx.compose.ui.graphics.Brush.verticalGradient(
+                                colors = listOf(
+                                    androidx.compose.ui.graphics.Color.Transparent,
+                                    androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.3f)
+                                )
+                            )
+                        )
+                )
+
+                // Overlapping avatar (bottom-left)
+                Surface(
+                    shape = CircleShape,
+                    color = colorScheme.surfaceContainerLowest,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .align(Alignment.BottomStart)
+                        .offset(x = 20.dp, y = 24.dp),
+                    shadowElevation = 4.dp,
+                    border = BorderStroke(
+                        width = 4.dp,
+                        color = colorScheme.surfaceContainerLowest
+                    )
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = post.author.take(1).uppercase(),
+                            style = typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                            color = colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Favorite, null, tint = Color.Red, modifier = Modifier.size(16.dp))
-                Spacer(modifier = Modifier.width(4.dp))
-                Text("${post.likes}", fontSize = 12.sp, color = Color.Gray)
+
+            // Card Content
+            Column(modifier = Modifier.padding(20.dp)) {
+                Spacer(modifier = Modifier.height(16.dp))
+                // Category + time row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = post.category.uppercase(),
+                        style = typography.labelLarge.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            letterSpacing = 1.sp
+                        ),
+                        color = colorScheme.primary
+                    )
+                    Text(
+                        text = post.time,
+                        style = typography.bodyMedium,
+                        color = colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Title
+                Text(
+                    text = post.title,
+                    style = typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
+                    color = colorScheme.onSurface
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Body
+                Text(
+                    text = post.body,
+                    style = typography.bodyMedium,
+                    color = colorScheme.onSurfaceVariant,
+                    lineHeight = 24.sp
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Action buttons
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    val isFirst = post.actionLabel == "Join Event"
+                    Button(
+                        onClick = { },
+                        shape = RoundedCornerShape(999.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (isFirst)
+                                colorScheme.primaryContainer
+                            else
+                                colorScheme.surfaceContainer,
+                            contentColor = if (isFirst)
+                                colorScheme.onPrimaryContainer
+                            else
+                                colorScheme.onSurface
+                        ),
+                        modifier = Modifier.height(44.dp)
+                    ) {
+                        Icon(
+                            imageVector = post.actionIcon ?: Icons.Default.NaturePeople,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            post.actionLabel,
+                            style = typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    // Bookmark / Favorite button
+                    Surface(
+                        shape = CircleShape,
+                        color = colorScheme.surfaceContainer,
+                        modifier = Modifier.size(44.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clickable { },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = if (isFirst) Icons.Default.Bookmark else Icons.Default.Favorite,
+                                contentDescription = null,
+                                tint = colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
     }
 }
 
-data class CommunityPost(val author: String, val body: String, val imageUrl: String, val time: String, val likes: Int)
+data class CommunityPost(
+    val author: String,
+    val category: String,
+    val title: String,
+    val body: String,
+    val imageUrl: String,
+    val time: String,
+    val likes: Int,
+    val actionLabel: String = "Join",
+    val actionIcon: ImageVector? = null
+)

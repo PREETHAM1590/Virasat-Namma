@@ -104,26 +104,31 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("home") {
-                            HomeScreen(
-                                onSiteClick = { siteId ->
-                                    navController.navigate("site_detail/$siteId") {
-                                        popUpTo("home") { inclusive = false }
-                                    }
-                                },
-                                onQrScan = { navController.navigate("qr_scan") },
-                                onPassport = { navController.navigate("passport") },
-                                onFavourites = { navController.navigate("favourites") },
-                                onNavItemClick = { item ->
-                                    navController.navigate(item.route) {
-                                        popUpTo("home") { inclusive = false }
-                                    }
-                                },
-                                onBadges = { navController.navigate("badges") },
-                                onQuiz = { navController.navigate("quiz") },
-                                onAiAssistant = { navController.navigate("ai_assistant") },
-                                onGuides = { navController.navigate("guides") },
-                                onItinerary = { navController.navigate("itinerary") }
-                            )
+                            Scaffold(bottomBar = { com.example.virasat.ui.components.VirasatBottomNavBar("home") { navController.navigate(it.route) { popUpTo("home") { inclusive = false } } } }) { p ->
+                                Box(modifier = Modifier.padding(p)) {
+                                    HomeScreen(
+                                        onSiteClick = { siteId ->
+                                            navController.navigate("site_detail/$siteId") {
+                                                popUpTo("home") { inclusive = false }
+                                            }
+                                        },
+                                        onQrScan = { navController.navigate("qr_scan") },
+                                        onPassport = { navController.navigate("passport") },
+                                        onFavourites = { navController.navigate("favourites") },
+                                        onNavItemClick = { item ->
+                                            navController.navigate(item.route) {
+                                                popUpTo("home") { inclusive = false }
+                                            }
+                                        },
+                                        onBadges = { navController.navigate("badges") },
+                                        onQuiz = { navController.navigate("quiz") },
+                                        onAiAssistant = { navController.navigate("ai_assistant") },
+                                        onGuides = { navController.navigate("guides") },
+                                        onItinerary = { navController.navigate("itinerary") },
+                                        onSearch = { navController.navigate("search") }
+                                    )
+                                }
+                            }
                         }
                         composable("site_detail/{siteId}") { backStackEntry ->
                             val siteId = backStackEntry.arguments?.getString("siteId") ?: ""
@@ -144,6 +149,9 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onReviews = { sId ->
                                     navController.navigate("reviews/$sId")
+                                },
+                                onAiTour = { sId ->
+                                    navController.navigate("ai_tour/$sId")
                                 }
                             )
                         }

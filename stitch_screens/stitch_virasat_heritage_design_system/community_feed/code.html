@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Virasat - Community Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#2e312e",
+                    "tertiary": "#556157",
+                    "on-primary-container": "#4a5800",
+                    "primary-fixed": "#d3ef59",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-dim": "#d9dad6",
+                    "surface-container-high": "#e7e9e4",
+                    "tertiary-container": "#bdcabd",
+                    "secondary-container": "#ceeace",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f3f4ef",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-background": "#1a1c19",
+                    "surface-variant": "#e2e3de",
+                    "surface-tint": "#556500",
+                    "primary-container": "#b7d23f",
+                    "on-surface": "#1a1c19",
+                    "background": "#f9faf5",
+                    "primary": "#556500",
+                    "outline": "#767964",
+                    "secondary-fixed-dim": "#b2ceb3",
+                    "secondary": "#4c644f",
+                    "secondary-fixed": "#ceeace",
+                    "surface-container": "#edeee9",
+                    "surface-bright": "#f9faf5",
+                    "inverse-primary": "#b7d23f",
+                    "on-tertiary-fixed-variant": "#3e4a40",
+                    "surface": "#f9faf5",
+                    "on-tertiary-fixed": "#131e16",
+                    "outline-variant": "#c6c8b0",
+                    "on-surface-variant": "#454836",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#4a554b",
+                    "on-secondary-fixed": "#09200f",
+                    "inverse-on-surface": "#f0f1ec",
+                    "surface-container-highest": "#e2e3de",
+                    "on-primary-fixed-variant": "#3f4c00",
+                    "on-primary-fixed": "#181e00",
+                    "tertiary-fixed": "#d9e6d8",
+                    "primary-fixed-dim": "#b7d23f",
+                    "on-secondary-fixed-variant": "#354c38",
+                    "on-secondary-container": "#526a54",
+                    "tertiary-fixed-dim": "#bdcabd",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "overlap-margin": "-32px",
+                    "container-padding": "24px",
+                    "section-margin": "48px",
+                    "element-gap": "16px",
+                    "unit": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "display-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-lg": [
+                            "Be Vietnam Pro"
+                    ],
+                    "label-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "headline-md": [
+                            "Plus Jakarta Sans"
+                    ]
+            },
+            "fontSize": {
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .neumorphic-shadow {
+            box-shadow: 12px 12px 32px rgba(85, 101, 0, 0.05), -12px -12px 32px rgba(255, 255, 255, 0.8);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen relative pb-32 overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="bg-transparent w-full px-container-padding pt-4 flex justify-between items-center max-w-7xl mx-auto z-40 relative">
+<button class="text-primary hover:opacity-80 transition-opacity transition-transform duration-300 active:scale-95 flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="eco">eco</span>
+</button>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Virasat</h1>
+<button class="text-primary hover:opacity-80 transition-opacity transition-transform duration-300 active:scale-95 flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="search">search</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="w-full max-w-7xl mx-auto px-container-padding mt-8 flex flex-col gap-section-margin">
+<!-- Header Text -->
+<div class="px-2">
+<h2 class="font-display-lg text-display-lg text-on-surface mb-2">Community</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-md">Discover stories, heritage walks, and preservation efforts from local custodians.</p>
+</div>
+<!-- Feed Container -->
+<div class="flex flex-col gap-12">
+<!-- Massive White Card 1 -->
+<article class="bg-surface-container-lowest rounded-lg p-container-padding neumorphic-shadow relative z-10 w-full max-w-2xl mx-auto">
+<!-- Image Container with Avatar Overlap -->
+<div class="relative w-full aspect-[4/3] sm:aspect-video mb-10">
+<img alt="Card Image" class="w-full h-full object-cover rounded-[24px]" data-alt="A lush, ancient banyan tree with sprawling roots covering the ruins of a stone temple in a serene forest setting. Soft, dappled sunlight filters through the bright green canopy, highlighting the mossy textures of the old stones. The scene evokes a deep sense of timeless organicism and cultural heritage preservation. The overall lighting is bright and inviting, matching a modern light-mode UI aesthetic with deep forest greens and vibrant lime accents reflecting the surrounding foliage." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVMwJT6zZTDvg5sNrncOogpUnSyKE1879Q24KD0Qf9kwuRNtDAXZkQ9FFO5D63i66sRpxrn_91hHToGJUBGdqWt6DCevchlSEh7d3iG3ahWr3-sYMOMSc4OOQatqtnR-H1erckTo0x4YtiC0a-2o64i6moq0_OShCcJ05czryi36Bu_ZRuILiZ8TfKqtPcUf3ocVtc-d00tWle6D6FZ-WW8MGK10wC4_Q_W49KtzHr6llVO5-vvenikz6al-xGWvAuwC47vtxAKY4"/>
+<!-- Bottom Gradient for textual contrast if text were on image, but keeping for visual weight -->
+<div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/30 to-transparent rounded-b-[24px] pointer-events-none"></div>
+<!-- Overlapping Avatar (Bottom-Left) -->
+<div class="absolute -bottom-8 left-6 w-20 h-20 rounded-full border-[6px] border-surface-container-lowest bg-surface-variant overflow-hidden shadow-lg z-20">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="A portrait of a young woman with warm skin tones and a gentle smile, standing outdoors with a softly blurred background of lush greenery. The sunlight gently illuminates her face, creating a natural, inviting mood. The image feels organic and aligned with a community-focused, modern custodian brand personality, utilizing a soft color palette that complements deep greens and light cream tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmrJs0daoHDGUq4hEVtC2N3Dn-gbuyA96xoBLoNsq7-PhkjeiHYBUSML3hGaLP8DR0qJZlpTQEIGI7sIg9BI-tiq9v4XIAZb6d5sbn4aCZXXtZKF6yQKW8QV2KIgvOxnWVpkwmbHbpJ44UoKSOqiDJDD94O1YwIZPnJgEboDEwozXjzLZqUYqC0RU37pDFyxnTZhZGI4F7DDMr1GHyLRObkL47b97NtdzrePPKQ0jXMKFhhrDnPGj8SCtGss7rhp7iYRzuW5O22yo"/>
+</div>
+</div>
+<!-- Card Content -->
+<div class="pl-2 pt-2">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-md text-label-md text-primary tracking-widest uppercase">Heritage Walk</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">2h ago</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-3">Restoring the Sacred Grove</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 leading-relaxed">
+                        Join us this weekend as we gather to document the indigenous flora surrounding the 14th-century ruins. We've uncovered three new species of medicinal moss that haven't been recorded in this area for decades.
+                    </p>
+<div class="flex items-center gap-4">
+<button class="bg-primary-container text-on-primary-container rounded-full px-6 py-3 font-label-md text-label-md flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-lg" data-icon="nature_people">nature_people</span>
+                            Join Event
+                        </button>
+<button class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Massive White Card 2 -->
+<article class="bg-surface-container-lowest rounded-lg p-container-padding neumorphic-shadow relative z-10 w-full max-w-2xl mx-auto sm:translate-x-4">
+<!-- Image Container with Avatar Overlap -->
+<div class="relative w-full aspect-[4/3] sm:aspect-video mb-10">
+<img alt="Card Image" class="w-full h-full object-cover rounded-[24px]" data-alt="A close-up shot of hands carefully molding damp clay into a traditional, ornate bowl. The artisan's workspace is softly lit by natural window light, revealing the rich, earthy textures of the terracotta clay. The environment feels calm, focused, and deeply rooted in ancestral craftsmanship. The visual style embodies neumorphic-organic design principles, showcasing raw, natural materials in a bright, clean, light cream surrounding with subtle deep green shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz4_1oUgkTrGnQBC7TCtn9kYBLDdOqTxZiSaD-d8x3inRJI6y_43QqFEUDe-6c0-tf39fpRi9ZthTtvyAPXhQpUe_FDBDUfgsSb8uz2bGWT-Dknph7NbcDLBDJlUjMqMN55hS3OHmj3qf2KbQcapQYChi2HMtt_5k6qCgxObgumBjF5WNx2cciud8z1DhE1_BDQ1R8HSufN29-ONTUw4pwKbpuZtaOPLkDeu1T37oZtpx2etYEy9fSXQj0SGjbhkIVl0TiiGAG-pE"/>
+<!-- Overlapping Avatar (Bottom-Left) -->
+<div class="absolute -bottom-8 left-6 w-20 h-20 rounded-full border-[6px] border-surface-container-lowest bg-surface-variant overflow-hidden shadow-lg z-20">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="A portrait of an older man with a weathered, kind face, wearing a simple linen shirt. He is situated in a brightly lit artisan workshop filled with blurred pottery in the background. The mood is authentic and timeless, conveying the wisdom of a modern custodian of heritage. The lighting is soft and flattering, harmonizing with a UI aesthetic built around light cream surfaces and organic, flowing layouts." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcOau8GpDMf4-gZLgW06EtNhY7t0SUPPgKYZWMz5DRNXRrrvrBOdUCl6XO7zjBIYUfXCuYW7TXl_Oz6FBm3HhEFZYVDyN0__HlnozEv49FyO8AGSrQu8ilADWWY5gTNVOsKip3LKKw1ieLD3V1bU-k8yiZ11O4fJ1a8Oriw8dqEbEGcZUevNhAmuYGdeoc6eGlwFu-UKh9Jev9EXEEn7gbK20PW5JXAT1B3ZahJ49urSmPQL4wK5t6GOtzR1Qm4on6QAb5egCc64E"/>
+</div>
+</div>
+<!-- Card Content -->
+<div class="pl-2 pt-2">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-md text-label-md text-primary tracking-widest uppercase">Craftsmanship</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">5h ago</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-3">The Terracotta Revival</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 leading-relaxed">
+                        A beautiful deep dive into the traditional methods of clay sourcing along the riverbanks. The tactile connection between the maker and the earth is something we must fight to preserve in the digital age.
+                    </p>
+<div class="flex items-center gap-4">
+<button class="bg-surface-container text-on-surface rounded-full px-6 py-3 font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="forum">forum</span>
+                            12 Comments
+                        </button>
+<button class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-md rounded-full px-6 py-3 z-50 bg-[#0B2211] shadow-[0_8px_32px_rgba(0,0,0,0.24)] shadow-xl flex justify-around items-center gap-element-gap md:hidden">
+<!-- Explore (Active based on Community Feed context) -->
+<button class="flex flex-col items-center justify-center text-primary-fixed bg-on-secondary-fixed-variant/20 rounded-full px-4 py-1 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="nest_eco_leaf" style="font-variation-settings: 'FILL' 1;">nest_eco_leaf</span>
+<span class="font-label-md text-label-md text-[10px] leading-none">Explore</span>
+</button>
+<!-- Heritage (Inactive) -->
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="temple_hindu">temple_hindu</span>
+<span class="font-label-md text-label-md text-[10px] leading-none">Heritage</span>
+</button>
+<!-- Saved (Inactive) -->
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="star">star</span>
+<span class="font-label-md text-label-md text-[10px] leading-none">Saved</span>
+</button>
+<!-- Profile (Inactive) -->
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label-md text-label-md text-[10px] leading-none">Profile</span>
+</button>
+</nav>
+</body></html>

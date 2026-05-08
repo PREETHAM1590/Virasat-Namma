@@ -4,10 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -26,9 +25,6 @@ import coil.compose.AsyncImage
 import com.example.virasat.data.model.HeritageSite
 import com.example.virasat.data.model.SiteType
 import com.example.virasat.data.source.KarnatakaSites
-import com.example.virasat.ui.theme.VirasatCream
-import com.example.virasat.ui.theme.VirasatGold
-import com.example.virasat.ui.theme.VirasatMaroon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,26 +48,70 @@ fun HeritageSitesListScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("All Heritage Sites") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = VirasatCream)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        // Top bar
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .statusBarsPadding()
+                .padding(top = 4.dp, bottom = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.9f),
+                tonalElevation = 1.dp,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable(onClick = onBack)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
+            Text(
+                "All Heritage Sites",
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.onSurface
             )
+
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.9f),
+                tonalElevation = 1.dp,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable(onClick = { isGrid = !isGrid })
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = if (isGrid) Icons.Default.List else Icons.Default.GridView,
+                        contentDescription = if (isGrid) "List View" else "Grid View",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
         }
-    ) { padding ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(VirasatCream)
-                .padding(padding)
-                .padding(16.dp)
+                .padding(horizontal = 24.dp)
         ) {
+            // Search
             OutlinedTextField(
                 value = query,
                 onValueChange = { query = it },
@@ -88,26 +128,38 @@ fun HeritageSitesListScreen(
                 singleLine = true,
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
                 )
             )
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Filter chips
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                TypeFilterChips(
-                    selected = selectedType,
-                    onSelect = { selectedType = it }
-                )
-                IconButton(onClick = { isGrid = !isGrid }) {
-                    Icon(
-                        if (isGrid) Icons.Default.List else Icons.Default.GridView,
-                        if (isGrid) "List View" else "Grid View",
-                        tint = VirasatMaroon
+                val types = listOf(null) + SiteType.values().toList()
+                types.forEach { type ->
+                    val label = type?.name?.replaceFirstChar { it.uppercase() } ?: "All"
+                    val isSelected = selectedType == type
+                    FilterChip(
+                        selected = isSelected,
+                        onClick = { selectedType = type },
+                        label = { Text(label, fontSize = 12.sp) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = MaterialTheme.colorScheme.primary,
+                            selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                            containerColor = MaterialTheme.colorScheme.surface,
+                            labelColor = MaterialTheme.colorScheme.onSurface
+                        ),
+                        border = FilterChipDefaults.filterChipBorder(
+                            enabled = true,
+                            selected = isSelected,
+                            borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        )
                     )
                 }
             }
@@ -116,7 +168,7 @@ fun HeritageSitesListScreen(
             Text(
                 "${filtered.size} site${if (filtered.size != 1) "s" else ""} found",
                 fontSize = 14.sp,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
             )
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -130,57 +182,29 @@ fun HeritageSitesListScreen(
                     },
                     actionLabel = "Clear Filters"
                 )
-            } else if (isGrid) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(filtered, key = { it.id }) { site ->
-                        GridSiteCard(site = site, onClick = { onSiteClick(site.id) })
-                    }
-                }
             } else {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(filtered, key = { it.id }) { site ->
-                        DirectorySiteCard(site = site, onClick = { onSiteClick(site.id) })
+                if (isGrid) {
+                    androidx.compose.foundation.lazy.grid.LazyVerticalGrid(
+                        columns = androidx.compose.foundation.lazy.grid.GridCells.Fixed(2),
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(filtered, key = { it.id }) { site ->
+                            GridSiteCard(site = site, onClick = { onSiteClick(site.id) })
+                        }
+                    }
+                } else {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(filtered, key = { it.id }) { site ->
+                            DirectorySiteCard(site = site, onClick = { onSiteClick(site.id) })
+                        }
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun TypeFilterChips(
-    selected: SiteType?,
-    onSelect: (SiteType?) -> Unit
-) {
-    val types = listOf(null) + SiteType.values().toList()
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        types.forEach { type ->
-            val label = type?.name?.replaceFirstChar { it.uppercase() } ?: "All"
-            val isSelected = selected == type
-            FilterChip(
-                selected = isSelected,
-                onClick = { onSelect(type) },
-                label = { Text(label, fontSize = 12.sp) },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = VirasatMaroon,
-                    selectedLabelColor = Color.White,
-                    containerColor = Color.White,
-                    labelColor = VirasatMaroon
-                ),
-                border = FilterChipDefaults.filterChipBorder(
-                    enabled = true,
-                    selected = isSelected,
-                    borderColor = VirasatMaroon.copy(alpha = 0.3f)
-                )
-            )
         }
     }
 }
@@ -190,8 +214,11 @@ fun DirectorySiteCard(site: HeritageSite, onClick: () -> Unit) {
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(16.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+        ),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(modifier = Modifier.height(100.dp)) {
             AsyncImage(
@@ -214,12 +241,12 @@ fun DirectorySiteCard(site: HeritageSite, onClick: () -> Unit) {
                         site.name,
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp,
-                        color = VirasatMaroon
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Text(
                         "${site.district}, ${site.location}",
                         fontSize = 12.sp,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1
                     )
                 }
@@ -227,11 +254,15 @@ fun DirectorySiteCard(site: HeritageSite, onClick: () -> Unit) {
                     Icon(
                         Icons.Default.Star,
                         null,
-                        tint = VirasatGold,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(14.dp)
                     )
                     Spacer(modifier = Modifier.width(2.dp))
-                    Text("${site.rating}", fontSize = 12.sp, color = Color.Gray)
+                    Text(
+                        "${site.rating}",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     SiteTypeBadge(type = site.type.name)
                 }
@@ -245,8 +276,11 @@ fun GridSiteCard(site: HeritageSite, onClick: () -> Unit) {
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(16.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
+        ),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column {
             AsyncImage(
@@ -263,13 +297,13 @@ fun GridSiteCard(site: HeritageSite, onClick: () -> Unit) {
                     site.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
-                    color = VirasatMaroon,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     maxLines = 1
                 )
                 Text(
                     site.district,
                     fontSize = 11.sp,
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(6.dp))
@@ -277,11 +311,15 @@ fun GridSiteCard(site: HeritageSite, onClick: () -> Unit) {
                     Icon(
                         Icons.Default.Star,
                         null,
-                        tint = VirasatGold,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(12.dp)
                     )
                     Spacer(modifier = Modifier.width(2.dp))
-                    Text("${site.rating}", fontSize = 11.sp, color = Color.Gray)
+                    Text(
+                        "${site.rating}",
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                     Spacer(modifier = Modifier.width(6.dp))
                     SiteTypeBadge(type = site.type.name)
                 }
@@ -293,7 +331,7 @@ fun GridSiteCard(site: HeritageSite, onClick: () -> Unit) {
 @Composable
 fun SiteTypeBadge(type: String) {
     Surface(
-        color = VirasatGold.copy(alpha = 0.12f),
+        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.12f),
         shape = RoundedCornerShape(6.dp)
     ) {
         Text(
@@ -301,7 +339,7 @@ fun SiteTypeBadge(type: String) {
             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
             fontSize = 10.sp,
             fontWeight = FontWeight.Medium,
-            color = VirasatMaroon
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

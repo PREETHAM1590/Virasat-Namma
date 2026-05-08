@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Virasat - Quiz</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#2e312e",
+                    "tertiary": "#556157",
+                    "on-primary-container": "#4a5800",
+                    "primary-fixed": "#d3ef59",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-dim": "#d9dad6",
+                    "surface-container-high": "#e7e9e4",
+                    "tertiary-container": "#bdcabd",
+                    "secondary-container": "#ceeace",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f3f4ef",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-background": "#1a1c19",
+                    "surface-variant": "#e2e3de",
+                    "surface-tint": "#556500",
+                    "primary-container": "#b7d23f",
+                    "on-surface": "#1a1c19",
+                    "background": "#f9faf5",
+                    "primary": "#556500",
+                    "outline": "#767964",
+                    "secondary-fixed-dim": "#b2ceb3",
+                    "secondary": "#4c644f",
+                    "secondary-fixed": "#ceeace",
+                    "surface-container": "#edeee9",
+                    "surface-bright": "#f9faf5",
+                    "inverse-primary": "#b7d23f",
+                    "on-tertiary-fixed-variant": "#3e4a40",
+                    "surface": "#f9faf5",
+                    "on-tertiary-fixed": "#131e16",
+                    "outline-variant": "#c6c8b0",
+                    "on-surface-variant": "#454836",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#4a554b",
+                    "on-secondary-fixed": "#09200f",
+                    "inverse-on-surface": "#f0f1ec",
+                    "surface-container-highest": "#e2e3de",
+                    "on-primary-fixed-variant": "#3f4c00",
+                    "on-primary-fixed": "#181e00",
+                    "tertiary-fixed": "#d9e6d8",
+                    "primary-fixed-dim": "#b7d23f",
+                    "on-secondary-fixed-variant": "#354c38",
+                    "on-secondary-container": "#526a54",
+                    "tertiary-fixed-dim": "#bdcabd",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "overlap-margin": "-32px",
+                    "container-padding": "24px",
+                    "section-margin": "48px",
+                    "element-gap": "16px",
+                    "unit": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "display-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-lg": [
+                            "Be Vietnam Pro"
+                    ],
+                    "label-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "headline-md": [
+                            "Plus Jakarta Sans"
+                    ]
+            },
+            "fontSize": {
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col antialiased relative overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Ambient Pale Mint Header Background Element -->
+<div class="absolute top-0 left-0 right-0 h-96 bg-secondary-container rounded-b-[4rem] z-0 shadow-[inset_0_-20px_40px_rgba(255,255,255,0.3)]"></div>
+<!-- TopAppBar -->
+<header class="bg-transparent w-full px-container-padding pt-4 relative z-20">
+<div class="flex justify-between items-center w-full max-w-7xl mx-auto bg-transparent">
+<!-- Leading Icon -->
+<button class="text-primary font-headline-md text-headline-md hover:opacity-80 transition-opacity transition-transform duration-300 active:scale-95 flex items-center justify-center w-12 h-12 rounded-full bg-surface-container-lowest/50 backdrop-blur-sm">
+<span class="material-symbols-outlined">eco</span>
+</button>
+<!-- Headline / Brand -->
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Virasat</h1>
+<!-- Trailing Icon -->
+<button class="text-on-surface-variant font-headline-md text-headline-md hover:opacity-80 transition-opacity transition-transform duration-300 active:scale-95 flex items-center justify-center w-12 h-12 rounded-full bg-surface-container-lowest/50 backdrop-blur-sm">
+<span class="material-symbols-outlined">search</span>
+</button>
+</div>
+</header>
+<!-- Main Quiz Canvas -->
+<main class="relative z-10 px-container-padding pt-8 max-w-2xl mx-auto w-full flex-grow flex flex-col">
+<!-- Context & Progress -->
+<div class="flex justify-between items-center mb-8 px-4">
+<div class="flex items-center gap-2">
+<div class="h-2 w-12 bg-primary rounded-full"></div>
+<div class="h-2 w-12 bg-primary rounded-full"></div>
+<div class="h-2 w-12 bg-primary rounded-full"></div>
+<div class="h-2 w-12 bg-surface-variant rounded-full"></div>
+<div class="h-2 w-12 bg-surface-variant rounded-full hidden sm:block"></div>
+</div>
+<span class="font-label-md text-label-md text-secondary">Question 3 of 5</span>
+</div>
+<!-- Floating Question Card -->
+<div class="bg-surface-container-lowest rounded-lg p-10 shadow-[0_16px_40px_-12px_rgba(76,100,79,0.15),0_0_0_1px_rgba(255,255,255,0.8)_inset] mb-12 transform hover:scale-[1.01] transition-transform duration-500">
+<h2 class="font-headline-lg text-headline-lg text-on-surface leading-tight">
+                Which architectural style is characterized by its use of local, sustainable materials to create natural cooling systems in arid regions?
+            </h2>
+</div>
+<!-- Answer Options Container -->
+<div class="flex flex-col gap-element-gap">
+<!-- Unselected Option 1 -->
+<button class="w-full text-left bg-surface-container-lowest rounded-full py-6 px-8 shadow-[4px_4px_20px_rgba(0,0,0,0.03),-4px_-4px_20px_rgba(255,255,255,0.9)] hover:bg-surface-container-low transition-all duration-300 flex items-center justify-between group active:scale-95">
+<span class="font-body-lg text-body-lg text-on-surface group-hover:text-primary transition-colors">Modern glass and steel skyscrapers</span>
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center group-hover:border-primary transition-colors"></div>
+</button>
+<!-- Selected Option (Vibrant Lime) -->
+<button class="w-full text-left bg-primary-container rounded-full py-6 px-8 shadow-[inset_3px_3px_10px_rgba(74,88,0,0.15),inset_-3px_-3px_10px_rgba(255,255,255,0.4)] transition-all duration-300 flex items-center justify-between border border-primary/10 relative overflow-hidden">
+<!-- Inner glow effect -->
+<div class="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none rounded-full"></div>
+<span class="font-body-lg text-body-lg text-on-primary-container relative z-10 font-semibold">Traditional mud-brick architecture</span>
+<span class="material-symbols-outlined text-primary relative z-10" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</button>
+<!-- Unselected Option 3 -->
+<button class="w-full text-left bg-surface-container-lowest rounded-full py-6 px-8 shadow-[4px_4px_20px_rgba(0,0,0,0.03),-4px_-4px_20px_rgba(255,255,255,0.9)] hover:bg-surface-container-low transition-all duration-300 flex items-center justify-between group active:scale-95">
+<span class="font-body-lg text-body-lg text-on-surface group-hover:text-primary transition-colors">Nomadic woven tent structures</span>
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center group-hover:border-primary transition-colors"></div>
+</button>
+<!-- Unselected Option 4 -->
+<button class="w-full text-left bg-surface-container-lowest rounded-full py-6 px-8 shadow-[4px_4px_20px_rgba(0,0,0,0.03),-4px_-4px_20px_rgba(255,255,255,0.9)] hover:bg-surface-container-low transition-all duration-300 flex items-center justify-between group active:scale-95">
+<span class="font-body-lg text-body-lg text-on-surface group-hover:text-primary transition-colors">Underground carved cave dwellings</span>
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center group-hover:border-primary transition-colors"></div>
+</button>
+</div>
+<!-- Action Area -->
+<div class="mt-section-margin flex justify-end pb-12">
+<button class="bg-primary-container text-on-primary-container rounded-full px-10 py-5 font-label-md text-label-md shadow-[0_8px_24px_-8px_rgba(183,210,63,0.6)] hover:brightness-105 active:scale-95 transition-all duration-300 flex items-center gap-3 relative overflow-hidden group">
+<div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full"></div>
+<span class="relative z-10">Confirm Answer</span>
+<span class="material-symbols-outlined relative z-10 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</main>
+</body></html>

@@ -1,14 +1,17 @@
 package com.example.virasat.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -21,186 +24,212 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.virasat.ui.theme.VirasatCream
-import com.example.virasat.ui.theme.VirasatGold
-import com.example.virasat.ui.theme.VirasatMaroon
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BadgesScreen(onBack: () -> Unit) {
-    val badges = listOf(
-        BadgeData("First Steps", "Check in at your first site", true, Icons.Default.Place, 1, 1),
-        BadgeData("Temple Trekker", "Visit 3 temples", true, Icons.Default.TempleBuddhist, 3, 3),
-        BadgeData("Fort Finder", "Visit 2 forts", false, Icons.Default.Fort, 1, 2),
-        BadgeData("UNESCO Explorer", "Visit all UNESCO sites", false, Icons.Default.Public, 1, 1),
-        BadgeData("Heritage Hunter", "Visit 5 different sites", true, Icons.Default.EmojiEvents, 5, 5),
-        BadgeData("Audio Aficionado", "Listen to 3 audio guides", false, Icons.Default.Headset, 1, 3),
-        BadgeData("Fact Finder", "Unlock 10 hidden facts", false, Icons.Default.Lightbulb, 4, 10),
-        BadgeData("Master Explorer", "Visit all 6 sites", false, Icons.Default.Star, 3, 6)
+    val earnedBadges = listOf(
+        BadgeItem("First Sprout", Icons.Default.Eco, true),
+        BadgeItem("Pilgrim", Icons.Default.TempleHindu, true),
+        BadgeItem("Pathfinder", Icons.Default.Map, true)
     )
-    val earned = badges.count { it.unlocked }
-    val total = badges.size
-    val progress = earned.toFloat() / total
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Badges & Achievements") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = VirasatCream)
+    val lockedBadges = listOf(
+        BadgeItem("Curator", Icons.Default.Museum, false),
+        BadgeItem("Botanist", Icons.Default.LocalFlorist, false),
+        BadgeItem("Elder", Icons.Default.Groups, false),
+        BadgeItem("UNESCO Explorer", Icons.Default.Public, false),
+        BadgeItem("Audio Aficionado", Icons.Default.Headset, false),
+        BadgeItem("Master Explorer", Icons.Default.Star, false)
+    )
+
+    val earned = earnedBadges.size
+    val total = earnedBadges.size + lockedBadges.size
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .verticalScroll(rememberScrollState())
+    ) {
+        // TopAppBar
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .statusBarsPadding()
+                .padding(top = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.9f),
+                tonalElevation = 1.dp,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable(onClick = onBack)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Default.Eco,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
+            Text(
+                "Virasat",
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.primary
             )
+
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.9f),
+                tonalElevation = 1.dp,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable(onClick = { })
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
         }
-    ) { padding ->
+
+        // Header
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .background(VirasatCream)
-                .padding(padding)
-                .padding(16.dp)
+                .fillMaxWidth()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        "$earned of $total Badges Unlocked",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = VirasatMaroon
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    LinearProgressIndicator(
-                        progress = { progress },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(10.dp)
-                            .clip(RoundedCornerShape(5.dp)),
-                        color = VirasatGold,
-                        trackColor = Color(0xFFEEEEEE)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        "${(progress * 100).toInt()}% complete",
-                        fontSize = 13.sp,
-                        color = Color.Gray
-                    )
-                }
+            Text(
+                "Custodian Badges",
+                style = MaterialTheme.typography.displayLarge.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                "You have earned $earned of $total badges",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.secondary,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        // Grid of badges
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 200.dp, max = 1200.dp)
+                .padding(horizontal = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            userScrollEnabled = false
+        ) {
+            items(earnedBadges) { badge ->
+                BadgeGridCard(badge = badge)
             }
-            Spacer(modifier = Modifier.height(20.dp))
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(badges) { badge ->
-                    BadgeGridCard(badge)
-                }
+            items(lockedBadges) { badge ->
+                BadgeGridCard(badge = badge)
             }
         }
+
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
 @Composable
-fun BadgeGridCard(badge: BadgeData) {
-    Card(
+private fun BadgeGridCard(badge: BadgeItem) {
+    val isEarned = badge.unlocked
+    val blobShape = when (badge.name) {
+        "First Sprout", "Curator" -> RoundedCornerShape(
+            topStartPercent = 43, topEndPercent = 57,
+            bottomStartPercent = 30, bottomEndPercent = 70
+        )
+        "Pilgrim", "Botanist" -> RoundedCornerShape(
+            topStartPercent = 50, topEndPercent = 50,
+            bottomStartPercent = 30, bottomEndPercent = 70
+        )
+        else -> RoundedCornerShape(
+            topStartPercent = 30, topEndPercent = 70,
+            bottomStartPercent = 50, bottomEndPercent = 50
+        )
+    }
+
+    Surface(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = if (badge.unlocked) Color.White else Color(0xFFEEEEEE)
-        ),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        color = if (isEarned)
+            MaterialTheme.colorScheme.surfaceContainerLowest
+        else
+            MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.8f),
+        shadowElevation = 2.dp,
+        tonalElevation = 1.dp
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(CircleShape)
-                    .background(
-                        if (badge.unlocked) VirasatGold.copy(alpha = 0.2f)
-                        else Color.LightGray.copy(alpha = 0.3f)
-                    ),
-                contentAlignment = Alignment.Center
+            // Organic blob icon container
+            Surface(
+                shape = blobShape,
+                color = if (isEarned)
+                    MaterialTheme.colorScheme.primaryContainer
+                else
+                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                modifier = Modifier.size(96.dp),
+                border = if (!isEarned) BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+                ) else null
             ) {
-                Icon(
-                    badge.icon,
-                    null,
-                    tint = if (badge.unlocked) VirasatGold else Color.Gray,
-                    modifier = Modifier.size(32.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                badge.title,
-                fontWeight = if (badge.unlocked) FontWeight.Bold else FontWeight.Medium,
-                fontSize = 14.sp,
-                color = if (badge.unlocked) VirasatMaroon else Color.Gray,
-                textAlign = TextAlign.Center,
-                maxLines = 1
-            )
-            Text(
-                badge.description,
-                fontSize = 11.sp,
-                color = Color.Gray,
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-                modifier = Modifier.padding(top = 2.dp)
-            )
-            if (!badge.unlocked) {
-                Spacer(modifier = Modifier.height(8.dp))
-                LinearProgressIndicator(
-                    progress = { badge.progress.toFloat() / badge.target },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(6.dp)
-                        .clip(RoundedCornerShape(3.dp)),
-                    color = Color.LightGray,
-                    trackColor = Color(0xFFE0E0E0)
-                )
-                Text(
-                    "${badge.progress}/${badge.target}",
-                    fontSize = 10.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            } else {
-                Spacer(modifier = Modifier.height(4.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        Icons.Default.CheckCircle,
-                        null,
-                        tint = Color(0xFF2E7D32),
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        "Earned",
-                        fontSize = 11.sp,
-                        color = Color(0xFF2E7D32),
-                        fontWeight = FontWeight.Medium
+                        imageVector = badge.icon,
+                        contentDescription = badge.name,
+                        tint = if (isEarned)
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        else
+                            MaterialTheme.colorScheme.outline.copy(alpha = 0.6f),
+                        modifier = Modifier.size(40.dp)
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                badge.name,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                color = if (isEarned)
+                    MaterialTheme.colorScheme.onSurface
+                else
+                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                if (isEarned) "Earned" else "Locked",
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
+                color = if (isEarned)
+                    MaterialTheme.colorScheme.secondary
+                else
+                    MaterialTheme.colorScheme.outline.copy(alpha = 0.6f),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
 
-data class BadgeData(
-    val title: String,
-    val description: String,
-    val unlocked: Boolean,
-    val icon: ImageVector,
-    val progress: Int = 0,
-    val target: Int = 1
-)
+data class BadgeItem(val name: String, val icon: ImageVector, val unlocked: Boolean)

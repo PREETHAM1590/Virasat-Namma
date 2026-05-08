@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Privacy &amp; Data - Virasat</title>
+<!-- Fonts: Plus Jakarta Sans & Be Vietnam Pro -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#e7e9e4",
+                    "primary-fixed": "#d3ef59",
+                    "inverse-surface": "#2e312e",
+                    "inverse-on-surface": "#f0f1ec",
+                    "on-tertiary-fixed-variant": "#3e4a40",
+                    "surface-tint": "#556500",
+                    "secondary-fixed-dim": "#b2ceb3",
+                    "on-secondary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#131e16",
+                    "on-tertiary-container": "#4a554b",
+                    "on-error-container": "#93000a",
+                    "on-secondary-container": "#526a54",
+                    "outline-variant": "#c6c8b0",
+                    "on-tertiary": "#ffffff",
+                    "background": "#f9faf5",
+                    "surface-dim": "#d9dad6",
+                    "surface-bright": "#f9faf5",
+                    "on-primary-fixed-variant": "#3f4c00",
+                    "secondary": "#4c644f",
+                    "secondary-container": "#ceeace",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f3f4ef",
+                    "tertiary-container": "#bdcabd",
+                    "surface-variant": "#e2e3de",
+                    "outline": "#767964",
+                    "primary-fixed-dim": "#b7d23f",
+                    "on-surface-variant": "#454836",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#ceeace",
+                    "on-surface": "#1a1c19",
+                    "on-secondary-fixed": "#09200f",
+                    "surface": "#f9faf5",
+                    "primary": "#556500",
+                    "surface-container-highest": "#e2e3de",
+                    "tertiary-fixed-dim": "#bdcabd",
+                    "inverse-primary": "#b7d23f",
+                    "primary-container": "#b7d23f",
+                    "on-background": "#1a1c19",
+                    "tertiary": "#556157",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed": "#181e00",
+                    "on-primary-container": "#4a5800",
+                    "surface-container": "#edeee9",
+                    "tertiary-fixed": "#d9e6d8",
+                    "on-secondary-fixed-variant": "#354c38",
+                    "error": "#ba1a1a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "overlap-margin": "-32px",
+                    "container-padding": "24px",
+                    "section-margin": "48px",
+                    "element-gap": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "label-md": ["Be Vietnam Pro"],
+                    "body-lg": ["Be Vietnam Pro"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-md": ["Be Vietnam Pro"],
+                    "display-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                    "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                    "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                    "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                    "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                    "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        /* Custom base styles for the design system */
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Neumorphic shadow utilities */
+        .shadow-organic-soft {
+            box-shadow: 8px 8px 24px rgba(85, 101, 0, 0.04), -8px -8px 24px rgba(255, 255, 255, 0.8);
+        }
+        .shadow-inset-soft {
+            box-shadow: inset 2px 2px 6px rgba(85, 101, 0, 0.08), inset -2px -2px 6px rgba(255, 255, 255, 0.9);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-section-margin selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar (Shared Component) -->
+<header class="w-full px-container-padding pt-4 bg-transparent flat no shadows flex justify-between items-center max-w-7xl mx-auto z-50 relative">
+<button class="text-primary hover:opacity-80 transition-opacity transition-transform duration-300 active:scale-95 flex items-center justify-center p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-fixed">
+<span class="material-symbols-outlined text-2xl">eco</span>
+</button>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Virasat</h1>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity transition-transform duration-300 active:scale-95 flex items-center justify-center p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-fixed">
+<span class="material-symbols-outlined text-2xl">search</span>
+</button>
+</header>
+<!-- Note: BottomNavBar is explicitly suppressed on this task-focused sub-page -->
+<!-- Main Content Canvas -->
+<main class="max-w-3xl mx-auto px-container-padding mt-section-margin relative z-10">
+<!-- Page Header -->
+<div class="mb-section-margin relative">
+<h2 class="font-display-lg text-display-lg text-on-surface mb-2">Privacy &amp; Data</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+                Manage your personal footprint, download your heritage journey, and control your account status in a secure environment.
+            </p>
+</div>
+<!-- Grouped Settings: Data Management Container -->
+<section class="bg-surface-container-lowest rounded-lg p-6 md:p-10 mb-12 shadow-organic-soft transition-transform duration-300 hover:-translate-y-1">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-8">Data Management</h3>
+<!-- Download Data Option -->
+<button class="w-full flex items-center justify-between p-4 mb-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors duration-300 group text-left">
+<div class="flex items-center gap-5">
+<div class="w-14 h-14 rounded-full bg-secondary-container flex items-center justify-center shadow-inset-soft shrink-0">
+<span class="material-symbols-outlined text-secondary font-medium" style="font-variation-settings: 'FILL' 1;">download</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">Download My Data</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 opacity-80">Export an archive of your saved walks, photos, and location history.</p>
+</div>
+</div>
+<div class="w-10 h-10 rounded-full flex items-center justify-center bg-transparent group-hover:bg-primary-container/20 transition-colors shrink-0 ml-4">
+<span class="material-symbols-outlined text-primary-fixed-dim text-2xl group-hover:translate-x-1 transition-transform duration-300">arrow_forward</span>
+</div>
+</button>
+<!-- Usage Analytics Toggle -->
+<div class="w-full flex items-center justify-between p-4 rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors duration-300">
+<div class="flex items-center gap-5 pr-4">
+<div class="w-14 h-14 rounded-full bg-tertiary-container flex items-center justify-center shadow-inset-soft shrink-0">
+<span class="material-symbols-outlined text-tertiary font-medium">monitoring</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">Share Usage Analytics</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 opacity-80">Help us improve the experience by sharing anonymous interaction data.</p>
+</div>
+</div>
+<!-- Custom Neumorphic Toggle -->
+<button aria-pressed="true" class="w-14 h-8 rounded-full bg-primary-container shadow-inset-soft flex items-center px-1 cursor-pointer shrink-0" role="switch">
+<div class="w-6 h-6 rounded-full bg-on-primary shadow-sm transform translate-x-6 transition-transform duration-300"></div>
+</button>
+</div>
+</section>
+<!-- Specialized Section: Account Closure -->
+<section class="bg-surface-container-lowest rounded-lg p-6 md:p-10 shadow-organic-soft relative overflow-hidden mt-section-margin">
+<!-- Organic decorative blob -->
+<div class="absolute -bottom-32 -right-32 w-80 h-80 bg-error-container/40 rounded-full blur-[80px] pointer-events-none z-0"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-error text-3xl" style="font-variation-settings: 'FILL' 1;">warning</span>
+<h3 class="font-headline-md text-headline-md text-error">Account Closure</h3>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-2xl leading-relaxed">
+                    Closing your account is a permanent action. All your curated lists, heritage contributions, and personal milestones will be permanently erased from our ecosystem and cannot be recovered.
+                </p>
+<div class="flex items-center justify-between flex-wrap gap-6 border-t-0 pt-4">
+<a class="font-label-md text-label-md text-secondary hover:text-primary transition-colors underline-offset-4 hover:underline" href="#">
+                        Read Data Retention Policy
+                    </a>
+<!-- Soft red-tinted pill button with dark green text -->
+<button class="bg-error-container hover:bg-[#ffcdc8] text-on-secondary-fixed px-8 py-4 rounded-full flex items-center gap-3 shadow-[4px_4px_12px_rgba(147,0,10,0.08),-4px_-4px_12px_rgba(255,255,255,0.9)] active:shadow-inset-soft active:scale-[0.98] transition-all duration-300">
+<span class="font-label-md text-label-md tracking-wide">Delete My Account</span>
+<span class="material-symbols-outlined text-xl">delete_forever</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+</body></html>
