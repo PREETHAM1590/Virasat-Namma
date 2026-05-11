@@ -83,6 +83,10 @@
     <string name="passport_facts_unlocked">Facts Unlocked</string>
     <string name="passport_no_checkins">No check-ins yet</string>
     <string name="passport_no_checkins_hint">Scan QR codes at heritage sites to stamp your passport.</string>
+    <string name="passport_badges">Passport Badges</string>
+    <string name="passport_level">Level %1$d</string>
+    <string name="passport_completed">Completed</string>
+    <string name="passport_recent_journeys">Recent Journeys</string>
 
     <!-- Map -->
     <string name="map_search_hint">Explore Karnataka sites…</string>
@@ -107,9 +111,15 @@
     <!-- Profile -->
     <string name="profile_title">Profile</string>
     <string name="profile_heritage_explorer">Heritage Explorer</string>
+    <string name="profile_heritage_sites">Heritage Sites</string>
+    <string name="profile_karnataka_passport">Karnataka Heritage Passport\nSites Visited &amp; Facts Unlocked</string>
     <string name="profile_checkins">Check-ins</string>
     <string name="profile_facts">Facts</string>
     <string name="profile_badges">Badges</string>
+    <string name="profile_saved_locations">Saved Locations</string>
+    <string name="profile_exploration_history">Exploration History</string>
+    <string name="profile_preferences">Preferences</string>
+    <string name="profile_sign_out">Sign Out</string>
 
     <!-- Search -->
     <string name="search_title">Search Heritage</string>
@@ -117,6 +127,8 @@
     <string name="search_no_results">No sites found for "%1$s"</string>
 
     <!-- Site Detail -->
+    <string name="detail_title">Discovering the Magic of %1$s</string>
+    <string name="detail_about">About this Heritage Site</string>
     <string name="detail_history">History</string>
     <string name="detail_architecture">Architecture</string>
     <string name="detail_legends">Legends</string>
@@ -125,8 +137,14 @@
     <string name="detail_audio_guide">Audio Guide</string>
     <string name="detail_ai_tour">AI Tour</string>
     <string name="detail_check_in">Check In</string>
+    <string name="detail_talking_tour">Talking Tour</string>
+    <string name="detail_free">Free</string>
+    <string name="detail_narrated">narrated tour</string>
+    <string name="detail_listen">Listen</string>
     <string name="detail_visiting_hours">Visiting Hours</string>
     <string name="detail_entry_fee">Entry Fee</string>
+    <string name="detail_site_not_found">Site not found</string>
+    <string name="detail_loading">Loading site…</string>
 
     <!-- Common -->
     <string name="loading">Loading…</string>

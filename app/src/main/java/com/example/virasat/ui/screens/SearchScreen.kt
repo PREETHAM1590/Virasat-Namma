@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.virasat.data.di.RepositoryProvider
+import com.example.virasat.R
 import com.example.virasat.data.model.HeritageSite
 
 @Composable
@@ -45,12 +47,24 @@ fun SearchScreen(
     var searchQuery by remember { mutableStateOf("") }
     var activeFilter by remember { mutableStateOf<String?>(null) }
 
-    val filters = listOf("All", "Temple", "Palace", "Fort", "Monument", "UNESCO", "Jain", "Museum", "Nature", "Cave")
+    data class FilterItem(val key: String, val labelRes: Int)
+    val filters = listOf(
+        FilterItem("All", R.string.category_all),
+        FilterItem("Temple", R.string.category_temple),
+        FilterItem("Palace", R.string.category_palace),
+        FilterItem("Fort", R.string.category_fort),
+        FilterItem("Monument", R.string.category_monument),
+        FilterItem("UNESCO", R.string.category_unesco),
+        FilterItem("Jain", R.string.category_jain),
+        FilterItem("Cave", R.string.category_cave)
+    )
 
     val ctx = LocalContext.current
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+    var isLoading by remember { mutableStateOf(true) }
     val allSites by produceState<List<HeritageSite>>(emptyList(), ctx) {
         value = repo.getAllSitesList()
+        isLoading = false
     }
 
     val filteredSites by remember(activeFilter, searchQuery, allSites) {
@@ -101,14 +115,14 @@ fun SearchScreen(
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.back),
                     tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(24.dp)
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "Explore Heritage",
+                text = stringResource(R.string.search_title),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -122,7 +136,7 @@ fun SearchScreen(
             onValueChange = { searchQuery = it },
             placeholder = {
                 Text(
-                    "Search monuments, districts…",
+                    stringResource(R.string.search_hint_full),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -139,7 +153,7 @@ fun SearchScreen(
                     IconButton(onClick = { searchQuery = ""; focusManager.clearFocus() }) {
                         Icon(
                             Icons.Default.Close,
-                            contentDescription = "Clear",
+                            contentDescription = stringResource(R.string.close),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
@@ -171,10 +185,10 @@ fun SearchScreen(
                 .padding(bottom = 24.dp)
         ) {
             items(filters) { filter ->
-                val selected = activeFilter == filter || (activeFilter == null && filter == "All")
+                val selected = activeFilter == filter.key || (activeFilter == null && filter.key == "All")
                 Surface(
                     onClick = {
-                        activeFilter = if (filter == "All") null else filter
+                        activeFilter = if (filter.key == "All") null else filter.key
                         focusManager.clearFocus()
                     },
                     modifier = Modifier.height(36.dp),
@@ -190,7 +204,7 @@ fun SearchScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = filter,
+                            text = stringResource(filter.labelRes),
                             style = MaterialTheme.typography.labelLarge,
                             color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
                         )
@@ -199,10 +213,21 @@ fun SearchScreen(
             }
         }
 
+        // Loading state
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+            }
+            return
+        }
+
         // Results count
         if (searchQuery.isNotBlank() || activeFilter != null) {
             Text(
-                text = "${filteredSites.size} result${if (filteredSites.size != 1) "s" else ""}",
+                text = stringResource(R.string.map_sites_found, filteredSites.size),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 24.dp).padding(bottom = 12.dp)
@@ -224,7 +249,7 @@ fun SearchScreen(
                     )
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        "No results for \"$searchQuery\"",
+                        stringResource(R.string.search_no_results, searchQuery),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -301,7 +326,7 @@ private fun SiteCard(site: HeritageSite, onClick: () -> Unit, topMargin: Dp = 0.
         ) {
             Icon(
                 imageVector = Icons.Default.Star,
-                contentDescription = "Favourite",
+                contentDescription = stringResource(R.string.save),
                 tint = cs.outline,
                 modifier = Modifier.size(20.dp)
             )

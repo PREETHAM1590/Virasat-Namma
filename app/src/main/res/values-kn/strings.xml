@@ -83,6 +83,10 @@
     <string name="passport_facts_unlocked">ತೆರೆದ ಸಂಗತಿಗಳು</string>
     <string name="passport_no_checkins">ಇನ್ನೂ ಚೆಕ್-ಇನ್ ಇಲ್ಲ</string>
     <string name="passport_no_checkins_hint">ಪಾಸ್‌ಪೋರ್ಟ್‌ಗೆ ಮುದ್ರೆ ಹಾಕಲು ಪರಂಪರೆ ತಾಣಗಳಲ್ಲಿ QR ಕೋಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.</string>
+    <string name="passport_badges">ಪಾಸ್‌ಪೋರ್ಟ್ ಬ್ಯಾಡ್ಜ್‌ಗಳು</string>
+    <string name="passport_level">ಮಟ್ಟ %1$d</string>
+    <string name="passport_completed">ಪೂರ್ಣಗೊಂಡಿದೆ</string>
+    <string name="passport_recent_journeys">ಇತ್ತೀಚಿನ ಪ್ರಯಾಣಗಳು</string>
 
     <!-- Map -->
     <string name="map_search_hint">ಕರ್ನಾಟಕ ತಾಣಗಳನ್ನು ಅನ್ವೇಷಿಸಿ…</string>
@@ -107,9 +111,15 @@
     <!-- Profile -->
     <string name="profile_title">ಪ್ರೊಫೈಲ್</string>
     <string name="profile_heritage_explorer">ಪರಂಪರೆ ಅನ್ವೇಷಕ</string>
+    <string name="profile_heritage_sites">ಪರಂಪರೆ ತಾಣಗಳು</string>
+    <string name="profile_karnataka_passport">ಕರ್ನಾಟಕ ಪರಂಪರೆ ಪಾಸ್‌ಪೋರ್ಟ್\nಭೇಟಿ ತಾಣಗಳು ಮತ್ತು ತೆರೆದ ಸಂಗತಿಗಳು</string>
     <string name="profile_checkins">ಚೆಕ್-ಇನ್‌ಗಳು</string>
     <string name="profile_facts">ಸಂಗತಿಗಳು</string>
     <string name="profile_badges">ಬ್ಯಾಡ್ಜ್‌ಗಳು</string>
+    <string name="profile_saved_locations">ಉಳಿಸಿದ ಸ್ಥಳಗಳು</string>
+    <string name="profile_exploration_history">ಅನ್ವೇಷಣಾ ಇತಿಹಾಸ</string>
+    <string name="profile_preferences">ಆದ್ಯತೆಗಳು</string>
+    <string name="profile_sign_out">ಸೈನ್ ಔಟ್</string>
 
     <!-- Search -->
     <string name="search_title">ಪರಂಪರೆ ಹುಡುಕಿ</string>
@@ -117,6 +127,8 @@
     <string name="search_no_results">"%1$s" ಗಾಗಿ ತಾಣಗಳು ಕಂಡಿಲ್ಲ</string>
 
     <!-- Site Detail -->
+    <string name="detail_title">%1$s ಅನ್ವೇಷಿಸುತ್ತಿದ್ದೇವೆ</string>
+    <string name="detail_about">ಈ ಪರಂಪರೆ ತಾಣದ ಬಗ್ಗೆ</string>
     <string name="detail_history">ಇತಿಹಾಸ</string>
     <string name="detail_architecture">ವಾಸ್ತುಶಿಲ್ಪ</string>
     <string name="detail_legends">ಐತಿಹ್ಯಗಳು</string>
@@ -125,8 +137,14 @@
     <string name="detail_audio_guide">ಆಡಿಯೋ ಗೈಡ್</string>
     <string name="detail_ai_tour">AI ಪ್ರವಾಸ</string>
     <string name="detail_check_in">ಚೆಕ್ ಇನ್</string>
+    <string name="detail_talking_tour">ಮಾತಿನ ಪ್ರವಾಸ</string>
+    <string name="detail_free">ಉಚಿತ</string>
+    <string name="detail_narrated">ವಿವರಿಸಿದ ಪ್ರವಾಸ</string>
+    <string name="detail_listen">ಕೇಳಿ</string>
     <string name="detail_visiting_hours">ಭೇಟಿ ವೇಳೆ</string>
     <string name="detail_entry_fee">ಪ್ರವೇಶ ಶುಲ್ಕ</string>
+    <string name="detail_site_not_found">ತಾಣ ಕಂಡುಬಂದಿಲ್ಲ</string>
+    <string name="detail_loading">ತಾಣ ಲೋಡ್ ಆಗುತ್ತಿದೆ…</string>
 
     <!-- Common -->
     <string name="loading">ಲೋಡ್ ಆಗುತ್ತಿದೆ…</string>

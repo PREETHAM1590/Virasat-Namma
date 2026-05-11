@@ -29,17 +29,22 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,9 +52,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.virasat.R
 import coil.compose.AsyncImage
-import com.example.virasat.data.source.KarnatakaSites
+import kotlinx.coroutines.launch
+import com.example.virasat.data.di.RepositoryProvider
+import com.example.virasat.data.service.GeminiHeritageService
 
 @Composable
 fun SiteDetailScreen(
@@ -60,11 +70,33 @@ fun SiteDetailScreen(
     onImmersiveView: (String) -> Unit,
     onGallery: (String) -> Unit,
     onReviews: (String) -> Unit,
-    onAiTour: (String) -> Unit
+    onAiTour: (String) -> Unit,
+    onTalkingTour: (String) -> Unit
 ) {
-    val site = KarnatakaSites.allSites.find { it.id == siteId }
+    val ctx = LocalContext.current
+    val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+    val scope = rememberCoroutineScope()
+    var isLoading by remember { mutableStateOf(true) }
+    val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
+        value = repo.getSiteById(siteId)
+        isLoading = false
+    }
     var isFav by remember { mutableStateOf(false) }
+    LaunchedEffect(siteId) {
+        isFav = repo.isBookmarked(siteId)
+    }
 
+    if (isLoading) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+        }
+        return
+    }
     if (site == null) {
         Box(
             Modifier
@@ -72,10 +104,14 @@ fun SiteDetailScreen(
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
-            Text("Site not found", style = MaterialTheme.typography.bodyLarge)
+            Text(
+                stringResource(R.string.detail_site_not_found),
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
         return
     }
+    val s = site!!
 
     Box(
         Modifier
@@ -90,7 +126,7 @@ fun SiteDetailScreen(
                     .height(442.dp)
             ) {
                 AsyncImage(
-                    model = site.imageUrl,
+                    model = s.imageUrl,
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
@@ -118,14 +154,14 @@ fun SiteDetailScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            "Back",
+                            stringResource(R.string.back),
                             tint = Color.White
                         )
                     }
                     IconButton(onClick = { }) {
                         Icon(
                             Icons.Default.Share,
-                            "Share",
+                            stringResource(R.string.share),
                             tint = Color.White
                         )
                     }
@@ -139,12 +175,14 @@ fun SiteDetailScreen(
                         .size(64.dp)
                         .clip(RoundedCornerShape(999.dp))
                         .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-                        .clickable { isFav = !isFav },
+                        .clickable {
+                            scope.launch { isFav = repo.toggleBookmark(siteId) }
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         if (isFav) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        "Favorite",
+                        if (isFav) stringResource(R.string.saved) else stringResource(R.string.save),
                         tint = MaterialTheme.colorScheme.error,
                         modifier = Modifier.size(28.dp)
                     )
@@ -161,14 +199,14 @@ fun SiteDetailScreen(
                         .padding(horizontal = 16.dp, vertical = 6.dp)
                 ) {
                     Text(
-                        site.district.uppercase(),
+                        s.district.uppercase(),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
                 }
                 Spacer(Modifier.height(16.dp))
                 Text(
-                    "Discovering the Magic of ${site.name}",
+                    stringResource(R.string.detail_title, s.name),
                     style = MaterialTheme.typography.displayLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -185,25 +223,6 @@ fun SiteDetailScreen(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            Icons.Default.CalendarToday,
-                            null,
-                            modifier = Modifier.size(16.dp),
-                            tint = MaterialTheme.colorScheme.secondary
-                        )
-                        Spacer(Modifier.width(6.dp))
-                        Text(
-                            "Est. 14th Century",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    Box(
-                        Modifier
-                            .width(1.dp)
-                            .height(16.dp)
-                            .background(MaterialTheme.colorScheme.outlineVariant))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
                             Icons.Default.LocationOn,
                             null,
                             modifier = Modifier.size(16.dp),
@@ -211,7 +230,7 @@ fun SiteDetailScreen(
                         )
                         Spacer(Modifier.width(6.dp))
                         Text(
-                            "350 km away",
+                            s.location,
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -230,7 +249,7 @@ fun SiteDetailScreen(
                         )
                         Spacer(Modifier.width(6.dp))
                         Text(
-                            "${site.rating} (${formatCount(site.reviews)})",
+                            "${s.rating} (${formatCount(s.reviews)} ${stringResource(R.string.reviews)})",
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -248,19 +267,19 @@ fun SiteDetailScreen(
                 ) {
                     Column {
                         Text(
-                            "About this Heritage Site",
+                            stringResource(R.string.detail_about),
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(Modifier.height(16.dp))
                         Text(
-                            site.description,
+                            s.description,
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(Modifier.height(16.dp))
                         Text(
-                            site.history,
+                            s.history,
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -273,9 +292,10 @@ fun SiteDetailScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    ActionChip("Gallery", Icons.Default.Image) { onGallery(siteId) }
-                    ActionChip("Check In", Icons.Default.QrCodeScanner) { onCheckIn() }
-                    ActionChip("AI Tour", Icons.Default.ChatBubble) { onAiTour(siteId) }
+                    ActionChip(stringResource(R.string.detail_gallery), Icons.Default.Image) { onGallery(siteId) }
+                    ActionChip(stringResource(R.string.detail_check_in), Icons.Default.QrCodeScanner) { onCheckIn() }
+                    ActionChip(stringResource(R.string.detail_ai_tour), Icons.Default.ChatBubble) { onAiTour(siteId) }
+                    ActionChip(stringResource(R.string.detail_talking_tour), Icons.Default.Mic) { onTalkingTour(siteId) }
                 }
                 Spacer(Modifier.height(32.dp))
 
@@ -291,17 +311,17 @@ fun SiteDetailScreen(
                 ) {
                     Column {
                         Text(
-                            "Audio Guide",
+                            stringResource(R.string.detail_audio_guide),
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            "Free",
+                            stringResource(R.string.detail_free),
                             style = MaterialTheme.typography.headlineLarge,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            "narrated tour",
+                            stringResource(R.string.detail_narrated),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -314,7 +334,7 @@ fun SiteDetailScreen(
                             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     ) {
-                        Text("Listen", style = MaterialTheme.typography.labelLarge)
+                        Text(stringResource(R.string.detail_listen), style = MaterialTheme.typography.labelLarge)
                         Icon(
                             Icons.Default.PlayArrow,
                             null,

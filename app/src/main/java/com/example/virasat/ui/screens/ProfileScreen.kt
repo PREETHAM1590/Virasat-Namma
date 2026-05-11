@@ -12,6 +12,12 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
+import com.example.virasat.R
+import com.example.virasat.data.di.RepositoryProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,8 +46,12 @@ fun ProfileScreen(
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val userPrefs = androidx.compose.runtime.remember { context.getSharedPreferences("virasat_prefs", android.content.Context.MODE_PRIVATE) }
-    val userName = androidx.compose.runtime.remember { userPrefs.getString("user_name", null) ?: "Heritage Explorer" }
+    val userName = androidx.compose.runtime.remember { userPrefs.getString("user_name", null) ?: context.getString(R.string.profile_heritage_explorer) }
     val userEmail = androidx.compose.runtime.remember { userPrefs.getString("user_email", null) ?: "" }
+    val repo = remember(context) { RepositoryProvider.getRepository(context) }
+    val allSites by produceState(0, context) { value = repo.getAllSitesList().size }
+    val checkInCount by produceState(0, context) { repo.getCheckInCount().collect { value = it } }
+    val unlockedFacts by produceState(0, context) { repo.getUnlockedFactCount().collect { value = it } }
     val scrollState = rememberScrollState()
     val cs = MaterialTheme.colorScheme
     val type = MaterialTheme.typography
@@ -68,13 +78,13 @@ fun ProfileScreen(
                 modifier = Modifier.size(28.dp)
             )
             Text(
-                text = "Virasat",
+                text = stringResource(R.string.app_name),
                 style = type.headlineLarge,
                 color = cs.primary
             )
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = "Search",
+                contentDescription = stringResource(R.string.search_title),
                 tint = cs.primary,
                 modifier = Modifier.size(28.dp)
             )
@@ -110,7 +120,7 @@ fun ProfileScreen(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Karnataka Heritage Passport\nSites Visited & Facts Unlocked",
+                        text = stringResource(R.string.profile_karnataka_passport),
                         style = type.bodyMedium,
                         color = cs.onSurfaceVariant,
                         textAlign = TextAlign.Center
@@ -170,12 +180,12 @@ fun ProfileScreen(
                     )
                     Column {
                         Text(
-                            text = "6",
+                            text = allSites.toString(),
                             style = type.headlineMedium,
                             color = cs.onPrimaryContainer
                         )
                         Text(
-                            text = "Heritage Sites",
+                            text = stringResource(R.string.profile_heritage_sites),
                             style = type.labelMedium,
                             color = cs.onPrimaryContainer.copy(alpha = 0.8f)
                         )
@@ -206,12 +216,12 @@ fun ProfileScreen(
                     )
                     Column {
                         Text(
-                            text = "---",
+                            text = checkInCount.toString(),
                             style = type.headlineMedium,
                             color = cs.onSurface
                         )
                         Text(
-                            text = "Check-ins",
+                            text = stringResource(R.string.profile_checkins),
                             style = type.labelMedium,
                             color = cs.onSurfaceVariant
                         )
@@ -231,17 +241,17 @@ fun ProfileScreen(
         ) {
             MenuRow(
                 icon = Icons.Default.Bookmark,
-                label = "Saved Locations",
+                label = stringResource(R.string.profile_saved_locations),
                 onClick = onBookmarks
             )
             MenuRow(
                 icon = Icons.Default.History,
-                label = "Exploration History",
+                label = stringResource(R.string.profile_exploration_history),
                 onClick = onCheckIns
             )
             MenuRow(
                 icon = Icons.Default.Settings,
-                label = "Preferences",
+                label = stringResource(R.string.profile_preferences),
                 onClick = onSettings
             )
         }
@@ -280,7 +290,7 @@ fun ProfileScreen(
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = "Sign Out",
+                    text = stringResource(R.string.profile_sign_out),
                     style = type.headlineMedium,
                     color = cs.onErrorContainer
                 )

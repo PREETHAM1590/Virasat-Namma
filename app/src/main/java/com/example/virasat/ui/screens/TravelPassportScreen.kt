@@ -15,13 +15,16 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.virasat.R
 import coil.compose.AsyncImage
 import com.example.virasat.data.model.CheckIn
 import com.example.virasat.data.source.ImageUrls
@@ -39,11 +42,13 @@ fun TravelPassportScreen(
     val checkIns by viewModel.checkIns.collectAsState()
     val uniqueSites by viewModel.uniqueSiteCount.collectAsState()
     val scrollState = rememberScrollState()
+    val cs = MaterialTheme.colorScheme
+    val type = MaterialTheme.typography
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(cs.background)
             .verticalScroll(scrollState)
     ) {
         // Header section
@@ -51,7 +56,7 @@ fun TravelPassportScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    MaterialTheme.colorScheme.onSecondaryContainer,
+                    cs.onSecondaryContainer,
                     RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
                 )
                 .padding(bottom = 64.dp)
@@ -66,51 +71,61 @@ fun TravelPassportScreen(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = stringResource(R.string.back),
+                    tint = cs.primary,
                     modifier = Modifier
                         .size(28.dp)
                         .clickable(onClick = onBack)
                 )
                 Text(
-                    text = "Virasat",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    text = stringResource(R.string.app_name),
+                    style = type.headlineLarge,
+                    color = cs.onPrimaryContainer
                 )
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Search",
-                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = stringResource(R.string.search_title),
+                    tint = cs.primary,
                     modifier = Modifier.size(28.dp)
                 )
             }
 
             // Avatar + name + level
+            val context = androidx.compose.ui.platform.LocalContext.current
+            val userPrefs = remember { context.getSharedPreferences("virasat_prefs", android.content.Context.MODE_PRIVATE) }
+            val userName = remember { userPrefs.getString("user_name", null) ?: context.getString(R.string.profile_heritage_explorer) }
+            val initials = userName.split(" ").take(2).mapNotNull { it.firstOrNull()?.uppercase() }.joinToString("").ifBlank { "HE" }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                AsyncImage(
-                    model = ImageUrls.PROFILE_AVATAR,
-                    contentDescription = "Profile",
-                    contentScale = ContentScale.Crop,
+                Box(
                     modifier = Modifier
                         .size(128.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.2f))
-                )
+                        .shadow(8.dp, CircleShape)
+                        .background(cs.primaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = initials,
+                        style = type.headlineLarge,
+                        color = cs.onPrimaryContainer,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
-                    text = "Master Explorer",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.secondaryContainer
+                    text = stringResource(R.string.passport_title),
+                    style = type.headlineLarge,
+                    color = cs.onSurface
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Surface(
                     shape = RoundedCornerShape(999.dp),
-                    color = MaterialTheme.colorScheme.primaryContainer,
+                    color = cs.primaryContainer,
                     shadowElevation = 2.dp
                 ) {
                     Row(
@@ -121,13 +136,13 @@ fun TravelPassportScreen(
                         Icon(
                             Icons.Default.Verified,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            tint = cs.onPrimaryContainer,
                             modifier = Modifier.size(18.dp)
                         )
                         Text(
-                            text = "Custodian Level 8",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            text = stringResource(R.string.passport_level, 1),
+                            style = type.labelLarge,
+                            color = cs.onPrimaryContainer
                         )
                     }
                 }
@@ -143,7 +158,7 @@ fun TravelPassportScreen(
         ) {
             Surface(
                 shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                color = cs.surfaceContainerLowest,
                 shadowElevation = 4.dp,
                 tonalElevation = 2.dp
             ) {
@@ -160,14 +175,14 @@ fun TravelPassportScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Passport Badges",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onSurface
+                            text = stringResource(R.string.passport_badges),
+                            style = type.headlineMedium,
+                            color = cs.onSurface
                         )
                         Text(
-                            text = "View All",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary
+                            text = stringResource(R.string.view_all),
+                            style = type.labelLarge,
+                            color = cs.primary
                         )
                     }
                     // Badge grid
@@ -179,74 +194,74 @@ fun TravelPassportScreen(
                             icon = { modifier ->
                                 Surface(
                                     shape = CircleShape,
-                                    color = MaterialTheme.colorScheme.secondaryContainer,
+                                    color = cs.secondaryContainer,
                                     modifier = modifier
                                         .size(64.dp)
                                         .shadow(2.dp, CircleShape),
-                                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                    contentColor = cs.onSecondaryContainer
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
                                         Text(
                                             text = "",
-                                            style = MaterialTheme.typography.displayLarge,
+                                            style = type.displayLarge,
                                             modifier = Modifier.padding(bottom = 4.dp)
                                         ) // landscape
                                     }
                                 }
                             },
-                            label = "Highlands"
+                            label = "Temples"
                         )
                         BadgeItem(
                             icon = { modifier ->
                                 Surface(
                                     shape = CircleShape,
-                                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                                    color = cs.tertiaryContainer,
                                     modifier = modifier
                                         .size(64.dp)
                                         .shadow(2.dp, CircleShape),
-                                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                                    contentColor = cs.onTertiaryContainer
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
                                         Text(
-                                            text = "",
-                                            style = MaterialTheme.typography.displayLarge,
+                                            text = "🕉️",
+                                            style = type.displayLarge,
                                             modifier = Modifier.padding(bottom = 4.dp)
-                                        ) // temple_buddhist
+                                        )
                                     }
                                 }
                             },
-                            label = "Sacred Sites"
+                            label = "Hoysala"
                         )
                         BadgeItem(
                             icon = { modifier ->
                                 Surface(
                                     shape = CircleShape,
-                                    color = MaterialTheme.colorScheme.errorContainer,
+                                    color = cs.errorContainer,
                                     modifier = modifier
                                         .size(64.dp)
                                         .shadow(2.dp, CircleShape),
-                                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                                    contentColor = cs.onErrorContainer
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
                                         Text(
-                                            text = "",
-                                            style = MaterialTheme.typography.displayLarge,
+                                            text = "🏛️",
+                                            style = type.displayLarge,
                                             modifier = Modifier.padding(bottom = 4.dp)
-                                        ) // local_fire_department
+                                        )
                                     }
                                 }
                             },
-                            label = "Campfire"
+                            label = "Palaces"
                         )
                         BadgeItem(
                             icon = { modifier ->
                                 Surface(
                                     shape = CircleShape,
-                                    color = MaterialTheme.colorScheme.surfaceDim,
+                                    color = cs.surfaceDim,
                                     modifier = modifier
                                         .size(64.dp)
                                         .shadow(0.dp, CircleShape),
-                                    contentColor = MaterialTheme.colorScheme.outline
+                                    contentColor = cs.outline
                                 ) {
                                     Box(contentAlignment = Alignment.Center) {
                                         Icon(
@@ -267,11 +282,10 @@ fun TravelPassportScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Recent Journeys
         Text(
-            text = "Recent Journeys",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground,
+            text = stringResource(R.string.passport_recent_journeys),
+            style = type.headlineMedium,
+            color = cs.onBackground,
             modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 16.dp)
         )
 
@@ -287,27 +301,33 @@ fun TravelPassportScreen(
                 }
             }
         } else {
-            // Sample journey items when empty
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .padding(horizontal = 24.dp, vertical = 32.dp),
+                contentAlignment = Alignment.Center
             ) {
-                SampleJourneyItem(
-                    title = "Echoes of the Ancients",
-                    date = "Oct 12, 2023",
-                    location = "Western Ghats",
-                    imageUrl = ImageUrls.HAMPI,
-                    onClick = {}
-                )
-                SampleJourneyItem(
-                    title = "Riverbed Sanctuary",
-                    date = "Sep 04, 2023",
-                    location = "Narmada Valley",
-                    imageUrl = ImageUrls.BADAMI,
-                    onClick = {}
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp),
+                        tint = cs.onSurfaceVariant.copy(alpha = 0.4f)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(R.string.passport_no_checkins),
+                        style = type.bodyLarge,
+                        color = cs.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(R.string.passport_no_checkins_hint),
+                        style = type.bodyMedium,
+                        color = cs.onSurfaceVariant.copy(alpha = 0.7f),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
 
@@ -321,6 +341,9 @@ private fun BadgeItem(
     label: String,
     isLocked: Boolean = false
 ) {
+    val cs = MaterialTheme.colorScheme
+    val type = MaterialTheme.typography
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -328,8 +351,8 @@ private fun BadgeItem(
         icon(Modifier)
         Text(
             text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = if (isLocked) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.onSurfaceVariant,
+            style = type.labelSmall,
+            color = if (isLocked) cs.outline else cs.onSurfaceVariant,
             fontWeight = FontWeight.SemiBold
         )
     }
@@ -338,10 +361,13 @@ private fun BadgeItem(
 @Composable
 private fun JourneyItem(checkIn: CheckIn, onClick: () -> Unit) {
     val dateFormat = remember { SimpleDateFormat("dd MMM yyyy", Locale.getDefault()) }
+    val cs = MaterialTheme.colorScheme
+    val type = MaterialTheme.typography
+
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerLowest,
+        color = cs.surfaceContainerLowest,
         shadowElevation = 4.dp,
         tonalElevation = 2.dp
     ) {
@@ -375,35 +401,35 @@ private fun JourneyItem(checkIn: CheckIn, onClick: () -> Unit) {
                 ) {
                     Surface(
                         shape = RoundedCornerShape(999.dp),
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                        color = cs.primary.copy(alpha = 0.1f)
                     ) {
                         Text(
-                            text = "Completed",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.primary,
+                            text = stringResource(R.string.passport_completed),
+                            style = type.labelMedium,
+                            color = cs.primary,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                         )
                     }
                     Icon(
                         Icons.Default.MoreHoriz,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        tint = cs.onSurfaceVariant,
                         modifier = Modifier.size(18.dp)
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = checkIn.siteName,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    style = type.bodyLarge,
+                    color = cs.onSurface,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "${dateFormat.format(Date(checkIn.timestamp))} • ${checkIn.siteLocation}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = type.bodyMedium,
+                    color = cs.onSurfaceVariant
                 )
             }
         }
@@ -418,10 +444,13 @@ private fun SampleJourneyItem(
     imageUrl: String,
     onClick: () -> Unit
 ) {
+    val cs = MaterialTheme.colorScheme
+    val type = MaterialTheme.typography
+
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerLowest,
+        color = cs.surfaceContainerLowest,
         shadowElevation = 4.dp,
         tonalElevation = 2.dp
     ) {
@@ -455,35 +484,35 @@ private fun SampleJourneyItem(
                 ) {
                     Surface(
                         shape = RoundedCornerShape(999.dp),
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                        color = cs.primary.copy(alpha = 0.1f)
                     ) {
                         Text(
-                            text = "Completed",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.primary,
+                            text = stringResource(R.string.passport_completed),
+                            style = type.labelMedium,
+                            color = cs.primary,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                         )
                     }
                     Icon(
                         Icons.Default.MoreHoriz,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        tint = cs.onSurfaceVariant,
                         modifier = Modifier.size(18.dp)
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    style = type.bodyLarge,
+                    color = cs.onSurface,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "$date • $location",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = type.bodyMedium,
+                    color = cs.onSurfaceVariant
                 )
             }
         }
