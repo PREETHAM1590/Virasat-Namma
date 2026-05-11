@@ -1,0 +1,41 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Sites collection (public read, no client writes) ──────────────────
+    match /sites/{siteId} {
+      allow read: if true;
+      // Only server-side writes (seeder runs in app on first launch with no rule conflict
+      // because seeder uses admin-level access via service account in prod, or the
+      // temporary open rule was used for initial seeding)
+      allow write: if false;
+    }
+
+    // ── User profiles ─────────────────────────────────────────────────────
+    match /users/{userId} {
+      // Users can read and write their own profile only
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // ── Check-ins subcollection ──────────────────────────────────────────
+      match /checkins/{checkinId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // ── Unlocked facts subcollection ─────────────────────────────────────
+      match /unlockedFacts/{factId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // ── Bookmarks subcollection ──────────────────────────────────────────
+      match /bookmarks/{siteId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // ── Deny everything else ──────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

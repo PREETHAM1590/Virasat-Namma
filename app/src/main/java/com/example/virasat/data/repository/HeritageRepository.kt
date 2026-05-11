@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface HeritageRepository {
     fun getAllSites(): Flow<List<HeritageSite>>
-    fun getAllSitesList(): List<HeritageSite>
-    fun getSiteById(id: String): HeritageSite?
+    suspend fun getAllSitesList(): List<HeritageSite>
+    suspend fun getSiteById(id: String): HeritageSite?
     fun getSitesByType(type: String): Flow<List<HeritageSite>>
     fun searchSites(query: String): Flow<List<HeritageSite>>
     fun getAllCheckIns(): Flow<List<CheckIn>>
@@ -22,4 +22,7 @@ interface HeritageRepository {
     fun getUnlockedFactCount(): Flow<Int>
     suspend fun unlockFact(siteId: String, fact: Fact)
     suspend fun isFactUnlocked(factId: String): Boolean
+    suspend fun toggleBookmark(siteId: String): Boolean
+    suspend fun isBookmarked(siteId: String): Boolean
+    fun observeBookmarks(): kotlinx.coroutines.flow.Flow<List<String>>
 }

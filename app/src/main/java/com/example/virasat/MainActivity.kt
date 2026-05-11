@@ -30,6 +30,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.service.FirebaseAnalyticsHelper
 import com.example.virasat.data.service.GeminiHeritageService
+import com.example.virasat.data.service.FirebaseAuthService
+import com.google.firebase.auth.FirebaseAuth
 import com.example.virasat.ui.components.BottomNavItem
 import com.example.virasat.ui.screens.*
 import com.example.virasat.ui.theme.VirasatTheme
@@ -50,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val prefs = LocalContext.current.getSharedPreferences("virasat_prefs", Context.MODE_PRIVATE)
                     val onboardingSeen = remember { prefs.getBoolean("onboarding_seen", false) }
-                    val isLoggedIn = remember { prefs.getBoolean("is_logged_in", false) }
+                    val isLoggedIn = remember { FirebaseAuthService.isLoggedIn }
                     val startDest = when {
                         !onboardingSeen -> "splash"
                         !isLoggedIn -> "login"
@@ -90,9 +92,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("login") {
                             LoginScreen(
-                                onLogin = { email, _ ->
+                                onLogin = { name, email ->
                                     prefs.edit()
-                                        .putBoolean("is_logged_in", true)
+                                        .putString("user_name", name)
                                         .putString("user_email", email)
                                         .apply()
                                     navController.navigate("home") { popUpTo(0) { inclusive = true } }
@@ -106,7 +108,6 @@ class MainActivity : ComponentActivity() {
                             SignUpScreen(
                                 onSignUp = { name, email, _ ->
                                     prefs.edit()
-                                        .putBoolean("is_logged_in", true)
                                         .putString("user_name", name)
                                         .putString("user_email", email)
                                         .apply()
@@ -268,7 +269,7 @@ class MainActivity : ComponentActivity() {
                                         onBookmarks = { navController.navigate("bookmarks") },
                                         onPassport = { navController.navigate("passport") },
                                         onLogout = {
-                                        prefs.edit().putBoolean("is_logged_in", false).apply()
+                                        FirebaseAuthService.signOut()
                                         navController.navigate("login") { popUpTo(0) { inclusive = true } }
                                     },
                                         onBadges = { navController.navigate("badges") },
@@ -295,7 +296,7 @@ class MainActivity : ComponentActivity() {
                                 onTerms = { navController.navigate("terms") },
                                 onDataSync = { navController.navigate("data_sync") },
                                 onLogout = {
-                                    prefs.edit().putBoolean("is_logged_in", false).apply()
+                                    FirebaseAuthService.signOut()
                                     navController.navigate("login") { popUpTo(0) { inclusive = true } }
                                 }
                             )

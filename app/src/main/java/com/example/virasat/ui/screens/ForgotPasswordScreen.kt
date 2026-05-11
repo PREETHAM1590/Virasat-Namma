@@ -28,15 +28,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.example.virasat.ui.theme.BeVietnamPro
 import com.example.virasat.ui.theme.PlusJakartaSans
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Surface
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.LaunchedEffect
+import com.example.virasat.viewmodel.AuthViewModel
 
 @Composable
 fun ForgotPasswordScreen(
     onSendResetLink: (String) -> Unit,
     onBack: () -> Unit
 ) {
+    val authViewModel: AuthViewModel = viewModel()
+    val resetState by authViewModel.resetState.collectAsState()
     var email by remember { mutableStateOf("") }
     var sent by remember { mutableStateOf(false) }
     val scheme = MaterialTheme.colorScheme
+    
+    LaunchedEffect(resetState.success) {
+        if (resetState.success) sent = true
+    }
 
     Box(
         modifier = Modifier
@@ -217,8 +230,8 @@ fun ForgotPasswordScreen(
                             RoundedCornerShape(999.dp)
                         )
                         .clickable(
-                            enabled = email.isNotBlank(),
-                            onClick = { sent = true; onSendResetLink(email) }
+                            enabled = email.isNotBlank() && !resetState.isLoading,
+                            onClick = { authViewModel.sendPasswordReset(email); onSendResetLink(email) }
                         )
                         .padding(vertical = 20.dp),
                     contentAlignment = Alignment.Center

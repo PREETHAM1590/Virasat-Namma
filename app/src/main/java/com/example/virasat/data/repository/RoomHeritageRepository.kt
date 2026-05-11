@@ -4,37 +4,42 @@ import android.content.Context
 import com.example.virasat.data.local.VirasatDatabase
 import com.example.virasat.data.model.*
 import com.example.virasat.data.source.KarnatakaSites
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class RoomHeritageRepository(context: Context) : HeritageRepository {
     private val database = VirasatDatabase.getDatabase(context)
+    private val siteDao = database.heritageSiteDao()
     private val checkInDao = database.checkInDao()
     private val unlockedFactDao = database.unlockedFactDao()
 
-    override fun getAllSites(): Flow<List<HeritageSite>> = flow {
-        emit(KarnatakaSites.allSites)
+    init {
+        // Seed the database on first launch
+        CoroutineScope(Dispatchers.IO).launch {
+            if (siteDao.getSiteCount() == 0) {
+                siteDao.insertSites(KarnatakaSites.allSites.map { it.toEntity() })
+            }
+        }
     }
 
-    override fun getAllSitesList(): List<HeritageSite> = KarnatakaSites.allSites
+    override fun getAllSites(): Flow<List<HeritageSite>> =
+        siteDao.getAllSites().map { list -> list.map { it.toModel() } }
 
-    override fun getSiteById(id: String): HeritageSite? {
-        return KarnatakaSites.allSites.find { it.id == id }
+    override suspend fun getAllSitesList(): List<HeritageSite> =
+        siteDao.getAllSitesList().map { it.toModel() }
+
+    override suspend fun getSiteById(id: String): HeritageSite? {
+        return siteDao.getSiteById(id)?.toModel()
     }
 
-    override fun getSitesByType(type: String): Flow<List<HeritageSite>> = flow {
-        emit(KarnatakaSites.allSites.filter { it.type.name == type })
-    }
+    override fun getSitesByType(type: String): Flow<List<HeritageSite>> =
+        siteDao.getSitesByType(type).map { list -> list.map { it.toModel() } }
 
-    override fun searchSites(query: String): Flow<List<HeritageSite>> = flow {
-        val q = query.lowercase()
-        emit(KarnatakaSites.allSites.filter {
-            it.name.lowercase().contains(q) ||
-            it.nameLocal.lowercase().contains(q) ||
-            it.location.lowercase().contains(q) ||
-            it.district.lowercase().contains(q)
-        })
-    }
+    override fun searchSites(query: String): Flow<List<HeritageSite>> =
+        siteDao.searchSites(query.lowercase()).map { list -> list.map { it.toModel() } }
 
     override fun getAllCheckIns(): Flow<List<CheckIn>> = checkInDao.getAllCheckIns()
 
@@ -78,4 +83,10 @@ class RoomHeritageRepository(context: Context) : HeritageRepository {
     override suspend fun isFactUnlocked(factId: String): Boolean {
         return unlockedFactDao.isFactUnlocked(factId)
     }
+
+    // Bookmark stubs - Room fallback has no bookmark support
+    override suspend fun toggleBookmark(siteId: String): Boolean = false
+    override suspend fun isBookmarked(siteId: String): Boolean = false
+    override fun observeBookmarks(): kotlinx.coroutines.flow.Flow<List<String>> =
+        kotlinx.coroutines.flow.flowOf(emptyList())
 }
