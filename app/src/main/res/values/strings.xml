@@ -4,6 +4,11 @@
     <string name="app_name">Virasat</string>
     <string name="app_tagline">Karnataka Heritage Guide</string>
 
+    <!-- Google Sign-In -->
+    <!-- TODO: Replace with your Web Client ID from Firebase Console → Project Settings → General → Web API Key -->
+    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID_HERE</string>
+    <string name="continue_with_google">Continue with Google</string>
+
     <!-- Bottom Nav -->
     <string name="nav_explore">Explore</string>
     <string name="nav_heritage">Heritage</string>

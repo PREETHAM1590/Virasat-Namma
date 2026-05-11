@@ -41,6 +41,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -50,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,6 +67,8 @@ import com.example.virasat.ui.theme.SecondaryContainer
 import com.example.virasat.ui.theme.SurfaceContainerLow
 import com.example.virasat.ui.theme.SurfaceContainerLowest
 import com.example.virasat.viewmodel.AuthViewModel
+import com.example.virasat.data.service.FirebaseAuthService
+import com.example.virasat.R
 
 @Composable
 fun LoginScreen(
@@ -74,12 +79,23 @@ fun LoginScreen(
 ) {
     val authViewModel: AuthViewModel = viewModel()
     val loginState by authViewModel.loginState.collectAsState()
+    val googleSignInState by authViewModel.googleSignInState.collectAsState()
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    // Trigger navigation on success
+    val ctx = androidx.compose.ui.platform.LocalContext.current
+
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        authViewModel.signInWithGoogle(result.data) { name, em ->
+            onLogin(name, em)
+        }
+    }
+
+    // Trigger navigation on email/password success
     LaunchedEffect(loginState.success) {
         if (loginState.success) {
             val displayName = authViewModel.currentUser?.displayName
@@ -272,8 +288,15 @@ fun LoginScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // Google sign-in placeholder (no Firebase Google Sign-In without SHA-1 in console)
+            // Google Sign-In
             Surface(
+                onClick = {
+                    authViewModel.clearGoogleSignInError()
+                    val webClientId = ctx.getString(R.string.default_web_client_id)
+                    val intent = FirebaseAuthService.getGoogleSignInIntent(ctx, webClientId)
+                    googleSignInLauncher.launch(intent)
+                },
+                enabled = !googleSignInState.isLoading,
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(999.dp),
                 color = SurfaceContainerLowest,
@@ -284,9 +307,34 @@ fun LoginScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text("G", style = MaterialTheme.typography.bodyLarge, color = Color(0xFF4285F4), fontWeight = FontWeight.Bold)
-                    Spacer(Modifier.width(12.dp))
-                    Text("Continue with Google", style = MaterialTheme.typography.bodyMedium, color = OnSurface)
+                    if (googleSignInState.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(22.dp),
+                            color = OnSurface,
+                            strokeWidth = 2.dp
+                        )
+                    } else {
+                        Text("G", style = MaterialTheme.typography.bodyLarge, color = Color(0xFF4285F4), fontWeight = FontWeight.Bold)
+                        Spacer(Modifier.width(12.dp))
+                        Text(stringResource(R.string.continue_with_google), style = MaterialTheme.typography.bodyMedium, color = OnSurface)
+                    }
+                }
+            }
+
+            // Google sign-in error
+            if (googleSignInState.error != null) {
+                Spacer(Modifier.height(8.dp))
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.4f)
+                ) {
+                    Text(
+                        googleSignInState.error!!,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
                 }
             }
 

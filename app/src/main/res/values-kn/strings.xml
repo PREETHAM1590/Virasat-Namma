@@ -4,6 +4,10 @@
     <string name="app_name">ವಿರಾಸತ್</string>
     <string name="app_tagline">ಕರ್ನಾಟಕ ಪರಂಪರೆ ಮಾರ್ಗದರ್ಶಿ</string>
 
+    <!-- Google Sign-In -->
+    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID_HERE</string>
+    <string name="continue_with_google">Google ನೊಂದಿಗೆ ಮುಂದುವರಿ</string>
+
     <!-- Bottom Nav -->
     <string name="nav_explore">ಅನ್ವೇಷಿಸಿ</string>
     <string name="nav_heritage">ಪರಂಪರೆ</string>

@@ -26,6 +26,9 @@ class AuthViewModel : ViewModel() {
     private val _resetState = MutableStateFlow(AuthUiState())
     val resetState: StateFlow<AuthUiState> = _resetState.asStateFlow()
 
+    private val _googleSignInState = MutableStateFlow(AuthUiState())
+    val googleSignInState: StateFlow<AuthUiState> = _googleSignInState.asStateFlow()
+
     val currentUser: FirebaseUser? get() = FirebaseAuthService.currentUser
 
     // ── Login ──────────────────────────────────────────────────────────────
@@ -110,12 +113,34 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    // ── Google Sign-In ───────────────────────────────────────────────────
+    fun signInWithGoogle(data: android.content.Intent?, onSuccess: (String, String) -> Unit) {
+        _googleSignInState.value = AuthUiState(isLoading = true)
+        viewModelScope.launch {
+            val result = FirebaseAuthService.handleGoogleSignInResult(data)
+            result.fold(
+                onSuccess = { user ->
+                    _googleSignInState.value = AuthUiState(success = true)
+                    val name = user.displayName ?: user.email?.substringBefore("@") ?: "User"
+                    val email = user.email ?: ""
+                    onSuccess(name, email)
+                },
+                onFailure = { e ->
+                    _googleSignInState.value = AuthUiState(
+                        error = FirebaseAuthService.friendlyError(e as Exception)
+                    )
+                }
+            )
+        }
+    }
+
     // ── Sign Out ───────────────────────────────────────────────────────────
     fun signOut() {
         FirebaseAuthService.signOut()
     }
 
     fun clearLoginError() { _loginState.value = AuthUiState() }
+    fun clearGoogleSignInError() { _googleSignInState.value = AuthUiState() }
     fun clearSignUpError() { _signUpState.value = AuthUiState() }
     fun clearResetState() { _resetState.value = AuthUiState() }
 }

@@ -1,7 +1,13 @@
 package com.example.virasat.data.service
 
+import android.content.Context
+import android.content.Intent
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
@@ -77,6 +83,45 @@ object FirebaseAuthService {
     // ── Sign Out ───────────────────────────────────────────────────────────
     fun signOut() {
         auth.signOut()
+    }
+
+    // ── Google Sign-In ─────────────────────────────────────────────────────
+    fun getGoogleSignInIntent(context: Context, webClientId: String): Intent {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(webClientId)
+            .requestEmail()
+            .build()
+        val client = GoogleSignIn.getClient(context, gso)
+        return client.signInIntent
+    }
+
+    suspend fun handleGoogleSignInResult(data: Intent?): Result<FirebaseUser> {
+        return try {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            val account = task.getResult(ApiException::class.java)
+            val idToken = account.idToken ?: return Result.failure(Exception("Google ID token is null"))
+            val credential = GoogleAuthProvider.getCredential(idToken, null)
+            val result = auth.signInWithCredential(credential).await()
+            val user = result.user ?: return Result.failure(Exception("Firebase auth failed"))
+
+            // Create/update user profile in Firestore if new user
+            if (result.additionalUserInfo?.isNewUser == true) {
+                db.collection("users").document(user.uid)
+                    .set(mapOf(
+                        "uid" to user.uid,
+                        "name" to (user.displayName ?: ""),
+                        "email" to (user.email ?: ""),
+                        "createdAt" to System.currentTimeMillis(),
+                        "checkInCount" to 0,
+                        "badgesEarned" to 0
+                    )).await()
+            }
+            Result.success(user)
+        } catch (e: ApiException) {
+            Result.failure(Exception("Google sign-in failed: ${e.statusCode}"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     // ── Fetch user profile from Firestore ──────────────────────────────────

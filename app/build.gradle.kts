@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     id("org.jetbrains.kotlin.android") version "2.0.0"
@@ -6,16 +8,25 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+val localProps = Properties()
+val localPropsFile = rootProject.file("local.properties")
+if (localPropsFile.exists()) {
+    localPropsFile.inputStream().use { localProps.load(it) }
+}
+val geminiApiKey: String = localProps.getProperty("geminiApiKey", "")
+val mapsApiKey: String = localProps.getProperty("mapsApiKey", "")
+
 android {
     namespace = "com.example.virasat"
     compileSdk = 35
-    buildToolsVersion = "35.0.0"
+    buildToolsVersion = "36.0.0"
 
     defaultConfig {
         applicationId = "com.example.virasat"
         minSdk = 26
         targetSdk = 35
-        buildConfigField("String", "GEMINI_API_KEY", "\"${providers.gradleProperty("geminiApiKey").getOrElse("")}\"")
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
         versionCode = 1
         versionName = "1.0"
 
@@ -55,6 +66,12 @@ android {
 
 kotlin {
     jvmToolchain(11)
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        allWarningsAsErrors.set(false)
+    }
 }
 
 dependencies {
@@ -97,8 +114,8 @@ dependencies {
     // JSON serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
-    // Gemini AI SDK
-    implementation("com.google.genai:google-genai:1.0.0")
+    // OkHttp for Gemini REST API calls
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
@@ -111,8 +128,21 @@ dependencies {
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
+
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+
+    // Chrome Custom Tabs
+    implementation("androidx.browser:browser:1.8.0")
+
+    // Location Services
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // Google Maps + Street View
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
