@@ -56,7 +56,7 @@ fun AudioGuideScreen(
     val coroutineScope = rememberCoroutineScope()
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
     val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
-        value = repo.getSiteById(siteId)
+        value = try { repo.getSiteById(siteId) } catch (_: Exception) { null }
     }
 
     val chapters = remember(siteId, generatedNarration, site) {

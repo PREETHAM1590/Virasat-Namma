@@ -61,9 +61,9 @@ fun SearchScreen(
 
     val ctx = LocalContext.current
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
-    var isLoading by remember { mutableStateOf(true) }
+    var isLoading by remember(ctx) { mutableStateOf(true) }
     val allSites by produceState<List<HeritageSite>>(emptyList(), ctx) {
-        value = repo.getAllSitesList()
+        value = try { repo.getAllSitesList() } catch (_: Exception) { emptyList() }
         isLoading = false
     }
 

@@ -39,7 +39,7 @@ fun CheckInSuccessScreen(
     val ctx = LocalContext.current
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
     val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
-        value = repo.getSiteById(siteId)
+        value = try { repo.getSiteById(siteId) } catch (_: Exception) { null }
     }
     val unlockedFact = remember(site, factId) {
         site?.facts?.find { it.id == factId }

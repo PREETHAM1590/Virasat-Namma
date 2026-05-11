@@ -58,7 +58,7 @@ fun TalkingToursScreen(
     val scope = rememberCoroutineScope()
     val repo = remember(context) { RepositoryProvider.getRepository(context) }
     val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
-        value = repo.getSiteById(siteId)
+        value = try { repo.getSiteById(siteId) } catch (_: Exception) { null }
     }
 
     val siteLatLng = remember(site) {

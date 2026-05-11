@@ -4,25 +4,36 @@ import com.example.virasat.data.model.*
 import com.example.virasat.data.source.FirestoreDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import com.example.virasat.data.source.KarnatakaSites
 
 class FirebaseHeritageRepository : HeritageRepository {
 
     private val firestore = FirestoreDataSource()
 
     override fun getAllSites(): Flow<List<HeritageSite>> =
-        firestore.observeAllSites()
+        firestore.observeAllSites().map { it.ifEmpty { KarnatakaSites.allSites } }
 
     override suspend fun getAllSitesList(): List<HeritageSite> =
-        firestore.getAllSitesList()
+        firestore.getAllSitesList().ifEmpty { KarnatakaSites.allSites }
 
     override suspend fun getSiteById(id: String): HeritageSite? =
-        firestore.getSiteById(id)
+        firestore.getSiteById(id) ?: KarnatakaSites.allSites.find { it.id == id }
 
     override fun getSitesByType(type: String): Flow<List<HeritageSite>> =
         firestore.observeSitesByType(type)
 
     override fun searchSites(query: String): Flow<List<HeritageSite>> = flow {
-        emit(firestore.searchSites(query))
+        val results = firestore.searchSites(query)
+        emit(
+            results.ifEmpty {
+                KarnatakaSites.allSites.filter {
+                    it.name.contains(query, ignoreCase = true) ||
+                        it.nameLocal.contains(query, ignoreCase = true) ||
+                        it.location.contains(query, ignoreCase = true)
+                }
+            }
+        )
     }
 
     override fun getAllCheckIns(): Flow<List<CheckIn>> =

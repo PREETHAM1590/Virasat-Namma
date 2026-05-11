@@ -59,6 +59,7 @@ import com.example.virasat.R
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import com.example.virasat.data.di.RepositoryProvider
+import com.example.virasat.data.source.KarnatakaSites
 import com.example.virasat.data.service.GeminiHeritageService
 
 @Composable
@@ -76,14 +77,18 @@ fun SiteDetailScreen(
     val ctx = LocalContext.current
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
     val scope = rememberCoroutineScope()
-    var isLoading by remember { mutableStateOf(true) }
+    var isLoading by remember(siteId) { mutableStateOf(true) }
     val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
-        value = repo.getSiteById(siteId)
+        value = try {
+            repo.getSiteById(siteId) ?: KarnatakaSites.allSites.find { it.id == siteId }
+        } catch (_: Exception) {
+            KarnatakaSites.allSites.find { it.id == siteId }
+        }
         isLoading = false
     }
     var isFav by remember { mutableStateOf(false) }
     LaunchedEffect(siteId) {
-        isFav = repo.isBookmarked(siteId)
+        isFav = try { repo.isBookmarked(siteId) } catch (_: Exception) { false }
     }
 
     if (isLoading) {
