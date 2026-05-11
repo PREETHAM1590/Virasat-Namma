@@ -154,11 +154,13 @@ fun TalkingToursScreen(
         onDispose { tts?.stop(); tts?.shutdown() }
     }
 
-    // Street View setup
+    // Street View setup — call full lifecycle in remember so panorama initialises immediately
     val streetViewView = remember(context, siteLatLng) {
-        val options = StreetViewPanoramaOptions().position(siteLatLng, 500)
+        val options = StreetViewPanoramaOptions().position(siteLatLng, 5000)
         StreetViewPanoramaView(context, options).apply {
             onCreate(null)
+            onStart()
+            onResume()           // must call before getStreetViewPanoramaAsync fires
             getStreetViewPanoramaAsync { p ->
                 panorama = p
                 p.isStreetNamesEnabled = true
@@ -173,8 +175,9 @@ fun TalkingToursScreen(
         }
     }
 
+    // Fallback timeout — 12 s
     LaunchedEffect(Unit) {
-        delay(10_000L)
+        delay(12_000L)
         if (!isPanoramaReady) {
             isPanoramaReady = true
             hasStreetView = false
@@ -202,35 +205,45 @@ fun TalkingToursScreen(
             ) { if (!showSnapshot) showUI = !showUI }
     ) {
         // ======================================================
-        // PRIMARY BACKGROUND: Street View (preferred) or Image
+        // PRIMARY BACKGROUND: Street View always in hierarchy.
+        // Image overlay shown on top; fades out once Street View ready.
         // ======================================================
-        if (isPanoramaReady && hasStreetView == true) {
-            AndroidView(
-                factory = { streetViewView },
-                modifier = Modifier.fillMaxSize()
-            )
-            DisposableEffect(Unit) {
-                streetViewView.onResume()
-                onDispose { streetViewView.onPause(); streetViewView.onDestroy() }
-            }
-        } else {
-            // Cinematic fallback — switch photo per stop
+
+        // Street View — always rendered so lifecycle is live
+        AndroidView(
+            factory = { streetViewView },
+            modifier = Modifier.fillMaxSize()
+        )
+        // Dispose properly (onResume already called in remember)
+        DisposableEffect(Unit) {
+            onDispose { streetViewView.onPause(); streetViewView.onStop(); streetViewView.onDestroy() }
+        }
+
+        // Cinematic image overlay — visible while loading or when Street View unavailable
+        val streetViewLive = isPanoramaReady && hasStreetView == true
+        AnimatedVisibility(
+            visible = !streetViewLive,
+            enter = EnterTransition.None,
+            exit = fadeOut(tween(1200))
+        ) {
             val stopImage = s.galleryImages.getOrNull(currentStopIndex) ?: s.imageUrl
-            AsyncImage(
-                model = stopImage,
-                contentDescription = s.name,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            listOf(Color.Black.copy(.55f), Color.Transparent, Color.Black.copy(.9f))
+            Box(Modifier.fillMaxSize()) {
+                AsyncImage(
+                    model = stopImage,
+                    contentDescription = s.name,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(Color.Black.copy(.55f), Color.Transparent, Color.Black.copy(.9f))
+                            )
                         )
-                    )
-            )
+                )
+            }
         }
 
         // ======================================================
