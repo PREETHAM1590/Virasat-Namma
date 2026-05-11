@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.*
@@ -31,8 +32,15 @@ fun SettingsScreen(
     onHelp: () -> Unit,
     onPrivacy: () -> Unit = {},
     onTerms: () -> Unit = {},
-    onDataSync: () -> Unit = {}
+    onDataSync: () -> Unit = {},
+    onLogout: () -> Unit = {}
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val userPrefs = remember { context.getSharedPreferences("virasat_prefs", android.content.Context.MODE_PRIVATE) }
+    val userName = remember { userPrefs.getString("user_name", null) ?: "Heritage Explorer" }
+    val userEmail = remember { userPrefs.getString("user_email", null) ?: "" }
+    val currentLangCode = remember { userPrefs.getString("app_locale", "en") ?: "en" }
+    val currentLangName = remember { when (currentLangCode) { "kn" -> "Kannada"; "hi" -> "Hindi"; "te" -> "Telugu"; "ta" -> "Tamil"; "ml" -> "Malayalam"; else -> "English" } }
     var notificationsEnabled by remember { mutableStateOf(true) }
     var locationEnabled by remember { mutableStateOf(true) }
     var offlineEnabled by remember { mutableStateOf(false) }
@@ -50,12 +58,13 @@ fun SettingsScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .statusBarsPadding()
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Default.Spa,
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Eco",
                 tint = cs.primary,
                 modifier = Modifier.size(28.dp)
@@ -140,18 +149,18 @@ fun SettingsScreen(
                     }
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Aria Solis",
+                            text = userName,
                             style = type.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
                             color = cs.onBackground
                         )
                         Text(
-                            text = "aria.solis@example.com",
+                            text = if (userEmail.isNotBlank()) userEmail else "Tap Edit to add email",
                             style = type.bodyMedium,
                             color = cs.onSurfaceVariant
                         )
                     }
                     Button(
-                        onClick = { },
+                        onClick = { onLogout() },
                         shape = RoundedCornerShape(999.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = cs.primaryContainer,
@@ -195,6 +204,14 @@ fun SettingsScreen(
                     modifier = Modifier.padding(bottom = 24.dp)
                 )
 
+                SettingsNavRow(
+                    icon = Icons.Default.Language,
+                    iconBg = cs.secondaryContainer.copy(alpha = 0.5f),
+                    iconTint = cs.secondary,
+                    label = "Language: $currentLangName",
+                    onClick = onLanguageSettings
+                )
+                Spacer(modifier = Modifier.height(16.dp))
                 SettingsToggleRow(
                     icon = Icons.Default.NotificationsActive,
                     iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
@@ -264,7 +281,7 @@ fun SettingsScreen(
 
             // Log Out Button
             Button(
-                onClick = { },
+                onClick = { onLogout() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),

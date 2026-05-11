@@ -6,11 +6,19 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -18,6 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.virasat.data.di.RepositoryProvider
+import com.example.virasat.data.service.FirebaseAnalyticsHelper
+import com.example.virasat.data.service.GeminiHeritageService
 import com.example.virasat.ui.components.BottomNavItem
 import com.example.virasat.ui.screens.*
 import com.example.virasat.ui.theme.VirasatTheme
@@ -25,6 +37,8 @@ import com.example.virasat.ui.theme.VirasatTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        GeminiHeritageService.initialize(BuildConfig.GEMINI_API_KEY)
+        FirebaseAnalyticsHelper.init(this)
         window.setFormat(PixelFormat.OPAQUE)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.decorView.setBackgroundColor(android.graphics.Color.parseColor("#FFF5E6"))
@@ -35,12 +49,20 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val prefs = LocalContext.current.getSharedPreferences("virasat_prefs", Context.MODE_PRIVATE)
-                    val onboarded = remember { prefs.getBoolean("onboarding_complete", false) }
-                    val startDest = if (onboarded) "home" else "splash"
+                    val onboardingSeen = remember { prefs.getBoolean("onboarding_seen", false) }
+                    val isLoggedIn = remember { prefs.getBoolean("is_logged_in", false) }
+                    val startDest = when {
+                        !onboardingSeen -> "splash"
+                        !isLoggedIn -> "login"
+                        else -> "home"
+                    }
                     val navController = rememberNavController()
+                    val homeViewModel: com.example.virasat.viewmodel.HomeViewModel = viewModel()
                     NavHost(
                         navController = navController,
-                        startDestination = startDest
+                        startDestination = startDest,
+                        enterTransition = { EnterTransition.None },
+                        exitTransition = { ExitTransition.None }
                     ) {
                         composable("splash") {
                             SplashScreen(
@@ -58,7 +80,7 @@ class MainActivity : ComponentActivity() {
                                     if (isSettingsFlow) {
                                         navController.popBackStack()
                                     } else {
-                                        navController.navigate("login") {
+                                        navController.navigate("onboarding") {
                                             popUpTo("language") { inclusive = true }
                                         }
                                     }
@@ -68,9 +90,12 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("login") {
                             LoginScreen(
-                                onLogin = { _, _ ->
-                                    prefs.edit().putBoolean("onboarding_complete", true).apply()
-                                    navController.navigate("onboarding") { popUpTo("login") { inclusive = true } }
+                                onLogin = { email, _ ->
+                                    prefs.edit()
+                                        .putBoolean("is_logged_in", true)
+                                        .putString("user_email", email)
+                                        .apply()
+                                    navController.navigate("home") { popUpTo(0) { inclusive = true } }
                                 },
                                 onNavigateToSignUp = { navController.navigate("signup") },
                                 onNavigateToForgotPassword = { navController.navigate("forgot_password") },
@@ -79,9 +104,13 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("signup") {
                             SignUpScreen(
-                                onSignUp = { _, _, _ ->
-                                    prefs.edit().putBoolean("onboarding_complete", true).apply()
-                                    navController.navigate("onboarding") { popUpTo("signup") { inclusive = true } }
+                                onSignUp = { name, email, _ ->
+                                    prefs.edit()
+                                        .putBoolean("is_logged_in", true)
+                                        .putString("user_name", name)
+                                        .putString("user_email", email)
+                                        .apply()
+                                    navController.navigate("home") { popUpTo(0) { inclusive = true } }
                                 },
                                 onNavigateToLogin = { navController.popBackStack() },
                                 onBack = { navController.popBackStack() }
@@ -96,42 +125,52 @@ class MainActivity : ComponentActivity() {
                         composable("onboarding") {
                             OnboardingScreen(
                                 onFinish = {
-                                    prefs.edit().putBoolean("onboarding_complete", true).apply()
-                                    navController.navigate("home") {
+                                    prefs.edit().putBoolean("onboarding_seen", true).apply()
+                                    navController.navigate("login") {
                                         popUpTo("onboarding") { inclusive = true }
                                     }
                                 }
                             )
                         }
                         composable("home") {
-                            Scaffold(bottomBar = { com.example.virasat.ui.components.VirasatBottomNavBar("home") { navController.navigate(it.route) { popUpTo("home") { inclusive = false } } } }) { p ->
-                                Box(modifier = Modifier.padding(p)) {
-                                    HomeScreen(
-                                        onSiteClick = { siteId ->
-                                            navController.navigate("site_detail/$siteId") {
-                                                popUpTo("home") { inclusive = false }
-                                            }
-                                        },
-                                        onQrScan = { navController.navigate("qr_scan") },
-                                        onPassport = { navController.navigate("passport") },
-                                        onFavourites = { navController.navigate("favourites") },
-                                        onNavItemClick = { item ->
-                                            navController.navigate(item.route) {
-                                                popUpTo("home") { inclusive = false }
-                                            }
-                                        },
-                                        onBadges = { navController.navigate("badges") },
-                                        onQuiz = { navController.navigate("quiz") },
-                                        onAiAssistant = { navController.navigate("ai_assistant") },
-                                        onGuides = { navController.navigate("guides") },
-                                        onItinerary = { navController.navigate("itinerary") },
-                                        onSearch = { navController.navigate("search") }
-                                    )
-                                }
+                            FirebaseAnalyticsHelper.logScreenView("home")
+                            HomeScreen(
+                                    onSiteClick = { siteId ->
+                                        navController.navigate("site_detail/$siteId") {
+                                            popUpTo("home") { inclusive = false }
+                                        }
+                                    },
+                                    onQrScan = { navController.navigate("qr_scan") },
+                                    onPassport = { navController.navigate("passport") },
+                                    onFavourites = { navController.navigate("favourites") },
+                                    onNavItemClick = { item ->
+                                        navController.navigate(item.route) {
+                                            popUpTo("home") { inclusive = false }
+                                        }
+                                    },
+                                    onBadges = { navController.navigate("badges") },
+                                    onQuiz = { navController.navigate("quiz") },
+                                    onAiAssistant = { navController.navigate("ai_assistant") },
+                                    onGuides = { navController.navigate("guides") },
+                                    onItinerary = { navController.navigate("itinerary") },
+                                    onSearch = { navController.navigate("search") },
+                                    onSitesList = { navController.navigate("sites_list") },
+                                    onCategoryClick = { category ->
+                                        val siteTypeMap = mapOf(
+                                            "Temple" to "TEMPLE", "Palace" to "PALACE", "Fort" to "FORT",
+                                            "Monument" to "MONUMENT", "UNESCO" to "UNESCO", "Jain" to "JAIN",
+                                            "Museum" to "MUSEUM", "Nature" to "NATURE"
+                                        )
+                                        val typeName = siteTypeMap[category]
+                                        if (typeName != null) {
+                                            homeViewModel.setTypeFilter(com.example.virasat.data.model.SiteType.valueOf(typeName))
+                                        }
+                                    }
+                                )
                             }
-                        }
                         composable("site_detail/{siteId}") { backStackEntry ->
                             val siteId = backStackEntry.arguments?.getString("siteId") ?: ""
+                            FirebaseAnalyticsHelper.logScreenView("site_detail")
                             SiteDetailScreen(
                                 siteId = siteId,
                                 onBack = { navController.popBackStack() },
@@ -152,6 +191,9 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onAiTour = { sId ->
                                     navController.navigate("ai_tour/$sId")
+                                },
+                                onTalkingTour = { sId ->
+                                    navController.navigate("talking_tour/$sId")
                                 }
                             )
                         }
@@ -167,16 +209,25 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("audio_guide/{siteId}") { backStackEntry ->
                             val siteId = backStackEntry.arguments?.getString("siteId") ?: ""
-                            val site = com.example.virasat.data.source.KarnatakaSites.allSites.find { it.id == siteId }
+                            val ctx = LocalContext.current
+                            val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+                            var siteName by remember { mutableStateOf(siteId) }
+                            LaunchedEffect(siteId) {
+                                siteName = repo.getSiteById(siteId)?.name ?: siteId
+                            }
                             AudioGuideScreen(
                                 siteId = siteId,
-                                siteName = site?.name ?: siteId,
+                                siteName = siteName,
                                 onBack = { navController.popBackStack() }
                             )
                         }
                         composable("immersive/{siteId}") { backStackEntry ->
                             val siteId = backStackEntry.arguments?.getString("siteId") ?: ""
-                            val site = com.example.virasat.data.source.KarnatakaSites.allSites.find { it.id == siteId }
+                            val ctx = LocalContext.current
+                            val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+                            val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
+                                value = repo.getSiteById(siteId)
+                            }
                             ImmersivePhotoScreen(
                                 siteId = siteId,
                                 siteName = site?.name ?: siteId,
@@ -207,6 +258,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("profile") {
+                            FirebaseAnalyticsHelper.logScreenView("profile")
                             Scaffold(bottomBar = { com.example.virasat.ui.components.VirasatBottomNavBar("profile") { navController.navigate(it.route) { popUpTo("home") { inclusive = false } } } }) { p ->
                                 Box(modifier = Modifier.padding(p)) {
                                     ProfileScreen(
@@ -215,7 +267,10 @@ class MainActivity : ComponentActivity() {
                                         onSettings = { navController.navigate("settings") },
                                         onBookmarks = { navController.navigate("bookmarks") },
                                         onPassport = { navController.navigate("passport") },
-                                        onLogout = { navController.navigate("login") },
+                                        onLogout = {
+                                        prefs.edit().putBoolean("is_logged_in", false).apply()
+                                        navController.navigate("login") { popUpTo(0) { inclusive = true } }
+                                    },
                                         onBadges = { navController.navigate("badges") },
                                         onCheckIns = { navController.navigate("my_checkins") },
                                         onGuides = { navController.navigate("guides") },
@@ -238,7 +293,11 @@ class MainActivity : ComponentActivity() {
                                 onHelp = { navController.navigate("help_support") },
                                 onPrivacy = { navController.navigate("privacy_policy") },
                                 onTerms = { navController.navigate("terms") },
-                                onDataSync = { navController.navigate("data_sync") }
+                                onDataSync = { navController.navigate("data_sync") },
+                                onLogout = {
+                                    prefs.edit().putBoolean("is_logged_in", false).apply()
+                                    navController.navigate("login") { popUpTo(0) { inclusive = true } }
+                                }
                             )
                         }
                         composable("about") {
@@ -251,6 +310,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("search") {
+                            FirebaseAnalyticsHelper.logScreenView("search")
                             Scaffold(bottomBar = { com.example.virasat.ui.components.VirasatBottomNavBar("search") { navController.navigate(it.route) { popUpTo("home") { inclusive = false } } } }) { p ->
                                 Box(modifier = Modifier.padding(p)) {
                                     SearchScreen(
@@ -278,7 +338,11 @@ class MainActivity : ComponentActivity() {
                             val siteId = backStackEntry.arguments?.getString("siteId") ?: ""
                             CheckInSuccessScreen(
                                 siteId = siteId,
-                                onViewSite = { navController.popBackStack() },
+                                onViewSite = { siteId ->
+                                    navController.navigate("site_detail/$siteId") {
+                                        popUpTo("home") { inclusive = false }
+                                    }
+                                },
                                 onViewPassport = { navController.navigate("passport") },
                                 onShare = { }
                             )
@@ -293,9 +357,11 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("ai_assistant") {
+                            FirebaseAnalyticsHelper.logScreenView("ai_assistant")
                             AIAssistantScreen(onBack = { navController.popBackStack() })
                         }
                         composable("quiz") {
+                            FirebaseAnalyticsHelper.logScreenView("quiz")
                             QuizScreen(onBack = { navController.popBackStack() })
                         }
                         composable("notifications") {
@@ -309,6 +375,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         composable("map") {
+                            FirebaseAnalyticsHelper.logScreenView("map")
                             Scaffold(bottomBar = { com.example.virasat.ui.components.VirasatBottomNavBar("map") { navController.navigate(it.route) { popUpTo("home") { inclusive = false } } } }) { p ->
                                 Box(modifier = Modifier.padding(p)) {
                                     MapScreen(
@@ -325,6 +392,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("itinerary") {
+                            FirebaseAnalyticsHelper.logScreenView("itinerary")
                             ItineraryScreen(
                                 onBack = { navController.popBackStack() },
                                 onSiteClick = { siteId -> navController.navigate("site_detail/$siteId") }
@@ -349,13 +417,14 @@ class MainActivity : ComponentActivity() {
                                 onSiteClick = { siteId -> navController.navigate("site_detail/$siteId") }
                             )
                         }
-                        composable("virtual_tour/{siteId}") { backStackEntry ->
+                        composable("ai_tour/{siteId}") { backStackEntry ->
                             val siteId = backStackEntry.arguments?.getString("siteId") ?: ""
-                            VirtualTourScreen(siteId = siteId, onBack = { navController.popBackStack() })
+                            AINarratedTourScreen(siteId = siteId, onBack = { navController.popBackStack() })
                         }
-                        composable("ar/{siteId}") { backStackEntry ->
+                        composable("talking_tour/{siteId}") { backStackEntry ->
                             val siteId = backStackEntry.arguments?.getString("siteId") ?: ""
-                            ARScreen(siteId = siteId, onBack = { navController.popBackStack() })
+                            FirebaseAnalyticsHelper.logScreenView("talking_tour")
+                            TalkingToursScreen(siteId = siteId, onBack = { navController.popBackStack() })
                         }
                         composable("contact_us") {
                             ContactUsScreen(

@@ -4,6 +4,7 @@ package com.example.virasat.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -12,35 +13,55 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.model.HeritageSite
 import com.example.virasat.data.source.ImageUrls
-import com.example.virasat.data.source.KarnatakaSites
+import com.example.virasat.ui.theme.Primary
+import com.example.virasat.ui.theme.PrimaryContainer
+import com.example.virasat.ui.theme.OnPrimaryContainer
 
 @Composable
 fun MapScreen(
     onBack: () -> Unit,
     onSiteClick: (String) -> Unit
 ) {
-    val sites = remember { KarnatakaSites.allSites }
-    var selectedSite by remember { mutableStateOf<HeritageSite?>(null) }
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val ctx = LocalContext.current
+    val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+    val allSites by produceState<List<HeritageSite>>(emptyList(), ctx) {
+        value = repo.getAllSitesList()
+    }
+    val cs = MaterialTheme.colorScheme
+    var selectedFilter by remember { mutableStateOf("All") }
+
+    val filters = listOf("All", "Temple", "Palace", "Fort", "Monument", "UNESCO", "Jain")
+    val displaySites = remember(allSites, selectedFilter) {
+        if (selectedFilter == "All") allSites
+        else allSites.filter { it.type.name.equals(selectedFilter, ignoreCase = true) }
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(cs.background)
     ) {
         // Map background image
         AsyncImage(
@@ -50,152 +71,156 @@ fun MapScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Top overlay: back button + search pill
-        Row(
+        // Subtle dark overlay on map for readability
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp, start = 24.dp, end = 24.dp)
-                .align(Alignment.TopCenter),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            FilledIconButton(
-                onClick = onBack,
-                modifier = Modifier.size(48.dp),
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest.copy(alpha = 0.8f)
-                ),
-                shape = RoundedCornerShape(999.dp)
-            ) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.08f))
+        )
+
+        // Site markers overlaid on map
+        Box(modifier = Modifier.fillMaxSize()) {
+            displaySites.forEach { site ->
+                val (xOff, yOff) = site.toMapOffset()
+                MapMarker(
+                    site = site,
+                    modifier = Modifier
+                        .offset(x = xOff, y = yOff)
+                        .padding(start = 40.dp, top = 80.dp),
+                    onClick = { onSiteClick(site.id) }
                 )
             }
-            Spacer(modifier = Modifier.width(16.dp))
-            Surface(
+        }
+
+        // Top overlay: back button + search pill
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .align(Alignment.TopCenter)
+        ) {
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp),
-                shape = RoundedCornerShape(999.dp),
-                color = MaterialTheme.colorScheme.surfaceContainerLowest,
-                shadowElevation = 2.dp
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .size(44.dp)
+                        .shadow(6.dp, RoundedCornerShape(999.dp), spotColor = Color.Black.copy(alpha = 0.1f))
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(Color.White)
+                        .clickable { onBack() },
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        Icons.Default.Search,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.outline,
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = cs.primary,
                         modifier = Modifier.size(20.dp)
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = "Search locations...",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.outline,
-                        modifier = Modifier.weight(1f)
-                    )
+                }
+                Spacer(modifier = Modifier.width(12.dp))
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(44.dp)
+                        .shadow(6.dp, RoundedCornerShape(999.dp), spotColor = Color.Black.copy(alpha = 0.08f))
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(Color.White),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = null,
+                            tint = cs.outline,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = "Explore Karnataka sites...",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = cs.outline
+                        )
+                    }
+                }
+            }
+
+            // Filter chips row
+            Row(
+                modifier = Modifier
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                filters.forEach { filter ->
+                    val isSelected = filter == selectedFilter
+                    Box(
+                        modifier = Modifier
+                            .shadow(
+                                if (isSelected) 6.dp else 2.dp,
+                                RoundedCornerShape(999.dp),
+                                spotColor = Primary.copy(alpha = if (isSelected) 0.2f else 0.05f)
+                            )
+                            .clip(RoundedCornerShape(999.dp))
+                            .background(if (isSelected) Primary else Color.White)
+                            .clickable { selectedFilter = filter }
+                            .padding(horizontal = 18.dp, vertical = 8.dp)
+                    ) {
+                        Text(
+                            filter,
+                            style = MaterialTheme.typography.labelLarge,
+                            color = if (isSelected) Color.White else Primary
+                        )
+                    }
                 }
             }
         }
 
-        // Bottom overlay: scrolling cards
-        LazyRow(
+        // Bottom overlay: scrolling site cards
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 32.dp, start = 24.dp, end = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(end = 24.dp)
         ) {
-            items(sites) { site ->
-                MapBottomCard(
-                    site = site,
-                    isFavourite = site.isFavourite,
-                    onClick = { onSiteClick(site.id) },
-                    onFavouriteClick = { /* toggle */ }
+            // Sites count badge
+            Box(
+                modifier = Modifier
+                    .padding(start = 24.dp, bottom = 12.dp)
+                    .clip(RoundedCornerShape(999.dp))
+                    .background(Color.White.copy(alpha = 0.92f))
+                    .padding(horizontal = 16.dp, vertical = 6.dp)
+            ) {
+                Text(
+                    "${displaySites.size} site${if (displaySites.size != 1) "s" else ""} found",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Primary,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
-        }
-    }
 
-    selectedSite?.let { site ->
-        ModalBottomSheet(
-            onDismissRequest = { selectedSite = null },
-            sheetState = sheetState,
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(28.dp)
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 0.dp),
+                horizontalArrangement = Arrangement.spacedBy(14.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(56.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            Icons.Default.LocationOn,
-                            null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(28.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column {
-                        Text(
-                            site.name,
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            "${site.district}, Karnataka",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    site.shortDescription,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                TypeBadge(type = site.type.name)
-                Spacer(modifier = Modifier.height(20.dp))
-                Button(
-                    onClick = {
-                        selectedSite = null
-                        onSiteClick(site.id)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                    ),
-                    shape = RoundedCornerShape(999.dp)
-                ) {
-                    Text(
-                        "View Details",
-                        style = MaterialTheme.typography.labelLarge
+                items(displaySites) { site ->
+                    MapBottomCard(
+                        site = site,
+                        isFavourite = site.isFavourite,
+                        onClick = { onSiteClick(site.id) },
+                        onFavouriteClick = { }
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
+            Spacer(modifier = Modifier.height(28.dp))
         }
     }
 }
@@ -207,69 +232,117 @@ private fun MapBottomCard(
     onClick: () -> Unit,
     onFavouriteClick: () -> Unit
 ) {
-    Surface(
-        onClick = onClick,
-        modifier = Modifier.width(280.dp),
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerLowest,
-        shadowElevation = 2.dp
+    val cs = MaterialTheme.colorScheme
+    Box(
+        modifier = Modifier
+            .width(260.dp)
+            .shadow(12.dp, RoundedCornerShape(20.dp), spotColor = Color.Black.copy(alpha = 0.1f))
+            .clip(RoundedCornerShape(20.dp))
+            .background(Color.White)
+            .clickable { onClick() }
     ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
-            Column(
+        Column {
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
+                    .height(130.dp)
             ) {
-                // Image
                 AsyncImage(
                     model = site.imageUrl,
                     contentDescription = site.name,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(128.dp)
-                        .clip(RoundedCornerShape(12.dp))
+                    modifier = Modifier.fillMaxSize()
                 )
-                Spacer(modifier = Modifier.height(12.dp))
-                Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)) {
-                    Text(
-                        text = site.name,
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.25f))
+                            )
+                        )
+                )
+                // Bookmark icon top-right
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.9f))
+                        .clickable { onFavouriteClick() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        if (isFavourite) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
+                        contentDescription = null,
+                        tint = if (isFavourite) Primary else cs.outline,
+                        modifier = Modifier.size(16.dp)
                     )
+                }
+                // Type badge bottom-left
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(8.dp)
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(Primary.copy(alpha = 0.85f))
+                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                ) {
                     Text(
-                        text = site.shortDescription,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 2
+                        site.type.name.replaceFirstChar { it.uppercase() },
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White
                     )
                 }
             }
-            // Floating heart button
-            FilledIconButton(
-                onClick = onFavouriteClick,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = (-4).dp, y = (-12).dp)
-                    .size(40.dp),
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (isFavourite)
-                        MaterialTheme.colorScheme.primaryContainer
-                    else
-                        MaterialTheme.colorScheme.surfaceVariant
-                ),
-                shape = RoundedCornerShape(999.dp)
-            ) {
-                Icon(
-                    Icons.Default.Favorite,
-                    contentDescription = "Favourite",
-                    tint = if (isFavourite)
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    else
-                        MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(20.dp)
-                )
+
+            Column(modifier = Modifier.padding(14.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Text(
+                        text = site.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = cs.onSurface,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Star,
+                            null,
+                            tint = Color(0xFFFFB300),
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Text(
+                            site.rating.toString(),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = cs.onSurface,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        Icons.Default.LocationOn,
+                        null,
+                        tint = cs.outline,
+                        modifier = Modifier.size(12.dp)
+                    )
+                    Spacer(modifier = Modifier.width(3.dp))
+                    Text(
+                        text = site.district,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = cs.onSurfaceVariant,
+                        maxLines = 1
+                    )
+                }
             }
         }
     }
@@ -310,31 +383,25 @@ fun MapMarker(
 ) {
     Box(
         modifier = modifier
-            .size(32.dp)
+            .size(36.dp)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Box(
             modifier = Modifier
-                .size(24.dp)
+                .size(28.dp)
+                .shadow(4.dp, CircleShape, spotColor = Primary.copy(alpha = 0.3f))
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)),
+                .background(Primary),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 Icons.Default.LocationOn,
                 null,
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(14.dp)
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
             )
         }
-        Box(
-            modifier = Modifier
-                .size(8.dp)
-                .offset(y = 14.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.25f))
-        )
     }
 }
 

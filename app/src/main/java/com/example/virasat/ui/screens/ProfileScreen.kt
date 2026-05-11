@@ -9,7 +9,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -21,7 +20,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.virasat.data.source.ImageUrls
 
 @Composable
 fun ProfileScreen(
@@ -40,37 +38,44 @@ fun ProfileScreen(
     onSitesList: () -> Unit = {},
     onLeaderboard: () -> Unit = {}
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val userPrefs = androidx.compose.runtime.remember { context.getSharedPreferences("virasat_prefs", android.content.Context.MODE_PRIVATE) }
+    val userName = androidx.compose.runtime.remember { userPrefs.getString("user_name", null) ?: "Heritage Explorer" }
+    val userEmail = androidx.compose.runtime.remember { userPrefs.getString("user_email", null) ?: "" }
     val scrollState = rememberScrollState()
+    val cs = MaterialTheme.colorScheme
+    val type = MaterialTheme.typography
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .background(cs.secondaryContainer)
             .verticalScroll(scrollState)
     ) {
         // Top bar: eco icon, title, search
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .statusBarsPadding()
                 .padding(horizontal = 24.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Icon(
-                imageVector = Icons.Default.Spa,
+                imageVector = Icons.Default.AccountBalance,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
+                tint = cs.primary,
                 modifier = Modifier.size(28.dp)
             )
             Text(
                 text = "Virasat",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.primary
+                style = type.headlineLarge,
+                color = cs.primary
             )
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = "Search",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = cs.primary,
                 modifier = Modifier.size(28.dp)
             )
         }
@@ -88,7 +93,7 @@ fun ProfileScreen(
                     .fillMaxWidth()
                     .padding(top = 64.dp),
                 shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                color = cs.surfaceContainerLowest,
                 shadowElevation = 4.dp
             ) {
                 Column(
@@ -99,47 +104,53 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Aria Thorne",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                        text = userName,
+                        style = type.headlineMedium,
+                        color = cs.onSurface
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "The Modern Custodian\nHeritage & Nature Explorer",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        text = "Karnataka Heritage Passport\nSites Visited & Facts Unlocked",
+                        style = type.bodyMedium,
+                        color = cs.onSurfaceVariant,
                         textAlign = TextAlign.Center
                     )
                 }
             }
 
             // Overlapping avatar (centered, half in card half above)
-            AsyncImage(
-                model = ImageUrls.PROFILE_AVATAR,
-                contentDescription = "Profile",
-                contentScale = ContentScale.Crop,
+            Box(
                 modifier = Modifier
                     .size(128.dp)
                     .align(Alignment.TopCenter)
                     .offset(y = (-32).dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceContainerLow)
                     .shadow(8.dp, CircleShape)
-            )
+                    .background(cs.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                val initials = userName.split(" ").take(2).mapNotNull { it.firstOrNull()?.uppercase() }.joinToString("")
+                Text(
+                    text = initials.ifBlank { "HE" },
+                    style = type.headlineLarge,
+                    color = cs.onPrimaryContainer,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                )
+            }
         }
 
         // Floating Profile Stats (overlapping card)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 48.dp)
+                .padding(horizontal = 24.dp)
                 .offset(y = (-20).dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Trails pill
             Surface(
                 shape = RoundedCornerShape(999.dp),
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = cs.primaryContainer,
                 shadowElevation = 4.dp,
                 tonalElevation = 2.dp,
                 modifier = Modifier.weight(1f)
@@ -154,19 +165,19 @@ fun ProfileScreen(
                     Icon(
                         imageVector = Icons.Default.Map,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        tint = cs.onPrimaryContainer,
                         modifier = Modifier.size(20.dp)
                     )
                     Column {
                         Text(
-                            text = "42",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            text = "6",
+                            style = type.headlineMedium,
+                            color = cs.onPrimaryContainer
                         )
                         Text(
-                            text = "Trails",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                            text = "Heritage Sites",
+                            style = type.labelMedium,
+                            color = cs.onPrimaryContainer.copy(alpha = 0.8f)
                         )
                     }
                 }
@@ -175,7 +186,7 @@ fun ProfileScreen(
             // Sites pill
             Surface(
                 shape = RoundedCornerShape(999.dp),
-                color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                color = cs.surfaceContainerLowest,
                 shadowElevation = 4.dp,
                 tonalElevation = 2.dp,
                 modifier = Modifier.weight(1f)
@@ -190,26 +201,26 @@ fun ProfileScreen(
                     Icon(
                         imageVector = Icons.Default.AccountBalance,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface,
+                        tint = cs.onSurface,
                         modifier = Modifier.size(20.dp)
                     )
                     Column {
                         Text(
-                            text = "18",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface
+                            text = "---",
+                            style = type.headlineMedium,
+                            color = cs.onSurface
                         )
                         Text(
-                            text = "Sites",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            text = "Check-ins",
+                            style = type.labelMedium,
+                            color = cs.onSurfaceVariant
                         )
                     }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(48.dp))
 
         // Menu buttons (rounded-full white containers)
         Column(
@@ -218,21 +229,6 @@ fun ProfileScreen(
                 .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            MenuRow(
-                icon = Icons.Default.CardMembership,
-                label = "Travel Passport",
-                onClick = onPassport
-            )
-            MenuRow(
-                icon = Icons.Default.LocationOn,
-                label = "All Heritage Sites",
-                onClick = onSitesList
-            )
-            MenuRow(
-                icon = Icons.Default.EmojiEvents,
-                label = "Badges",
-                onClick = onBadges
-            )
             MenuRow(
                 icon = Icons.Default.Bookmark,
                 label = "Saved Locations",
@@ -244,34 +240,9 @@ fun ProfileScreen(
                 onClick = onCheckIns
             )
             MenuRow(
-                icon = Icons.Default.School,
-                label = "Heritage Guides",
-                onClick = onGuides
-            )
-            MenuRow(
-                icon = Icons.Default.Groups,
-                label = "Community",
-                onClick = onCommunity
-            )
-            MenuRow(
-                icon = Icons.Default.Leaderboard,
-                label = "Leaderboard",
-                onClick = onLeaderboard
-            )
-            MenuRow(
                 icon = Icons.Default.Settings,
                 label = "Preferences",
                 onClick = onSettings
-            )
-            MenuRow(
-                icon = Icons.Default.Help,
-                label = "Help & Support",
-                onClick = onHelp
-            )
-            MenuRow(
-                icon = Icons.Default.Feedback,
-                label = "Feedback",
-                onClick = onFeedback
             )
         }
 
@@ -281,7 +252,7 @@ fun ProfileScreen(
         Surface(
             onClick = onLogout,
             shape = RoundedCornerShape(999.dp),
-            color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f),
+            color = cs.errorContainer.copy(alpha = 0.5f),
             shadowElevation = 2.dp,
             modifier = Modifier
                 .fillMaxWidth()
@@ -297,21 +268,21 @@ fun ProfileScreen(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)),
+                        .background(cs.errorContainer.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                        imageVector = Icons.Filled.ExitToApp,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onErrorContainer,
+                        tint = cs.onErrorContainer,
                         modifier = Modifier.size(20.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
                     text = "Sign Out",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onErrorContainer
+                    style = type.headlineMedium,
+                    color = cs.onErrorContainer
                 )
             }
         }
@@ -326,10 +297,13 @@ private fun MenuRow(
     label: String,
     onClick: () -> Unit
 ) {
+    val cs = MaterialTheme.colorScheme
+    val type = MaterialTheme.typography
+
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(999.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerLowest,
+        color = cs.surfaceContainerLowest,
         shadowElevation = 2.dp,
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -343,27 +317,27 @@ private fun MenuRow(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.secondaryContainer),
+                    .background(cs.secondaryContainer),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    tint = cs.onSecondaryContainer,
                     modifier = Modifier.size(20.dp)
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = label,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = type.headlineMedium,
+                color = cs.onSecondaryContainer,
                 modifier = Modifier.weight(1f)
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.5f),
+                tint = cs.onSecondaryContainer.copy(alpha = 0.5f),
                 modifier = Modifier.size(20.dp)
             )
         }
