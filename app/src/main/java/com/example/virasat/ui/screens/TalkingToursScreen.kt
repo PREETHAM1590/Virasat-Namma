@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -31,11 +30,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import coil.compose.AsyncImage
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.service.GeminiHeritageService
 import com.example.virasat.data.service.TriviaQuestion
-import com.google.android.gms.maps.StreetViewPanorama
+import com.example.virasat.data.source.StreetViewData
 import com.google.android.gms.maps.StreetViewPanoramaOptions
 import com.google.android.gms.maps.StreetViewPanoramaView
 import com.google.android.gms.maps.model.LatLng
@@ -74,12 +72,6 @@ fun TalkingToursScreen(
 
     var currentStopIndex by remember { mutableIntStateOf(0) }
     var showUI by remember { mutableStateOf(true) }
-
-    // Street View state
-    @Suppress("UNUSED_VARIABLE")
-    var panorama by remember { mutableStateOf<StreetViewPanorama?>(null) }
-    var hasStreetView by remember { mutableStateOf<Boolean?>(null) }
-    var isPanoramaReady by remember { mutableStateOf(false) }
 
     // Snapshot state
     var isSnapshotLoading by remember { mutableStateOf(false) }
@@ -154,33 +146,24 @@ fun TalkingToursScreen(
         onDispose { tts?.stop(); tts?.shutdown() }
     }
 
-    // Street View setup — call full lifecycle in remember so panorama initialises immediately
-    val streetViewView = remember(context, siteLatLng) {
-        val options = StreetViewPanoramaOptions().position(siteLatLng, 5000)
+    // Street View — use verified panorama ID when available, else fall back to coords
+    val streetViewView = remember(context, siteId, siteLatLng) {
+        val panoId = StreetViewData.panoramaIds[siteId]
+        val options = if (panoId != null) {
+            StreetViewPanoramaOptions().panoramaId(panoId)
+        } else {
+            StreetViewPanoramaOptions().position(siteLatLng, 5000)
+        }
         StreetViewPanoramaView(context, options).apply {
             onCreate(null)
             onStart()
-            onResume()           // must call before getStreetViewPanoramaAsync fires
+            onResume()   // full lifecycle so panorama loads immediately
             getStreetViewPanoramaAsync { p ->
-                panorama = p
                 p.isStreetNamesEnabled = true
                 p.isUserNavigationEnabled = true
                 p.isZoomGesturesEnabled = true
                 p.isPanningGesturesEnabled = true
-                p.setOnStreetViewPanoramaChangeListener { location ->
-                    hasStreetView = location?.links?.isNotEmpty() ?: false
-                    isPanoramaReady = true
-                }
             }
-        }
-    }
-
-    // Fallback timeout — 12 s
-    LaunchedEffect(Unit) {
-        delay(12_000L)
-        if (!isPanoramaReady) {
-            isPanoramaReady = true
-            hasStreetView = false
         }
     }
 
@@ -205,45 +188,14 @@ fun TalkingToursScreen(
             ) { if (!showSnapshot) showUI = !showUI }
     ) {
         // ======================================================
-        // PRIMARY BACKGROUND: Street View always in hierarchy.
-        // Image overlay shown on top; fades out once Street View ready.
+        // BACKGROUND: Street View fills the entire screen
         // ======================================================
-
-        // Street View — always rendered so lifecycle is live
         AndroidView(
             factory = { streetViewView },
             modifier = Modifier.fillMaxSize()
         )
-        // Dispose properly (onResume already called in remember)
         DisposableEffect(Unit) {
             onDispose { streetViewView.onPause(); streetViewView.onStop(); streetViewView.onDestroy() }
-        }
-
-        // Cinematic image overlay — visible while loading or when Street View unavailable
-        val streetViewLive = isPanoramaReady && hasStreetView == true
-        AnimatedVisibility(
-            visible = !streetViewLive,
-            enter = EnterTransition.None,
-            exit = fadeOut(tween(1200))
-        ) {
-            val stopImage = s.galleryImages.getOrNull(currentStopIndex) ?: s.imageUrl
-            Box(Modifier.fillMaxSize()) {
-                AsyncImage(
-                    model = stopImage,
-                    contentDescription = s.name,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(Color.Black.copy(.55f), Color.Transparent, Color.Black.copy(.9f))
-                            )
-                        )
-                )
-            }
         }
 
         // ======================================================
@@ -375,32 +327,6 @@ fun TalkingToursScreen(
                                 tts?.stop()
                             }
                     )
-                }
-            }
-        }
-
-        // ======================================================
-        // PHOTO MODE BADGE (when no Street View)
-        // ======================================================
-        if (isPanoramaReady && hasStreetView == false) {
-            AnimatedVisibility(
-                visible = showUI,
-                enter = fadeIn(),
-                exit = fadeOut(),
-                modifier = Modifier.align(Alignment.TopCenter).padding(top = 104.dp)
-            ) {
-                Surface(
-                    shape = RoundedCornerShape(999.dp),
-                    color = Color.Black.copy(.55f)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
-                    ) {
-                        Icon(Icons.Default.PhotoCamera, null, tint = Color.White.copy(.6f), modifier = Modifier.size(12.dp))
-                        Spacer(Modifier.width(5.dp))
-                        Text("Photo Tour", color = Color.White.copy(.6f), fontSize = 11.sp, fontWeight = FontWeight.Medium)
-                    }
                 }
             }
         }
