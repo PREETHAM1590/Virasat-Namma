@@ -1,3 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App -->
     <string name="app_name">Virasat</string>
+    <string name="app_tagline">Karnataka Heritage Guide</string>
+
+    <!-- Bottom Nav -->
+    <string name="nav_explore">Explore</string>
+    <string name="nav_heritage">Heritage</string>
+    <string name="nav_saved">Saved</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Home Screen -->
+    <string name="home_greeting">Hi, %1$s 👋</string>
+    <string name="home_tagline">Heritage\nis Power</string>
+    <string name="home_location">KARNATAKA, INDIA</string>
+    <string name="home_search_hint">Search sites</string>
+    <string name="home_popular_sites">Popular Sites</string>
+    <string name="home_curated_trails">Curated Trails</string>
+    <string name="home_featured">Featured</string>
+    <string name="home_explore_now">Explore Now</string>
+    <string name="view_all">View All</string>
+    <string name="category_all">All</string>
+    <string name="category_temple">Temple</string>
+    <string name="category_palace">Palace</string>
+    <string name="category_fort">Fort</string>
+    <string name="category_monument">Monument</string>
+    <string name="category_unesco">UNESCO</string>
+    <string name="category_jain">Jain</string>
+    <string name="category_cave">Cave</string>
+
+    <!-- Auth -->
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Create Account</string>
+    <string name="sign_in_welcome">Hi, Welcome 👋</string>
+    <string name="sign_in_subtitle">Sign in to continue your heritage journey.</string>
+    <string name="sign_up_subtitle">Join Virasat and start exploring Karnataka\'s heritage.</string>
+    <string name="full_name">Full Name</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="password_hint">Password (min. 6 characters)</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="no_account">Don\'t have an account? </string>
+    <string name="have_account">Already have an account? </string>
+    <string name="reset_link_sent">Reset link sent! Check your email.</string>
+    <string name="logout">Log Out</string>
+
+    <!-- Language Screen -->
+    <string name="select_language">Select\nLanguage</string>
+    <string name="language_subtitle">Choose your preferred language for the Virasat experience.</string>
+    <string name="btn_continue">Continue</string>
+
+    <!-- QR Scanner -->
+    <string name="qr_title">Scan QR Code</string>
+    <string name="qr_subtitle">Point camera at a heritage site QR code</string>
+    <string name="qr_checking_in">Checking in…</string>
+    <string name="qr_already_checked">Already checked in</string>
+    <string name="qr_check_in">Check In</string>
+    <string name="qr_scanning">Scanning…</string>
+
+    <!-- Check-in Success -->
+    <string name="checkin_success_title">Check-in Successful!</string>
+    <string name="checkin_success_sub">Your visit has been recorded in your travel passport.</string>
+    <string name="hidden_fact_unlocked">🔓 Hidden Fact Unlocked!</string>
+    <string name="continue_exploring">Continue Exploring</string>
+    <string name="view_passport">View Passport</string>
+
+    <!-- Audio Guide -->
+    <string name="audio_guide_title">Audio Guide</string>
+    <string name="audio_playing">Playing</string>
+    <string name="audio_paused">Paused</string>
+    <string name="audio_chapter">Chapter %1$d of %2$d</string>
+
+    <!-- Bookmarks / Saved -->
+    <string name="saved_journeys">Saved Journeys</string>
+    <string name="saved_subtitle">Revisit the heritage sites you\'ve curated.</string>
+    <string name="no_saved_sites">No saved sites yet</string>
+    <string name="no_saved_hint">Explore heritage sites and bookmark the ones you want to revisit.</string>
+
+    <!-- Travel Passport -->
+    <string name="passport_title">Travel Passport</string>
+    <string name="passport_sites_visited">Sites Visited</string>
+    <string name="passport_facts_unlocked">Facts Unlocked</string>
+    <string name="passport_no_checkins">No check-ins yet</string>
+    <string name="passport_no_checkins_hint">Scan QR codes at heritage sites to stamp your passport.</string>
+
+    <!-- Map -->
+    <string name="map_search_hint">Explore Karnataka sites…</string>
+    <string name="map_sites_found">%1$d sites found</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_subtitle">Manage your preferences and account.</string>
+    <string name="settings_account">Account</string>
+    <string name="settings_preferences">Preferences</string>
+    <string name="settings_language">Language: %1$s</string>
+    <string name="settings_notifications">Push Notifications</string>
+    <string name="settings_location">Location Services</string>
+    <string name="settings_offline">Offline Mode</string>
+    <string name="settings_support">Support &amp; About</string>
+    <string name="settings_help">Help Center</string>
+    <string name="settings_about">About Virasat</string>
+    <string name="settings_privacy">Privacy &amp; Security</string>
+    <string name="settings_payments">Payment Methods</string>
+    <string name="settings_edit">Edit</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_heritage_explorer">Heritage Explorer</string>
+    <string name="profile_checkins">Check-ins</string>
+    <string name="profile_facts">Facts</string>
+    <string name="profile_badges">Badges</string>
+
+    <!-- Search -->
+    <string name="search_title">Search Heritage</string>
+    <string name="search_hint_full">Search temples, palaces, forts…</string>
+    <string name="search_no_results">No sites found for "%1$s"</string>
+
+    <!-- Site Detail -->
+    <string name="detail_history">History</string>
+    <string name="detail_architecture">Architecture</string>
+    <string name="detail_legends">Legends</string>
+    <string name="detail_facts">Interesting Facts</string>
+    <string name="detail_gallery">Gallery</string>
+    <string name="detail_audio_guide">Audio Guide</string>
+    <string name="detail_ai_tour">AI Tour</string>
+    <string name="detail_check_in">Check In</string>
+    <string name="detail_visiting_hours">Visiting Hours</string>
+    <string name="detail_entry_fee">Entry Fee</string>
+
+    <!-- Common -->
+    <string name="loading">Loading…</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="no_internet">No internet connection.</string>
+    <string name="back">Back</string>
+    <string name="close">Close</string>
+    <string name="share">Share</string>
+    <string name="save">Save</string>
+    <string name="saved">Saved</string>
+    <string name="reviews">reviews</string>
+    <string name="district">%1$s District</string>
 </resources>

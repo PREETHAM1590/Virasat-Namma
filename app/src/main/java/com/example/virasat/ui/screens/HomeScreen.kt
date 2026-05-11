@@ -43,6 +43,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
+import com.example.virasat.R
+import com.example.virasat.util.LocaleHelper
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -124,7 +127,7 @@ fun HomeScreen(
                 ) {
                     Column {
                         Text(
-                            "Hi, $userName \uD83D\uDC4B",
+                            stringResource(R.string.home_greeting, userName),
                             style = MaterialTheme.typography.bodyLarge,
                             color = OnSurfaceVariant
                         )
@@ -159,7 +162,7 @@ fun HomeScreen(
                                 )
                                 Spacer(Modifier.width(6.dp))
                                 Text(
-                                    "Search sites",
+                                    stringResource(R.string.home_search_hint),
                                     style = MaterialTheme.typography.labelMedium,
                                     color = Primary
                                 )
@@ -178,7 +181,7 @@ fun HomeScreen(
                     Icon(Icons.Default.LocationOn, null, tint = Primary, modifier = Modifier.size(14.dp))
                     Spacer(Modifier.width(4.dp))
                     Text(
-                        "KARNATAKA, INDIA",
+                        stringResource(R.string.home_location),
                         style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 1.5.sp),
                         color = Primary
                     )
@@ -188,10 +191,15 @@ fun HomeScreen(
 
             // ── Category chips ──────────────────────────────────────────────
             item {
-                val categories = listOf("All", "Temple", "Palace", "Fort", "Monument", "UNESCO", "Jain")
+                val allType = stringResource(R.string.category_all)
+                val categories = listOf(allType, stringResource(R.string.category_temple), stringResource(R.string.category_palace), stringResource(R.string.category_fort), stringResource(R.string.category_monument), stringResource(R.string.category_unesco), stringResource(R.string.category_jain))
                 val siteTypeMap = mapOf(
-                    "Temple" to "TEMPLE", "Palace" to "PALACE", "Fort" to "FORT",
-                    "Monument" to "MONUMENT", "UNESCO" to "UNESCO", "Jain" to "JAIN"
+                    stringResource(R.string.category_temple) to "TEMPLE",
+                    stringResource(R.string.category_palace) to "PALACE",
+                    stringResource(R.string.category_fort) to "FORT",
+                    stringResource(R.string.category_monument) to "MONUMENT",
+                    stringResource(R.string.category_unesco) to "UNESCO",
+                    stringResource(R.string.category_jain) to "JAIN"
                 )
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = hPadding),
@@ -199,7 +207,7 @@ fun HomeScreen(
                     modifier = Modifier.padding(bottom = 24.dp)
                 ) {
                     items(categories) { cat ->
-                        val isSelected = if (cat == "All") selectedType == null
+                        val isSelected = if (cat == allType) selectedType == null
                         else selectedType?.name == siteTypeMap[cat]
                         Box(
                             modifier = Modifier
@@ -211,7 +219,7 @@ fun HomeScreen(
                                 .clip(RoundedCornerShape(999.dp))
                                 .background(if (isSelected) Primary else Color.White)
                                 .clickable {
-                                    if (cat == "All") {
+                                    if (cat == allType) {
                                         viewModel.setTypeFilter(null)
                                     } else {
                                         val typeName = siteTypeMap[cat]
@@ -276,7 +284,7 @@ fun HomeScreen(
                                     .padding(horizontal = 14.dp, vertical = 6.dp)
                             ) {
                                 Text(
-                                    "Featured",
+                                    stringResource(R.string.home_featured),
                                     color = Color.White,
                                     style = MaterialTheme.typography.labelMedium
                                 )
@@ -306,7 +314,7 @@ fun HomeScreen(
                                 contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
                             ) {
                                 Text(
-                                    "Explore Now",
+                                    stringResource(R.string.home_explore_now),
                                     style = MaterialTheme.typography.labelLarge,
                                     fontWeight = FontWeight.SemiBold
                                 )
@@ -327,7 +335,7 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "Popular Sites",
+                        stringResource(R.string.home_popular_sites),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         color = OnSurface
@@ -364,7 +372,7 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "Curated Trails",
+                        stringResource(R.string.home_curated_trails),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         color = OnSurface

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">ವಿರಾಸತ್</string>
+    <string name="app_tagline">ಕರ್ನಾಟಕ ಪರಂಪರೆ ಮಾರ್ಗದರ್ಶಿ</string>
+
+    <!-- Bottom Nav -->
+    <string name="nav_explore">ಅನ್ವೇಷಿಸಿ</string>
+    <string name="nav_heritage">ಪರಂಪರೆ</string>
+    <string name="nav_saved">ಉಳಿಸಿದ</string>
+    <string name="nav_profile">ಪ್ರೊಫೈಲ್</string>
+
+    <!-- Home Screen -->
+    <string name="home_greeting">ನಮಸ್ಕಾರ, %1$s 🙏</string>
+    <string name="home_tagline">ಪರಂಪರೆ\nಶಕ್ತಿ</string>
+    <string name="home_location">ಕರ್ನಾಟಕ, ಭಾರತ</string>
+    <string name="home_search_hint">ತಾಣಗಳನ್ನು ಹುಡುಕಿ</string>
+    <string name="home_popular_sites">ಜನಪ್ರಿಯ ತಾಣಗಳು</string>
+    <string name="home_curated_trails">ಆಯ್ದ ಮಾರ್ಗಗಳು</string>
+    <string name="home_featured">ವಿಶೇಷ</string>
+    <string name="home_explore_now">ಈಗ ಅನ್ವೇಷಿಸಿ</string>
+    <string name="view_all">ಎಲ್ಲ ನೋಡಿ</string>
+    <string name="category_all">ಎಲ್ಲ</string>
+    <string name="category_temple">ದೇವಾಲಯ</string>
+    <string name="category_palace">ಅರಮನೆ</string>
+    <string name="category_fort">ಕೋಟೆ</string>
+    <string name="category_monument">ಸ್ಮಾರಕ</string>
+    <string name="category_unesco">ಯುನೆಸ್ಕೋ</string>
+    <string name="category_jain">ಜೈನ</string>
+    <string name="category_cave">ಗುಹಾಲಯ</string>
+
+    <!-- Auth -->
+    <string name="sign_in">ಸೈನ್ ಇನ್</string>
+    <string name="sign_up">ಖಾತೆ ತೆರೆಯಿರಿ</string>
+    <string name="sign_in_welcome">ನಮಸ್ಕಾರ, ಸ್ವಾಗತ 🙏</string>
+    <string name="sign_in_subtitle">ನಿಮ್ಮ ಪರಂಪರೆ ಪ್ರಯಾಣ ಮುಂದುವರಿಸಲು ಸೈನ್ ಇನ್ ಮಾಡಿ.</string>
+    <string name="sign_up_subtitle">ವಿರಾಸತ್‌ಗೆ ಸೇರಿ ಕರ್ನಾಟಕದ ಪರಂಪರೆಯನ್ನು ಅನ್ವೇಷಿಸಿ.</string>
+    <string name="full_name">ಪೂರ್ಣ ಹೆಸರು</string>
+    <string name="email_address">ಇಮೇಲ್ ವಿಳಾಸ</string>
+    <string name="password">ಪಾಸ್‌ವರ್ಡ್</string>
+    <string name="password_hint">ಪಾಸ್‌ವರ್ಡ್ (ಕನಿಷ್ಠ 6 ಅಕ್ಷರಗಳು)</string>
+    <string name="forgot_password">ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದೀರಾ?</string>
+    <string name="no_account">ಖಾತೆ ಇಲ್ಲವೇ? </string>
+    <string name="have_account">ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ? </string>
+    <string name="reset_link_sent">ರೀಸೆಟ್ ಲಿಂಕ್ ಕಳುಹಿಸಲಾಗಿದೆ! ನಿಮ್ಮ ಇಮೇಲ್ ಪರಿಶೀಲಿಸಿ.</string>
+    <string name="logout">ಲಾಗ್ ಔಟ್</string>
+
+    <!-- Language Screen -->
+    <string name="select_language">ಭಾಷೆ\nಆಯ್ಕೆ ಮಾಡಿ</string>
+    <string name="language_subtitle">ವಿರಾಸತ್ ಅನುಭವಕ್ಕಾಗಿ ನಿಮ್ಮ ಆದ್ಯತೆಯ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ.</string>
+    <string name="btn_continue">ಮುಂದುವರಿ</string>
+
+    <!-- QR Scanner -->
+    <string name="qr_title">QR ಕೋಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ</string>
+    <string name="qr_subtitle">ಪರಂಪರೆ ತಾಣದ QR ಕೋಡ್‌ಗೆ ಕ್ಯಾಮೆರಾ ತೋರಿಸಿ</string>
+    <string name="qr_checking_in">ಚೆಕ್-ಇನ್ ಆಗುತ್ತಿದೆ…</string>
+    <string name="qr_already_checked">ಈಗಾಗಲೇ ಚೆಕ್-ಇನ್ ಮಾಡಿದ್ದೀರಿ</string>
+    <string name="qr_check_in">ಚೆಕ್ ಇನ್</string>
+    <string name="qr_scanning">ಸ್ಕ್ಯಾನ್ ಆಗುತ್ತಿದೆ…</string>
+
+    <!-- Check-in Success -->
+    <string name="checkin_success_title">ಚೆಕ್-ಇನ್ ಯಶಸ್ವಿ!</string>
+    <string name="checkin_success_sub">ನಿಮ್ಮ ಭೇಟಿ ಪ್ರಯಾಣ ಪಾಸ್‌ಪೋರ್ಟ್‌ನಲ್ಲಿ ದಾಖಲಾಗಿದೆ.</string>
+    <string name="hidden_fact_unlocked">🔓 ಮಿಕ್ಕ ಸಂಗತಿ ತೆರೆಯಲಾಯಿತು!</string>
+    <string name="continue_exploring">ಮುಂದೆ ಅನ್ವೇಷಿಸಿ</string>
+    <string name="view_passport">ಪಾಸ್‌ಪೋರ್ಟ್ ನೋಡಿ</string>
+
+    <!-- Audio Guide -->
+    <string name="audio_guide_title">ಆಡಿಯೋ ಗೈಡ್</string>
+    <string name="audio_playing">ನುಡಿಸಲಾಗುತ್ತಿದೆ</string>
+    <string name="audio_paused">ನಿಲ್ಲಿಸಲಾಗಿದೆ</string>
+    <string name="audio_chapter">%1$d ರ ಅಧ್ಯಾಯ %2$d</string>
+
+    <!-- Bookmarks / Saved -->
+    <string name="saved_journeys">ಉಳಿಸಿದ ಪ್ರಯಾಣಗಳು</string>
+    <string name="saved_subtitle">ನೀವು ಸಂಗ್ರಹಿಸಿದ ಪರಂಪರೆ ತಾಣಗಳಿಗೆ ಮರಳಿ ಭೇಟಿ ಮಾಡಿ.</string>
+    <string name="no_saved_sites">ಇನ್ನೂ ಯಾವ ತಾಣಗಳನ್ನೂ ಉಳಿಸಿಲ್ಲ</string>
+    <string name="no_saved_hint">ಪರಂಪರೆ ತಾಣಗಳನ್ನು ಅನ್ವೇಷಿಸಿ ಮತ್ತು ನೀವು ಮತ್ತೊಮ್ಮೆ ಭೇಟಿ ಮಾಡಲು ಬಯಸುವ ತಾಣಗಳನ್ನು ಉಳಿಸಿ.</string>
+
+    <!-- Travel Passport -->
+    <string name="passport_title">ಪ್ರಯಾಣ ಪಾಸ್‌ಪೋರ್ಟ್</string>
+    <string name="passport_sites_visited">ಭೇಟಿ ತಾಣಗಳು</string>
+    <string name="passport_facts_unlocked">ತೆರೆದ ಸಂಗತಿಗಳು</string>
+    <string name="passport_no_checkins">ಇನ್ನೂ ಚೆಕ್-ಇನ್ ಇಲ್ಲ</string>
+    <string name="passport_no_checkins_hint">ಪಾಸ್‌ಪೋರ್ಟ್‌ಗೆ ಮುದ್ರೆ ಹಾಕಲು ಪರಂಪರೆ ತಾಣಗಳಲ್ಲಿ QR ಕೋಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.</string>
+
+    <!-- Map -->
+    <string name="map_search_hint">ಕರ್ನಾಟಕ ತಾಣಗಳನ್ನು ಅನ್ವೇಷಿಸಿ…</string>
+    <string name="map_sites_found">%1$d ತಾಣಗಳು ಕಂಡವು</string>
+
+    <!-- Settings -->
+    <string name="settings_title">ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
+    <string name="settings_subtitle">ನಿಮ್ಮ ಆದ್ಯತೆಗಳು ಮತ್ತು ಖಾತೆ ನಿರ್ವಹಿಸಿ.</string>
+    <string name="settings_account">ಖಾತೆ</string>
+    <string name="settings_preferences">ಆದ್ಯತೆಗಳು</string>
+    <string name="settings_language">ಭಾಷೆ: %1$s</string>
+    <string name="settings_notifications">ಪುಶ್ ಅಧಿಸೂಚನೆಗಳು</string>
+    <string name="settings_location">ಸ್ಥಳ ಸೇವೆಗಳು</string>
+    <string name="settings_offline">ಆಫ್‌ಲೈನ್ ಮೋಡ್</string>
+    <string name="settings_support">ಬೆಂಬಲ ಮತ್ತು ಮಾಹಿತಿ</string>
+    <string name="settings_help">ಸಹಾಯ ಕೇಂದ್ರ</string>
+    <string name="settings_about">ವಿರಾಸತ್ ಬಗ್ಗೆ</string>
+    <string name="settings_privacy">ಗೌಪ್ಯತೆ ಮತ್ತು ಭದ್ರತೆ</string>
+    <string name="settings_payments">ಪಾವತಿ ವಿಧಾನಗಳು</string>
+    <string name="settings_edit">ಸಂಪಾದಿಸಿ</string>
+
+    <!-- Profile -->
+    <string name="profile_title">ಪ್ರೊಫೈಲ್</string>
+    <string name="profile_heritage_explorer">ಪರಂಪರೆ ಅನ್ವೇಷಕ</string>
+    <string name="profile_checkins">ಚೆಕ್-ಇನ್‌ಗಳು</string>
+    <string name="profile_facts">ಸಂಗತಿಗಳು</string>
+    <string name="profile_badges">ಬ್ಯಾಡ್ಜ್‌ಗಳು</string>
+
+    <!-- Search -->
+    <string name="search_title">ಪರಂಪರೆ ಹುಡುಕಿ</string>
+    <string name="search_hint_full">ದೇವಾಲಯ, ಅರಮನೆ, ಕೋಟೆ ಹುಡುಕಿ…</string>
+    <string name="search_no_results">"%1$s" ಗಾಗಿ ತಾಣಗಳು ಕಂಡಿಲ್ಲ</string>
+
+    <!-- Site Detail -->
+    <string name="detail_history">ಇತಿಹಾಸ</string>
+    <string name="detail_architecture">ವಾಸ್ತುಶಿಲ್ಪ</string>
+    <string name="detail_legends">ಐತಿಹ್ಯಗಳು</string>
+    <string name="detail_facts">ಆಸಕ್ತಿದಾಯಕ ಸಂಗತಿಗಳು</string>
+    <string name="detail_gallery">ಚಿತ್ರ ಗ್ಯಾಲರಿ</string>
+    <string name="detail_audio_guide">ಆಡಿಯೋ ಗೈಡ್</string>
+    <string name="detail_ai_tour">AI ಪ್ರವಾಸ</string>
+    <string name="detail_check_in">ಚೆಕ್ ಇನ್</string>
+    <string name="detail_visiting_hours">ಭೇಟಿ ವೇಳೆ</string>
+    <string name="detail_entry_fee">ಪ್ರವೇಶ ಶುಲ್ಕ</string>
+
+    <!-- Common -->
+    <string name="loading">ಲೋಡ್ ಆಗುತ್ತಿದೆ…</string>
+    <string name="error_generic">ಏನೋ ತಪ್ಪಾಯಿತು. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="no_internet">ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕ ಇಲ್ಲ.</string>
+    <string name="back">ಹಿಂದೆ</string>
+    <string name="close">ಮುಚ್ಚಿ</string>
+    <string name="share">ಹಂಚಿಕೊಳ್ಳಿ</string>
+    <string name="save">ಉಳಿಸಿ</string>
+    <string name="saved">ಉಳಿಸಲಾಗಿದೆ</string>
+    <string name="reviews">ವಿಮರ್ಶೆಗಳು</string>
+    <string name="district">%1$s ಜಿಲ್ಲೆ</string>
+</resources>

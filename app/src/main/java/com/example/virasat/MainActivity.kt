@@ -31,12 +31,20 @@ import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.service.FirebaseAnalyticsHelper
 import com.example.virasat.data.service.GeminiHeritageService
 import com.example.virasat.data.service.FirebaseAuthService
+import com.example.virasat.util.LocaleHelper
+import com.example.virasat.data.source.FirestoreSeeder
 import com.google.firebase.auth.FirebaseAuth
 import com.example.virasat.ui.components.BottomNavItem
 import com.example.virasat.ui.screens.*
 import com.example.virasat.ui.theme.VirasatTheme
 
 class MainActivity : ComponentActivity() {
+
+    override fun attachBaseContext(newBase: android.content.Context) {
+        val lang = LocaleHelper.getSavedLocale(newBase)
+        super.attachBaseContext(LocaleHelper.wrap(newBase, lang))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         GeminiHeritageService.initialize(BuildConfig.GEMINI_API_KEY)
@@ -134,6 +142,10 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("home") {
+                            val homeCtx = LocalContext.current
+                            LaunchedEffect(Unit) {
+                                FirestoreSeeder.seedIfNeeded(homeCtx)
+                            }
                             FirebaseAnalyticsHelper.logScreenView("home")
                             HomeScreen(
                                     onSiteClick = { siteId ->
@@ -201,8 +213,13 @@ class MainActivity : ComponentActivity() {
                         composable("qr_scan") {
                             QrScannerScreen(
                                 onBack = { navController.popBackStack() },
-                                onNavigateToSite = { siteId ->
-                                    navController.navigate("check_in_success/$siteId") {
+                                onNavigateToSite = { siteIdWithParams ->
+                                    // siteIdWithParams may be "siteId?factId=xxx"
+                                    val parts = siteIdWithParams.split("?factId=")
+                                    val siteId = parts[0]
+                                    val factId = if (parts.size > 1) parts[1] else ""
+                                    val route = if (factId.isNotBlank()) "check_in_success/$siteId/$factId" else "check_in_success/$siteId/"
+                                    navController.navigate(route) {
                                         popUpTo("qr_scan") { inclusive = true }
                                     }
                                 }
@@ -335,10 +352,12 @@ class MainActivity : ComponentActivity() {
                                 onBack = { navController.popBackStack() }
                             )
                         }
-                        composable("check_in_success/{siteId}") { backStackEntry ->
+                        composable("check_in_success/{siteId}/{factId}") { backStackEntry ->
                             val siteId = backStackEntry.arguments?.getString("siteId") ?: ""
+                            val factId = backStackEntry.arguments?.getString("factId") ?: ""
                             CheckInSuccessScreen(
                                 siteId = siteId,
+                                factId = factId,
                                 onViewSite = { siteId ->
                                     navController.navigate("site_detail/$siteId") {
                                         popUpTo("home") { inclusive = false }

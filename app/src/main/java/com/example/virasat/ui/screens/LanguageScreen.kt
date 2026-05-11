@@ -47,7 +47,9 @@ import com.example.virasat.ui.theme.SurfaceContainerLowest
 import com.example.virasat.ui.theme.OnSurface
 import com.example.virasat.ui.theme.OnSurfaceVariant
 import com.example.virasat.ui.theme.OutlineVariant
+import android.app.Activity
 import java.util.Locale
+import com.example.virasat.util.LocaleHelper
 
 data class AppLanguage(val code: String, val displayName: String, val nativeName: String)
 
@@ -96,7 +98,7 @@ fun LanguageScreen(
                         .clip(RoundedCornerShape(999.dp))
                         .background(SurfaceContainerLowest)
                 ) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = OnSurfaceVariant)
+                    Icon(@Suppress("DEPRECATION") Icons.Filled.ArrowBack, contentDescription = "Back", tint = OnSurfaceVariant)
                 }
 
                 Text(
@@ -208,7 +210,10 @@ fun LanguageScreen(
         ) {
             Button(
                 onClick = {
-                    setLocale(context, selectedCode)
+                    LocaleHelper.setLocale(context, selectedCode)
+                    // Apply locale + restart Activity so all UI strings reload
+                    LocaleHelper.wrap(context, selectedCode)
+                    (context as? Activity)?.recreate()
                     onContinue()
                 },
                 modifier = Modifier

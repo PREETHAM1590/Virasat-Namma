@@ -56,6 +56,7 @@ fun QrScannerScreen(
     val scannedSite by viewModel.scannedSite.collectAsState()
     val hasCheckedIn by viewModel.hasCheckedIn.collectAsState()
     val isCheckingIn by viewModel.isCheckingIn.collectAsState()
+    val unlockedFact by viewModel.unlockedFact.collectAsState()
 
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -63,6 +64,17 @@ fun QrScannerScreen(
 
     LaunchedEffect(Unit) {
         if (!hasCameraPermission) launcher.launch(Manifest.permission.CAMERA)
+    }
+
+    // Navigate to success screen once check-in completes
+    LaunchedEffect(hasCheckedIn, isCheckingIn) {
+        if (hasCheckedIn && !isCheckingIn) {
+            val site = scannedSite
+            if (site != null) {
+                val fId = unlockedFact?.id ?: ""
+                onNavigateToSite(site.id + (if (fId.isNotBlank()) "?factId=$fId" else ""))
+            }
+        }
     }
 
     val cs = MaterialTheme.colorScheme
@@ -264,8 +276,8 @@ fun QrScannerScreen(
                         .background(cs.surfaceContainerLowest.copy(alpha = 0.8f))
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Spa,
-                        contentDescription = "Search",
+                        imageVector = Icons.Default.QrCodeScanner,
+                        contentDescription = "QR",
                         tint = cs.primary
                     )
                 }

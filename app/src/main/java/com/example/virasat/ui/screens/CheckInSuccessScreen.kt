@@ -15,23 +15,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.virasat.data.source.KarnatakaSites
+import com.example.virasat.data.di.RepositoryProvider
+import com.example.virasat.data.model.Fact
+import androidx.compose.ui.res.stringResource
+import com.example.virasat.R
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckInSuccessScreen(
     siteId: String,
-    onViewSite: () -> Unit,
+    factId: String = "",
+    onViewSite: (String) -> Unit,
     onViewPassport: () -> Unit,
     onShare: () -> Unit
 ) {
-    val site = KarnatakaSites.allSites.find { it.id == siteId }
+    val ctx = LocalContext.current
+    val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+    val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
+        value = repo.getSiteById(siteId)
+    }
+    val unlockedFact = remember(site, factId) {
+        site?.facts?.find { it.id == factId }
+    }
 
     var showConfetti by remember { mutableStateOf(false) }
     var showBadge by remember { mutableStateOf(false) }
@@ -125,11 +137,44 @@ fun CheckInSuccessScreen(
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
 
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Hidden Fact Card
+            if (unlockedFact != null) {
+                androidx.compose.material3.Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                    tonalElevation = 1.dp
+                ) {
+                    Column(modifier = Modifier.padding(20.dp)) {
+                        Text(
+                            stringResource(R.string.hidden_fact_unlocked),
+                            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            unlockedFact.title,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            unlockedFact.description,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
             Spacer(modifier = Modifier.weight(1f))
 
             // Continue Exploring button
             Button(
-                onClick = onViewSite,
+                onClick = { onViewSite(siteId) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -149,7 +194,7 @@ fun CheckInSuccessScreen(
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
                     )
                     Icon(
-                        imageVector = Icons.Default.ArrowForward,
+                        imageVector = @Suppress("DEPRECATION") Icons.Filled.ArrowForward,
                         contentDescription = null,
                         modifier = Modifier.size(20.dp)
                     )

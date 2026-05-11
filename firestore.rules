@@ -3,37 +3,37 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── Sites collection (public read, no client writes) ──────────────────
+    // ── Sites collection (public heritage data) ───────────────────────────
     match /sites/{siteId} {
+      // Anyone can read site information
       allow read: if true;
-      // Only server-side writes (seeder runs in app on first launch with no rule conflict
-      // because seeder uses admin-level access via service account in prod, or the
-      // temporary open rule was used for initial seeding)
-      allow write: if false;
+      // Authenticated users can write (needed for app's first-launch seeder)
+      // In production, restrict to admin role or use Admin SDK + Cloud Function
+      allow write: if request.auth != null;
     }
 
-    // ── User profiles ─────────────────────────────────────────────────────
+    // ── User profiles and user-scoped data ───────────────────────────────
     match /users/{userId} {
-      // Users can read and write their own profile only
+      // Users can only read/write their own profile
       allow read, write: if request.auth != null && request.auth.uid == userId;
 
-      // ── Check-ins subcollection ──────────────────────────────────────────
+      // ── Check-ins (persisted in Room DB + Firestore) ──────────────────
       match /checkins/{checkinId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
 
-      // ── Unlocked facts subcollection ─────────────────────────────────────
+      // ── Unlocked facts (QR scan rewards) ──────────────────────────────
       match /unlockedFacts/{factId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
 
-      // ── Bookmarks subcollection ──────────────────────────────────────────
+      // ── Bookmarked / saved sites ───────────────────────────────────────
       match /bookmarks/{siteId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
     }
 
-    // ── Deny everything else ──────────────────────────────────────────────
+    // ── Deny all other paths ──────────────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
     }

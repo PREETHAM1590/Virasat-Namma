@@ -24,10 +24,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.model.AudioChapter
+import com.example.virasat.data.service.GeminiHeritageService
+import com.example.virasat.util.LocaleHelper
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-val sampleChapters = listOf(
+val chapters = listOf(
     AudioChapter("1", "Introduction to the Site", 120, "", "Welcome to this magnificent heritage site. As you walk through these ancient corridors, imagine the centuries of history embedded in every stone."),
     AudioChapter("2", "Historical Significance", 180, "", "Built during the peak of the Vijayanagara Empire, this structure represents the pinnacle of Dravidian architecture..."),
     AudioChapter("3", "Architectural Marvels", 240, "", "Notice the intricate carvings on the pillars. Each sculpture tells a story from mythology..."),
@@ -41,30 +45,86 @@ fun AudioGuideScreen(
     siteName: String,
     onBack: () -> Unit
 ) {
+    val ctx = LocalContext.current
+    val savedLocale = LocaleHelper.getSavedLocale(ctx)
     var currentChapter by remember { mutableIntStateOf(0) }
     var isPlaying by remember { mutableStateOf(false) }
     var progress by remember { mutableFloatStateOf(0f) }
-    val chapter = sampleChapters[currentChapter]
+    var selectedLanguage by remember { mutableStateOf(when(savedLocale) { "kn" -> "Kannada"; "hi" -> "Hindi"; else -> "English" }) }
+    var generatedNarration by remember { mutableStateOf("") }
+    var isGenerating by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+    val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
+        value = repo.getSiteById(siteId)
+    }
+
+    val chapters = remember(siteId, generatedNarration, site) {
+        val intro = site?.shortDescription ?: "Welcome to this magnificent heritage site."
+        val narration = generatedNarration.ifBlank { intro }
+        fun estimateDuration(text: String): Int = (text.split(" ").size.coerceAtLeast(20) * 60 / 130).coerceAtLeast(30)
+        listOf(
+            AudioChapter("1", "Introduction", estimateDuration(narration), "", narration),
+            AudioChapter("2", "Historical Significance", estimateDuration(site?.history ?: ""), "", site?.history ?: "Built during the peak of a great empire..."),
+            AudioChapter("3", "Architectural Marvels", estimateDuration(site?.architecture ?: ""), "", site?.architecture ?: "Notice the intricate carvings on the pillars..."),
+            AudioChapter("4", "Hidden Legends", estimateDuration(site?.legends ?: ""), "", site?.legends ?: "Local folklore speaks of secret passages..."),
+            AudioChapter("5", "Key Facts", 60, "", site?.facts?.take(3)?.joinToString("\n") { "${it.title}: ${it.description}" } ?: "This site holds centuries of history." )
+        )
+    }
+    val chapter = chapters[currentChapter]
 
     val context = LocalContext.current
     var tts by remember { mutableStateOf<TextToSpeech?>(null) }
+    var ttsReady by remember { mutableStateOf(false) }
+
+    fun setTtsLanguage() {
+        val locale = when (selectedLanguage) {
+            "Kannada" -> Locale("kn", "IN")
+            "Hindi" -> Locale("hi", "IN")
+            "Tamil" -> Locale("ta", "IN")
+            "Telugu" -> Locale("te", "IN")
+            else -> Locale.ENGLISH
+        }
+        val result = tts?.setLanguage(locale)
+        // Fallback to English if language not supported by device TTS engine
+        if (result == android.speech.tts.TextToSpeech.LANG_NOT_SUPPORTED ||
+            result == android.speech.tts.TextToSpeech.LANG_MISSING_DATA) {
+            tts?.setLanguage(Locale.ENGLISH)
+        }
+    }
+
+    var pendingStart by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         tts = TextToSpeech(context) { status ->
             if (status == TextToSpeech.SUCCESS) {
-                tts?.language = Locale.ENGLISH
+                ttsReady = true
+                setTtsLanguage()
                 tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                     override fun onStart(utteranceId: String?) { isPlaying = true }
                     override fun onDone(utteranceId: String?) {
                         isPlaying = false
                         progress = 0f
-                        if (currentChapter < sampleChapters.lastIndex) {
+                        if (currentChapter < chapters.lastIndex) {
                             currentChapter++
                         }
                     }
                     override fun onError(utteranceId: String?) { isPlaying = false }
                 })
+                if (pendingStart) {
+                    pendingStart = false
+                    tts?.speak(chapters[currentChapter].transcript, TextToSpeech.QUEUE_FLUSH, null, null)
+                }
             }
+        }
+    }
+
+    LaunchedEffect(selectedLanguage) {
+        if (ttsReady) setTtsLanguage()
+        if (GeminiHeritageService.isInitialized()) {
+            isGenerating = true
+            generatedNarration = GeminiHeritageService.generateNarration(site, selectedLanguage)
+            isGenerating = false
         }
     }
 
@@ -78,8 +138,8 @@ fun AudioGuideScreen(
     LaunchedEffect(currentChapter) {
         progress = 0f
         tts?.stop()
-        if (isPlaying) {
-            tts?.speak(chapter.transcript, TextToSpeech.QUEUE_FLUSH, null, null)
+        if (isPlaying && ttsReady) {
+            tts?.speak(chapters[currentChapter].transcript, TextToSpeech.QUEUE_FLUSH, null, null)
         }
     }
 
@@ -92,6 +152,9 @@ fun AudioGuideScreen(
             progress = 0f
         }
     }
+
+    val cs = MaterialTheme.colorScheme
+    val type = MaterialTheme.typography
 
     Box(
         modifier = Modifier
@@ -107,6 +170,7 @@ fun AudioGuideScreen(
             Row(
                 Modifier
                     .fillMaxWidth()
+                    .statusBarsPadding()
                     .padding(horizontal = 24.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -115,21 +179,31 @@ fun AudioGuideScreen(
                     Icon(
                         Icons.AutoMirrored.Filled.ArrowBack,
                         "Back",
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = cs.onSurface,
                         modifier = Modifier.size(28.dp)
                     )
                 }
-                Text(
-                    "Virasat",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                IconButton(onClick = { }) {
-                    Icon(
-                        Icons.Default.Search,
-                        null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(28.dp)
+                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                    Text(
+                        siteName,
+                        style = type.headlineMedium,
+                        color = cs.onSurface,
+                        maxLines = 1
+                    )
+                }
+                Surface(
+                    shape = RoundedCornerShape(999.dp),
+                    color = cs.primaryContainer,
+                    onClick = {
+                        selectedLanguage = if (selectedLanguage == "English") "Hindi" else "English"
+                    }
+                ) {
+                    Text(
+                        if (selectedLanguage == "English") "EN" else "HI",
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        color = cs.onPrimaryContainer
                     )
                 }
             }
@@ -150,12 +224,12 @@ fun AudioGuideScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         AsyncImage(
-                            model = "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600",
-                            contentDescription = null,
+                            model = "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=800",
+                            contentDescription = siteName,
                             modifier = Modifier.fillMaxSize(),
                             contentScale = androidx.compose.ui.layout.ContentScale.Crop
                         )
-                        // Inner shadow overlay
+                        // Neumorphic inner shadow overlay
                         Box(
                             Modifier
                                 .fillMaxSize()
@@ -170,7 +244,7 @@ fun AudioGuideScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(32.dp))
-                            .background(Color(0xFF050505))
+                            .background(Color(0xFF0B2211))
                             .padding(24.dp)
                     ) {
                         Column {
@@ -182,17 +256,17 @@ fun AudioGuideScreen(
                             ) {
                                 Text(
                                     formatTime((progress * chapter.durationSeconds).toInt()),
-                                    style = MaterialTheme.typography.labelLarge,
+                                    style = type.labelMedium,
                                     color = Color.White.copy(alpha = 0.8f)
                                 )
                                 Text(
-                                    "The Sacred Grove",
-                                    style = MaterialTheme.typography.headlineMedium,
+                                    siteName,
+                                    style = type.headlineMedium,
                                     color = Color.White
                                 )
                                 Text(
                                     formatTime(chapter.durationSeconds),
-                                    style = MaterialTheme.typography.labelLarge,
+                                    style = type.labelMedium,
                                     color = Color.White.copy(alpha = 0.8f)
                                 )
                             }
@@ -201,7 +275,7 @@ fun AudioGuideScreen(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(4.dp)
+                                    .height(8.dp)
                                     .clip(RoundedCornerShape(999.dp))
                                     .background(Color.White.copy(alpha = 0.2f))
                             ) {
@@ -210,7 +284,7 @@ fun AudioGuideScreen(
                                         .fillMaxWidth(progress)
                                         .fillMaxHeight()
                                         .clip(RoundedCornerShape(999.dp))
-                                        .background(MaterialTheme.colorScheme.primaryContainer)
+                                        .background(cs.primaryContainer)
                                 )
                             }
                             Spacer(Modifier.height(20.dp))
@@ -233,14 +307,18 @@ fun AudioGuideScreen(
                                         Icons.Default.Replay10,
                                         "Rewind",
                                         modifier = Modifier.size(32.dp),
-                                        tint = MaterialTheme.colorScheme.secondaryContainer
+                                        tint = Color(0xFFE2EFE1)
                                     )
                                 }
                                 Button(
                                     onClick = {
                                         isPlaying = !isPlaying
                                         if (isPlaying) {
-                                            tts?.speak(chapter.transcript, TextToSpeech.QUEUE_FLUSH, null, null)
+                                            if (ttsReady) {
+                                                tts?.speak(chapter.transcript, TextToSpeech.QUEUE_FLUSH, null, null)
+                                            } else {
+                                                pendingStart = true
+                                            }
                                         } else {
                                             tts?.stop()
                                         }
@@ -248,19 +326,19 @@ fun AudioGuideScreen(
                                     modifier = Modifier.size(64.dp),
                                     shape = CircleShape,
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                                        containerColor = cs.primaryContainer
                                     )
                                 ) {
                                     Icon(
                                         if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                                         if (isPlaying) "Pause" else "Play",
                                         modifier = Modifier.size(32.dp),
-                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                        tint = Color(0xFF0B2211)
                                     )
                                 }
                                 IconButton(
                                     onClick = {
-                                        if (currentChapter < sampleChapters.lastIndex) {
+                                        if (currentChapter < chapters.lastIndex) {
                                             currentChapter++
                                             progress = 0f
                                             isPlaying = false
@@ -271,7 +349,7 @@ fun AudioGuideScreen(
                                         Icons.Default.Forward10,
                                         "Forward",
                                         modifier = Modifier.size(32.dp),
-                                        tint = MaterialTheme.colorScheme.secondaryContainer
+                                        tint = Color(0xFFE2EFE1)
                                     )
                                 }
                             }
@@ -284,30 +362,34 @@ fun AudioGuideScreen(
             Spacer(Modifier.height(32.dp))
             Text(
                 "Chapters",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(horizontal = 24.dp)
+                style = type.headlineMedium,
+                color = cs.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
             )
             Spacer(Modifier.height(16.dp))
             Column(
                 modifier = Modifier.padding(horizontal = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                sampleChapters.forEachIndexed { index, ch ->
+                chapters.forEachIndexed { index, ch ->
                     val isCurrent = index == currentChapter
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(cs.surfaceContainerLowest)
                             .clickable {
                                 tts?.stop()
                                 currentChapter = index
                                 progress = 0f
                                 isPlaying = true
-                                tts?.speak(ch.transcript, TextToSpeech.QUEUE_FLUSH, null, null)
+                                if (ttsReady) {
+                                    tts?.speak(ch.transcript, TextToSpeech.QUEUE_FLUSH, null, null)
+                                } else {
+                                    pendingStart = true
+                                }
                             }
-                            .padding(20.dp)
+                            .padding(24.dp)
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -321,20 +403,21 @@ fun AudioGuideScreen(
                                         .width(4.dp)
                                         .height(48.dp)
                                         .clip(RoundedCornerShape(999.dp))
-                                        .background(MaterialTheme.colorScheme.primaryContainer)
+                                        .background(cs.primaryContainer)
                                 )
                                 Box(
                                     modifier = Modifier
                                         .size(48.dp)
                                         .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f)),
+                                        .background(cs.primaryContainer.copy(alpha = 0.2f)),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
-                                        Icons.Default.VolumeUp,
+                                        @Suppress("DEPRECATION")
+                                    Icons.Default.VolumeUp,
                                         null,
                                         modifier = Modifier.size(24.dp),
-                                        tint = MaterialTheme.colorScheme.primaryContainer
+                                        tint = cs.primaryContainer
                                     )
                                 }
                             } else {
@@ -343,33 +426,33 @@ fun AudioGuideScreen(
                                     modifier = Modifier
                                         .size(48.dp)
                                         .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                                        .background(cs.surfaceVariant),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
                                         String.format("%02d", index + 1),
-                                        style = MaterialTheme.typography.labelLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        style = type.labelMedium,
+                                        color = cs.onSurfaceVariant
                                     )
                                 }
                             }
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     ch.title,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = type.bodyLarge,
+                                    color = cs.onSurface,
                                     fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Normal
                                 )
                                 Text(
                                     ch.transcript.take(50) + "...",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    style = type.bodyMedium,
+                                    color = cs.onSurfaceVariant
                                 )
                             }
                             Text(
                                 if (isCurrent) "Now Playing" else formatTime(ch.durationSeconds),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                style = type.labelMedium,
+                                color = cs.onSurfaceVariant
                             )
                         }
                     }
