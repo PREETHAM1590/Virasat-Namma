@@ -82,7 +82,7 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
         return org.json.JSONObject().put("contents", contents).toString()
     }
 
-    private suspend fun callGemini(prompt: String, model: String = "gemini-2.0-flash"): String = withContext(Dispatchers.IO) {
+    internal suspend fun callGemini(prompt: String, model: String = "gemini-2.0-flash"): String = withContext(Dispatchers.IO) {
         if (!isInitialized()) return@withContext ""
         try {
             val requestBody = buildPayload(prompt).toRequestBody("application/json".toMediaType())

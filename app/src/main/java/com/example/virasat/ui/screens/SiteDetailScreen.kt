@@ -1,5 +1,6 @@
 package com.example.virasat.ui.screens
 
+import com.example.virasat.util.LocaleHelper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -90,6 +91,13 @@ fun SiteDetailScreen(
     var isFav by remember { mutableStateOf(false) }
     LaunchedEffect(siteId) {
         isFav = try { repo.isBookmarked(siteId) } catch (_: Exception) { false }
+    }
+
+    // Preload Kannada translations if locale is Kannada
+    LaunchedEffect(site) {
+        if (site != null && LocaleHelper.getSavedLocale(ctx) == "kn") {
+            com.example.virasat.data.source.KannadaContentProvider.preloadSite(ctx, site!!)
+        }
     }
 
     var userLocation by remember { mutableStateOf<android.location.Location?>(null) }
@@ -298,13 +306,13 @@ fun SiteDetailScreen(
                         )
                         Spacer(Modifier.height(16.dp))
                         Text(
-                            s.description,
+                            LocaleHelper.siteDescription(s, ctx),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(Modifier.height(16.dp))
                         Text(
-                            s.history,
+                            LocaleHelper.siteHistory(s, ctx),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
