@@ -170,7 +170,7 @@ fun LoginScreen(
                     email = it
                     authViewModel.clearLoginError()
                 },
-                placeholder = { Text("Email Address", color = MaterialTheme.colorScheme.outline) },
+                placeholder = { Text(stringResource(R.string.email_address), color = MaterialTheme.colorScheme.outline) },
                 leadingIcon = { Icon(Icons.Default.Mail, null, tint = MaterialTheme.colorScheme.outline) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -193,7 +193,7 @@ fun LoginScreen(
                     password = it
                     authViewModel.clearLoginError()
                 },
-                placeholder = { Text("Password", color = MaterialTheme.colorScheme.outline) },
+                placeholder = { Text(stringResource(R.string.password), color = MaterialTheme.colorScheme.outline) },
                 leadingIcon = { Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.outline) },
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -271,7 +271,7 @@ fun LoginScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Sign In", style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp))
+                    Text(stringResource(R.string.sign_in_btn), style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp))
                     Spacer(Modifier.width(8.dp))
                     Icon(Icons.AutoMirrored.Filled.ArrowForward, null, modifier = Modifier.size(18.dp))
                 }
@@ -343,7 +343,7 @@ fun LoginScreen(
                 Modifier.align(Alignment.CenterHorizontally),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text("Don't have an account? ", style = MaterialTheme.typography.bodyMedium, color = OnSurfaceVariant)
+                Text(stringResource(R.string.no_account), style = MaterialTheme.typography.bodyMedium, color = OnSurfaceVariant)
                 Text(
                     "Sign Up",
                     modifier = Modifier.clickable { onNavigateToSignUp() },

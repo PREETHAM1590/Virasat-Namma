@@ -6,49 +6,48 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// Stitch Design System — Typography
-// Headings: Plus Jakarta Sans (clean, rounded geometric)
-// Body/Labels: Be Vietnam Pro (warm, contemporary)
+// Design System — Indian Temple Architecture Typography
+// Headings: Serif (evokes stone-carved inscriptions, temple epigraphy)
+// Body/Labels: SansSerif (clean readability on modern screens)
 
-val PlusJakartaSans = FontFamily.SansSerif
+val PlusJakartaSans = FontFamily.Serif
 val BeVietnamPro = FontFamily.SansSerif
 
 val VirasatTypography = Typography(
     displayLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.Bold,
         fontSize = 48.sp,
         lineHeight = 56.sp,
-        letterSpacing = (-0.02).sp
+        letterSpacing = (-0.01).sp
     ),
     displayMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.Bold,
         fontSize = 40.sp,
         lineHeight = 48.sp,
-        letterSpacing = (-0.02).sp
-    ),
-    headlineLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 32.sp,
-        lineHeight = 40.sp,
         letterSpacing = (-0.01).sp
     ),
+    headlineLarge = TextStyle(
+        fontFamily = FontFamily.Serif,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 32.sp,
+        lineHeight = 40.sp
+    ),
     headlineMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp,
         lineHeight = 32.sp
     ),
     headlineSmall = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.SemiBold,
         fontSize = 20.sp,
         lineHeight = 28.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
         lineHeight = 26.sp

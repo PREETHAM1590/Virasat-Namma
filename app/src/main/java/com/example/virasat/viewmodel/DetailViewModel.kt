@@ -27,10 +27,10 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun loadSite(siteId: String) {
-        _site.value = repository.getSiteById(siteId)
         viewModelScope.launch {
+            _site.value = repository.getSiteById(siteId)
             _hasCheckedIn.value = repository.hasCheckedIn(siteId)
-            site.value?.facts?.forEach { fact ->
+            _site.value?.facts?.forEach { fact ->
                 if (repository.isFactUnlocked(fact.id)) {
                     _unlockedFacts.value = _unlockedFacts.value + fact.id
                 }

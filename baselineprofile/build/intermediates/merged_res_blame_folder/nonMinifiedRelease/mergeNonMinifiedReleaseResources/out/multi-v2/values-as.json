@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.example.virasat.baselineprofile-mergeNonMinifiedReleaseResources-16:/values-as/values-as.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\badbo\\.gradle\\caches\\8.9\\transforms\\fac4a97fd6d9389cf848e3cfadc26bce\\transformed\\core-1.9.0\\res\\values-as\\values-as.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -6,15 +6,14 @@ import com.example.virasat.data.repository.HeritageRepository
 import com.example.virasat.data.repository.RoomHeritageRepository
 
 object RepositoryProvider {
-    @Volatile
-    var useFirebase: Boolean = false
+    @Volatile var useFirebase: Boolean = true
 
     private var repository: HeritageRepository? = null
 
     fun getRepository(context: Context): HeritageRepository {
         return repository ?: synchronized(this) {
             repository ?: if (useFirebase) {
-                FirebaseHeritageRepository()
+                FirebaseHeritageRepository(context)
             } else {
                 RoomHeritageRepository(context)
             }.also { repository = it }

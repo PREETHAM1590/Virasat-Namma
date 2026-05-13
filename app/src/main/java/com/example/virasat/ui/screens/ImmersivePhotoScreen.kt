@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.virasat.ui.screens
 
 import android.annotation.SuppressLint
@@ -7,20 +9,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.RotateRight
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.ZoomIn
 import androidx.compose.material.icons.filled.ZoomOut
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.example.virasat.ui.theme.*
+
+private val RefreshIcon get() = Icons.Filled.Refresh
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -79,7 +82,6 @@ pannellum.viewer('panorama', {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Main 360 content
         AndroidView(
             factory = { context ->
                 WebView(context).apply {
@@ -98,7 +100,6 @@ pannellum.viewer('panorama', {
             }
         )
 
-        // Semi-transparent top bar with back arrow
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -124,7 +125,6 @@ pannellum.viewer('panorama', {
             }
         }
 
-        // Title at bottom
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -138,7 +138,6 @@ pannellum.viewer('panorama', {
             )
         }
 
-        // Floating control pills (center-right)
         Column(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
@@ -194,7 +193,7 @@ pannellum.viewer('panorama', {
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector = Icons.Default.RotateRight,
+                        imageVector = RefreshIcon,
                         contentDescription = "Auto Rotate",
                         tint = if (autoRotate)
                             MaterialTheme.colorScheme.onPrimaryContainer

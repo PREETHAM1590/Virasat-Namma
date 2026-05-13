@@ -1,28 +1,69 @@
 package com.example.virasat.data.service
 
-import com.example.virasat.data.source.KarnatakaSites
-import com.google.genai.Client
-import com.google.genai.types.GenerateContentResponse
+import android.graphics.Bitmap
+import android.util.Base64
+import com.example.virasat.data.model.HeritageSite
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
+import java.io.ByteArrayOutputStream
+import java.util.concurrent.TimeUnit
 
 object GeminiHeritageService {
     private var apiKey: String = ""
-    private var client: Client? = null
+
+    // Rate limiting - 10 requests per minute max
+    private var lastRequestTime = 0L
+    private val minRequestInterval = 6000L // 6 seconds between requests
+    private var requestCount = 0
+    private val maxRequestsPerMinute = 10
+
+    // SSL Certificate Pinner - Uncomment and add actual hash for production
+    // Get hash via: openssl s_client -servername generativelanguage.googleapis.com -connect generativelanguage.googleapis.com:443 | openssl x509 -fingerprint -sha256 -noout
+    // private val certificatePinner = CertificatePinner.Builder()
+    //     .add("generativelanguage.googleapis.com", "sha256/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=")
+    //     .build()
+
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
+        // .certificatePinner(certificatePinner) // Enable when you have real hash
+        .build()
+
+    private fun checkRateLimit(): Boolean {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastRequestTime > 60000) {
+            requestCount = 0
+        }
+        return if (requestCount >= maxRequestsPerMinute) {
+            false
+        } else {
+            if (currentTime - lastRequestTime < minRequestInterval) {
+                Thread.sleep(minRequestInterval - (currentTime - lastRequestTime))
+            }
+            requestCount++
+            lastRequestTime = currentTime
+            true
+        }
+    }
 
     fun initialize(key: String) {
         apiKey = key
-        client = Client.builder().apiKey(key).build()
     }
 
     fun isInitialized(): Boolean = apiKey.isNotBlank()
 
-    private fun getSiteContext(siteId: String): String {
-        val site = KarnatakaSites.allSites.find { it.id == siteId } ?: return ""
+    private fun getSiteContext(site: HeritageSite?): String {
+        if (site == null) return ""
         return """
 Site: ${site.name} (${site.nameLocal})
 Location: ${site.location}, ${site.district}
+Coordinates: ${site.latitude}, ${site.longitude}
 Type: ${site.type}
 Description: ${site.shortDescription}
 History: ${site.history}
@@ -33,44 +74,129 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
 """.trimIndent()
     }
 
-    suspend fun generateNarration(siteId: String, language: String = "English"): String = withContext(Dispatchers.IO) {
-        if (!isInitialized()) return@withContext KarnatakaSites.allSites.find { it.id == siteId }?.description ?: ""
+    internal fun buildPayload(prompt: String): String {
+        val part = org.json.JSONObject().put("text", prompt)
+        val parts = org.json.JSONArray().put(part)
+        val content = org.json.JSONObject().put("parts", parts)
+        val contents = org.json.JSONArray().put(content)
+        return org.json.JSONObject().put("contents", contents).toString()
+    }
+
+    private suspend fun callGemini(prompt: String, model: String = "gemini-2.0-flash"): String = withContext(Dispatchers.IO) {
+        if (!isInitialized()) return@withContext ""
         try {
-            val context = getSiteContext(siteId)
-            val prompt = "You are a knowledgeable heritage tour guide. Create a warm, engaging 60-second audio narration script in $language about this heritage site.\n\nSite Context:\n$context\n\nRequirements:\n- Write in $language only\n- Natural, conversational tone like a live tour guide\n- 150-200 words, approx 60 seconds spoken\n- Start with \"Welcome to...\" or equivalent in $language\n- Mention the site's historical significance and one fascinating architectural detail\n- End with an invitation to explore"
-            val response = client!!.models.generateContent("gemini-2.5-flash-preview", prompt, null)
-            response.text() ?: KarnatakaSites.allSites.find { it.id == siteId }?.description ?: ""
-        } catch (e: Exception) {
-            KarnatakaSites.allSites.find { it.id == siteId }?.shortDescription ?: "Explore this magnificent heritage site."
+            val requestBody = buildPayload(prompt).toRequestBody("application/json".toMediaType())
+            val request = Request.Builder()
+                .url("https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey")
+                .post(requestBody)
+                .build()
+
+            client.newCall(request).execute().use { response ->
+                val body = response.body?.string() ?: return@withContext ""
+                val json = org.json.JSONObject(body)
+                if (json.has("candidates")) {
+                    val candidates = json.getJSONArray("candidates")
+                    if (candidates.length() > 0) {
+                        val content = candidates.getJSONObject(0).getJSONObject("content")
+                        val parts = content.getJSONArray("parts")
+                        if (parts.length() > 0) {
+                            return@withContext parts.getJSONObject(0).optString("text", "")
+                        }
+                    }
+                }
+                return@withContext ""
+            }
+        } catch (_: Exception) {
+            ""
         }
     }
 
-    suspend fun describeView(siteId: String, focus: String = "overview", language: String = "English"): String = withContext(Dispatchers.IO) {
+    private suspend fun callGeminiMultimodal(
+        promptText: String,
+        imageBytes: ByteArray,
+        model: String = "gemini-2.0-flash"
+    ): String = withContext(Dispatchers.IO) {
+        if (!isInitialized()) return@withContext ""
+        try {
+            val base64Image = Base64.encodeToString(imageBytes, Base64.NO_WRAP)
+
+            // Build multipart request
+            val boundary = "boundary_" + System.currentTimeMillis()
+            val multipartBody = buildMultipartBody(promptText, base64Image, boundary)
+
+            val request = Request.Builder()
+                .url("https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey")
+                .post(multipartBody.toRequestBody("multipart/form-data; boundary=$boundary".toMediaType()))
+                .build()
+
+            client.newCall(request).execute().use { response ->
+                val body = response.body?.string() ?: return@withContext ""
+                val json = org.json.JSONObject(body)
+                if (json.has("candidates")) {
+                    val candidates = json.getJSONArray("candidates")
+                    if (candidates.length() > 0) {
+                        val content = candidates.getJSONObject(0).getJSONObject("content")
+                        val parts = content.getJSONArray("parts")
+                        if (parts.length() > 0) {
+                            return@withContext parts.getJSONObject(0).optString("text", "")
+                        }
+                    }
+                }
+                return@withContext ""
+            }
+        } catch (_: Exception) {
+            ""
+        }
+    }
+
+    private fun buildMultipartBody(text: String, base64Image: String, boundary: String): String {
+        return """
+--$boundary
+Content-Type: application/json
+
+{"parts":[{"text":"$text"},{"inline_data":{"mime_type":"image/jpeg","data":"$base64Image"}}]}
+
+--$boundary--
+        """.trimIndent()
+    }
+
+    suspend fun generateNarration(site: HeritageSite?, language: String = "English"): String = withContext(Dispatchers.IO) {
+        if (!isInitialized()) return@withContext site?.description ?: ""
+        try {
+            val context = getSiteContext(site)
+            val prompt = "You are a knowledgeable heritage tour guide. Create a warm, engaging 60-second audio narration script in $language about this heritage site.\n\nSite Context:\n$context\n\nRequirements:\n- Write in $language only\n- Natural, conversational tone like a live tour guide\n- 150-200 words, approx 60 seconds spoken\n- Start with \"Welcome to...\" or equivalent in $language\n- Mention the site's historical significance and one fascinating architectural detail\n- End with an invitation to explore"
+            val response = callGemini(prompt) ?: ""
+            response.ifBlank { site?.description ?: "" }
+        } catch (e: Exception) {
+            site?.shortDescription ?: "Explore this magnificent heritage site."
+        }
+    }
+
+    suspend fun describeView(site: HeritageSite?, focus: String = "overview", language: String = "English"): String = withContext(Dispatchers.IO) {
+        if (site == null) return@withContext ""
         if (!isInitialized()) return@withContext "Take a moment to observe the intricate details of this site."
         try {
-            val site = KarnatakaSites.allSites.find { it.id == siteId } ?: return@withContext ""
             val focusText = when (focus.lowercase()) {
                 "architecture" -> site.architecture; "history" -> site.history; "legends" -> site.legends
                 else -> site.description
             }
             val prompt = "You are looking at ${site.name} in Karnataka, India. Your current focus is on the $focus of this site.\n\nContext about $focus:\n${focusText}\n\nIn 2-3 sentences in $language, describe what makes this view special. Mention one specific detail the viewer might notice."
-            val response = client!!.models.generateContent("gemini-2.5-flash-preview", prompt, null)
-            response.text() ?: "Observe the remarkable craftsmanship of this heritage site."
+            val response = callGemini(prompt) ?: ""
+            response.ifBlank { "Observe the remarkable craftsmanship of this heritage site." }
         } catch (e: Exception) {
             "Each corner of this site holds centuries of history waiting to be discovered."
         }
     }
 
-    suspend fun generateTrivia(siteId: String, count: Int = 3, language: String = "English"): List<TriviaQuestion> = withContext(Dispatchers.IO) {
-        if (!isInitialized()) return@withContext defaultTrivia(siteId)
+    suspend fun generateTrivia(site: HeritageSite?, count: Int = 3, language: String = "English"): List<TriviaQuestion> = withContext(Dispatchers.IO) {
+        if (!isInitialized()) return@withContext defaultTrivia(site)
         try {
-            val context = getSiteContext(siteId)
+            val context = getSiteContext(site)
             val prompt = "Based on this heritage site context, create $count engaging trivia questions in $language.\n\nContext:\n$context\n\nReturn ONLY a JSON array with no markdown formatting, no code fences:\n[\n  {\"question\": \"...\", \"options\": [\"A. ...\", \"B. ...\", \"C. ...\", \"D. ...\"], \"correctAnswer\": 0, \"explanation\": \"...\"}\n]\nCorrectAnswer is the 0-based index of the correct option."
-            val response = client!!.models.generateContent("gemini-2.5-flash-preview", prompt, null)
-            val text = response.text() ?: return@withContext defaultTrivia(siteId)
-            parseTriviaJson(text, count)
+            val response = callGemini(prompt) ?: return@withContext defaultTrivia(site)
+            parseTriviaJson(response, count)
         } catch (e: Exception) {
-            defaultTrivia(siteId)
+            defaultTrivia(site)
         }
     }
 
@@ -91,12 +217,130 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
                 )
             }
         } catch (e: Exception) {
-            defaultTrivia(text.hashCode().toString().take(3))
+            defaultTrivia(null)
         }
     }
 
-    private fun defaultTrivia(siteId: String): List<TriviaQuestion> {
-        val site = KarnatakaSites.allSites.find { it.id == siteId } ?: return emptyList()
+    suspend fun generateSnapshotNarration(
+        site: HeritageSite?,
+        viewLabel: String,
+        language: String = "English"
+    ): String = withContext(Dispatchers.IO) {
+        if (!isInitialized()) return@withContext fallbackSnapshotNarration(language)
+        try {
+            val context = getSiteContext(site)
+            val prompt = """You are an expert heritage guide at ${site?.name ?: "a Karnataka heritage site"}. The visitor is looking at this specific view: "$viewLabel".
+
+Site context:
+$context
+
+In a warm, conversational tone in $language, describe what the visitor is seeing in 3-4 sentences. Point out one fascinating detail they might miss. Keep it to about 30 seconds of spoken time. Start with an engaging observation."""
+            val response = callGemini(prompt) ?: return@withContext fallbackSnapshotNarration(language)
+            response.ifBlank { fallbackSnapshotNarration(language) }
+        } catch (_: Exception) {
+            fallbackSnapshotNarration(language)
+        }
+    }
+
+    private fun fallbackSnapshotNarration(language: String): String =
+        if (language.contains("Kannada", ignoreCase = true))
+            "ಈ ದೃಶ್ಯದಲ್ಲಿ ಶತಮಾನಗಳ ಕಥೆಗಳು ಅಡಗಿವೆ. ಸೂಕ್ಷ್ಮ ವಿವರಗಳನ್ನು ಗಮನಿಸಿ."
+        else
+            "Each view here holds centuries of stories waiting to be discovered."
+
+    suspend fun generateCuriosityQuestions(
+        site: HeritageSite?,
+        viewLabel: String,
+        language: String = "English"
+    ): List<String> = withContext(Dispatchers.IO) {
+        if (!isInitialized()) return@withContext curiosityFallback(site)
+        try {
+            val context = getSiteContext(site)
+            val prompt = """You are a curious heritage guide at $viewLabel. The visitor has just heard about this view.
+
+Site context:
+$context
+
+Generate exactly 3 short, thought-provoking curiosity questions in $language that encourage the visitor to look closer at this view. Each question should be 1 sentence, no longer than 15 words. Return as a plain numbered list, one per line. No markdown, no quotes."""
+            val response = callGemini(prompt) ?: return@withContext curiosityFallback(site)
+            response.lines()
+                .map { it.replace(Regex("^\\d+[.)]\\s*"), "").trim() }
+                .filter { it.isNotBlank() && it.endsWith("?") }
+                .take(3)
+        } catch (e: Exception) {
+            curiosityFallback(site)
+        }
+    }
+
+    suspend fun analyzeStreetViewSnapshot(
+        site: HeritageSite?,
+        bitmap: Bitmap,
+        language: String = "English",
+        cameraHeading: Float = 0f,
+        cameraPitch: Float = 0f
+    ): String = withContext(Dispatchers.IO) {
+        if (!isInitialized()) return@withContext fallbackSnapshotNarration(language)
+        try {
+            val context = getSiteContext(site)
+
+            // Compress bitmap for vision API
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream)
+            val imageBytes = stream.toByteArray()
+
+            val promptText = """You are an expert heritage guide at ${site?.name ?: "a Karnataka heritage site"}. The visitor is currently looking at a live Street View capture from this historic location.
+
+The camera is facing heading $cameraHeading degrees, tilt $cameraPitch degrees.
+
+Site context:
+$context
+
+Look at this Street View image carefully. In a warm, conversational tone in $language, describe what the visitor is seeing — point out specific architectural details, textures, materials, or historical features visible in this exact view. Mention one fascinating detail they might miss. Keep it to about 30 seconds of spoken time."""
+
+            val response = callGeminiMultimodal(promptText, imageBytes) ?: return@withContext fallbackSnapshotNarration(language)
+            response.ifBlank { fallbackSnapshotNarration(language) }
+        } catch (_: Exception) {
+            fallbackSnapshotNarration(language)
+        }
+    }
+
+    suspend fun chatWithHeritageGuide(userMessage: String, language: String = "English", siteContext: String = "", sitesSummary: String = ""): String = withContext(Dispatchers.IO) {
+        if (!isInitialized()) return@withContext "I'm currently offline. Please check your connection and try again."
+        try {
+            val prompt = """You are Virasat Guide, a knowledgeable and warm heritage tour guide for Karnataka, India.
+
+Available heritage sites in Karnataka:
+${sitesSummary.ifBlank { "Various temples, palaces, forts and monuments across Karnataka." }}
+
+User question: $userMessage
+
+Instructions:
+- Reply in $language
+- Be conversational, warm, and enthusiastic about Karnataka's heritage
+- If asking about a specific site, give detailed historical and architectural info
+- If asking for recommendations, suggest 2-3 relevant sites with brief reasons
+- If asking about entry fees, timings, or travel tips, give practical advice
+- Keep responses concise but informative (under 150 words)
+- If the user greets you, respond warmly and offer to help explore Karnataka's heritage
+
+Site-specific context provided: ${siteContext.ifBlank { "None" }}"""
+            val response = callGemini(prompt) ?: ""
+            response.ifBlank { "I'm exploring the heritage archives for you. Could you rephrase your question?" }
+        } catch (e: Exception) {
+            "I'm having trouble connecting to the heritage database. Please try again in a moment."
+        }
+    }
+
+    private fun curiosityFallback(site: HeritageSite?): List<String> {
+        return listOf(
+            "What stories do these stone walls hold?",
+            "Can you spot the craftsmanship detail in this view?",
+            "How many generations walked this very spot?"
+        )
+    }
+
+    private fun defaultTrivia(site: HeritageSite?): List<TriviaQuestion> {
+        if (site == null) return emptyList()
         return site.facts.take(3).mapIndexed { i, fact ->
             TriviaQuestion(
                 question = "Fact about ${site.name}",

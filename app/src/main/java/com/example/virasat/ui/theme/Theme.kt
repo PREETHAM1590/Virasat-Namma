@@ -4,7 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-private val StitchColorScheme = lightColorScheme(
+private val TempleColorScheme = lightColorScheme(
     primary = Primary,
     onPrimary = OnPrimary,
     primaryContainer = PrimaryContainer,
@@ -47,7 +47,7 @@ fun VirasatTheme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
-        colorScheme = StitchColorScheme,
+        colorScheme = TempleColorScheme,
         typography = VirasatTypography,
         shapes = VirasatShapes,
         content = content

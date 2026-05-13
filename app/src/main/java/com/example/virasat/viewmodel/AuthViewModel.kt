@@ -1,4 +1,4 @@
-package com.example.virasat.viewmodel
+﻿package com.example.virasat.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -75,8 +75,9 @@ class AuthViewModel : ViewModel() {
             _signUpState.value = AuthUiState(error = "Email is required.")
             return
         }
-        if (password.length < 6) {
-            _signUpState.value = AuthUiState(error = "Password must be at least 6 characters.")
+        val passwordError = validatePassword(password)
+        if (passwordError != null) {
+            _signUpState.value = AuthUiState(error = passwordError)
             return
         }
         _signUpState.value = AuthUiState(isLoading = true)
@@ -92,6 +93,15 @@ class AuthViewModel : ViewModel() {
                 }
             )
         }
+    }
+
+    private fun validatePassword(password: String): String? {
+        if (password.length < 9) return "Password must be at least 9 characters."
+        if (!password.any { it.isUpperCase() }) return "Password must contain an uppercase letter."
+        if (!password.any { it.isLowerCase() }) return "Password must contain a lowercase letter."
+        if (!password.any { it.isDigit() }) return "Password must contain a number."
+        if (!password.any { !it.isLetterOrDigit() }) return "Password must contain a special character."
+        return null
     }
 
     // ── Password Reset ─────────────────────────────────────────────────────

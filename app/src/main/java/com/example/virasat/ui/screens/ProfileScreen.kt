@@ -59,7 +59,7 @@ fun ProfileScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(cs.secondaryContainer)
+            .background(cs.background)
             .verticalScroll(scrollState)
     ) {
         // Top bar: eco icon, title, search
@@ -136,16 +136,46 @@ fun ProfileScreen(
                     .offset(y = (-32).dp)
                     .clip(CircleShape)
                     .shadow(8.dp, CircleShape)
-                    .background(cs.primaryContainer),
+                    .background(cs.primary),
                 contentAlignment = Alignment.Center
             ) {
                 val initials = userName.split(" ").take(2).mapNotNull { it.firstOrNull()?.uppercase() }.joinToString("")
                 Text(
                     text = initials.ifBlank { "HE" },
                     style = type.headlineLarge,
-                    color = cs.onPrimaryContainer,
+                    color = cs.onPrimary,
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                 )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Edit profile button
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            Surface(
+                onClick = onEditProfile,
+                shape = RoundedCornerShape(999.dp),
+                color = cs.primaryContainer,
+                shadowElevation = 2.dp
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = null,
+                        tint = cs.onPrimaryContainer,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.profile_edit_profile),
+                        style = type.labelLarge,
+                        color = cs.onPrimaryContainer
+                    )
+                }
             }
         }
 

@@ -17,9 +17,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.virasat.data.di.RepositoryProvider
 
 @Composable
 fun QuizScreen(onBack: () -> Unit) {
@@ -29,14 +31,13 @@ fun QuizScreen(onBack: () -> Unit) {
     var showResult by remember { mutableStateOf(false) }
     var answered by remember { mutableStateOf(false) }
 
-    val questions = remember {
-        listOf(
-            QuizQuestion("Which empire built Hampi as its capital?", listOf("Chola", "Vijayanagara", "Mughal", "Maurya"), 1),
-            QuizQuestion("What is the famous dance pose count of Hampi's Nataraja?", listOf("56", "81", "108", "18"), 3),
-            QuizQuestion("Which site is known as the 'Whispering Gallery'?", listOf("Mysore Palace", "Gol Gumbaz", "Hampi", "Badami"), 1),
-            QuizQuestion("The Hoysala temples use which stone for carvings?", listOf("Marble", "Granite", "Soapstone", "Sandstone"), 2),
-            QuizQuestion("How many light bulbs illuminate Mysore Palace during Dussehra?", listOf("50,000", "75,000", "97,000", "1,00,000"), 2)
-        )
+    val ctx = LocalContext.current
+    val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+    val allSites by produceState<List<com.example.virasat.data.model.HeritageSite>>(emptyList(), ctx) {
+        value = repo.getAllSitesList()
+    }
+    val questions = remember(allSites) {
+        generateQuizQuestionsFromSites(allSites).shuffled().take(8)
     }
 
     Column(
@@ -47,6 +48,7 @@ fun QuizScreen(onBack: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .statusBarsPadding()
                 .padding(horizontal = 20.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -371,3 +373,57 @@ private fun QuizResult(
 }
 
 data class QuizQuestion(val question: String, val options: List<String>, val correctAnswer: Int)
+
+private fun generateQuizQuestionsFromSites(allSites: List<com.example.virasat.data.model.HeritageSite>): List<QuizQuestion> {
+    val questions = mutableListOf<QuizQuestion>()
+
+    // Generate questions from site facts
+    allSites.shuffled().take(15).forEach { site ->
+        site.facts.take(2).forEach { fact ->
+            val wrongSites = allSites.filter { it.id != site.id }.shuffled().take(3)
+            val opts = listOf(site.name) + wrongSites.map { it.name }
+            val shuffledOpts = opts.shuffled()
+            questions.add(
+                QuizQuestion(
+                    question = "${site.name} is known for: ${fact.title}. Which site is this?",
+                    options = shuffledOpts,
+                    correctAnswer = shuffledOpts.indexOf(site.name)
+                )
+            )
+        }
+    }
+
+    // Add some district-based questions
+    allSites.shuffled().take(10).forEach { site ->
+        val wrongDistricts = allSites.filter { it.district != site.district }.map { it.district }.distinct().shuffled().take(3)
+        val opts = listOf(site.district) + wrongDistricts
+        val shuffledOpts = opts.shuffled()
+        questions.add(
+            QuizQuestion(
+                question = "${site.name} is located in which district?",
+                options = shuffledOpts,
+                correctAnswer = shuffledOpts.indexOf(site.district)
+            )
+        )
+    }
+
+    // Add type-based questions
+    allSites.shuffled().take(10).forEach { site ->
+        val otherTypes = com.example.virasat.data.model.SiteType.values().filter { it != site.type }.shuffled().take(3)
+        val opts = listOf(site.type.name.replaceFirstChar { it.uppercase() }) + otherTypes.map { it.name.replaceFirstChar { it.uppercase() } }
+        val shuffledOpts = opts.shuffled()
+        questions.add(
+            QuizQuestion(
+                question = "What type of heritage site is ${site.name}?",
+                options = shuffledOpts,
+                correctAnswer = shuffledOpts.indexOf(site.type.name.replaceFirstChar { it.uppercase() })
+            )
+        )
+    }
+
+    return questions.ifEmpty {
+        listOf(
+            QuizQuestion("Which empire built Hampi as its capital?", listOf("Chola", "Vijayanagara", "Mughal", "Maurya"), 1)
+        )
+    }
+}

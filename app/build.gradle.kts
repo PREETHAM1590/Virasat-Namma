@@ -4,8 +4,10 @@ plugins {
     alias(libs.plugins.android.application)
     id("org.jetbrains.kotlin.android") version "2.0.0"
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
     id("com.google.devtools.ksp") version "2.0.0-1.0.22"
     id("com.google.gms.google-services")
+    id("androidx.baselineprofile")
 }
 
 val localProps = Properties()
@@ -42,7 +44,8 @@ android {
         debug {
         }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -78,7 +81,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.material)
 
-    val composeBom = platform("androidx.compose:compose-bom:2024.05.00")
+    val composeBom = platform("androidx.compose:compose-bom:2024.09.00")
     implementation(composeBom)
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -131,6 +134,11 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
+
+    // WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 
     // Google Sign-In
     implementation("com.google.android.gms:play-services-auth:21.2.0")
@@ -143,8 +151,24 @@ dependencies {
 
     // Google Maps + Street View
     implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.maps.android:maps-compose:6.1.1")
+
+    // AndroidX Security - Encrypted SharedPreferences
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
+    // Biometric Authentication
+    implementation("androidx.biometric:biometric:1.1.0")
+
+    // Baseline Profile
+    implementation("androidx.profileinstaller:profileinstaller:1.3.1")
+    baselineProfile(project(":baselineprofile"))
 
     testImplementation(libs.junit)
+    testImplementation("io.kotest:kotest-property-jvm:5.9.1")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.9.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 }
+
+tasks.withType<Test> { useJUnitPlatform() }

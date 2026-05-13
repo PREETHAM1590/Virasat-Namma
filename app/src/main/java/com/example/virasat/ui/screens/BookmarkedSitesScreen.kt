@@ -10,20 +10,24 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.model.HeritageSite
-import com.example.virasat.data.source.KarnatakaSites
 import com.example.virasat.ui.theme.BeVietnamPro
 import com.example.virasat.ui.theme.PlusJakartaSans
 
@@ -32,34 +36,23 @@ fun BookmarkedSitesScreen(
     onBack: () -> Unit,
     onSiteClick: (String) -> Unit
 ) {
-    val bookmarked = remember { KarnatakaSites.allSites.filter { it.isFavourite } }
-    val sampleSites = remember {
-        listOf(
+    val ctx = LocalContext.current
+    val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+    val allSites by produceState<List<HeritageSite>>(emptyList(), ctx) {
+        value = repo.getAllSitesList()
+    }
+    val bookmarked = remember(allSites) { allSites.filter { it.isFavourite } }
+    val sampleSites = remember(allSites) {
+        allSites.map { site ->
             SampleBookmarkedSite(
-                "mossy-ziggurat",
-                "The Mossy Ziggurat",
-                "A forgotten architectural marvel slowly being reclaimed by the ancient forest. Explore the terraced levels where rare flora now blooms amidst carved stone.",
-                "Eastern Highlands",
-                "HERITAGE RESERVE",
-                KarnatakaSites.allSites.firstOrNull()?.imageUrl ?: ""
-            ),
-            SampleBookmarkedSite(
-                "veridian-glasshouse",
-                "Veridian Glasshouse",
-                "Step into a living archive of endangered plant species housed within an elegant Victorian-era glass structure.",
-                "Royal Gardens District",
-                "BOTANICAL SANCTUARY",
-                KarnatakaSites.allSites.drop(1).firstOrNull()?.imageUrl ?: ""
-            ),
-            SampleBookmarkedSite(
-                "whispering-cascades",
-                "The Whispering Cascades",
-                "A sacred water site known for its unique acoustic properties. The polished stones here have been smoothed by centuries.",
-                "Valley of Stones",
-                "NATURAL WONDER",
-                KarnatakaSites.allSites.drop(2).firstOrNull()?.imageUrl ?: ""
+                site.id,
+                site.name,
+                site.shortDescription,
+                site.location,
+                site.type.name.replaceFirstChar { it.uppercase() },
+                site.imageUrl
             )
-        )
+        }
     }
 
     val displaySites = if (bookmarked.isNotEmpty()) bookmarked else emptyList()
@@ -94,7 +87,7 @@ fun BookmarkedSitesScreen(
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
-                            imageVector = Icons.Default.Eco,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(24.dp)
@@ -150,13 +143,40 @@ fun BookmarkedSitesScreen(
         }
 
         if (displaySites.isEmpty()) {
-            // Show sample cards from HTML design when no real bookmarks
-            sampleSites.forEach { site ->
-                SavedJourneyCard(
-                    site = site,
-                    onClick = { onSiteClick(site.id) }
+            // Empty state
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(48.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(88.dp)
+                        .clip(RoundedCornerShape(999.dp))
+                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.BookmarkBorder,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = "No saved sites yet",
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Explore heritage sites and bookmark the ones you want to revisit.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
             }
         } else {
             displaySites.forEach { site ->

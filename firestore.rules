@@ -5,11 +5,11 @@ service cloud.firestore {
 
     // ── Sites collection (public heritage data) ───────────────────────────
     match /sites/{siteId} {
-      // Anyone can read site information
+      // Anyone can read site information (public data)
       allow read: if true;
-      // Authenticated users can write (needed for app's first-launch seeder)
-      // In production, restrict to admin role or use Admin SDK + Cloud Function
-      allow write: if request.auth != null;
+      // ONLY admin can write — use Firebase Admin SDK or Cloud Functions for seeding
+      // Clients CANNOT directly write to sites
+      allow write: if false;
     }
 
     // ── User profiles and user-scoped data ───────────────────────────────

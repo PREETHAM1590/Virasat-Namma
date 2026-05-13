@@ -49,19 +49,19 @@ data class OnboardingPage(
 
 val onboardingPages = listOf(
     OnboardingPage(
-        "Rooted in Legacy",
-        "Discover the seamless harmony between cultural preservation and the natural world.",
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuC6BxoSrVINAMjBwN56vdsUj82W4F-lmIRXHQgRMp_NsryIvIvJYXsVdOkiPaa1RREc5yGJd_kzb2vw2x6tebMCnZN3MRwkGSvVNM1dXdeX4-7fMe4FzYhxOQ_E3qXcvklNEcP8K4tT-ZoQapHMGNMyRrbczMypaqMdh1_ZOMBVeRhviyhRyQNqYQhbUQwkDs6x9nmAF7RCSyRROthJpWbAhh28IGCJegud63NezQtk9v9llqVUsOjFDr09mFMQ0pSZp7Yr2IbuFNQ"
+        "Discover Karnataka",
+        "Explore 6 UNESCO World Heritage sites, ancient temples, palaces, and monuments across Karnataka.",
+        "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=800"
     ),
     OnboardingPage(
-        "Living Heritage",
-        "Immerse yourself in stories passed down through generations. Every leaf, every stone has a voice.",
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuB7MnOM8E2OyarLAuptFq0x54skKEdvB_eTMIwG0AcWOpuh6tMVFBsB2-1GX-W1edK2Q73LlmxAUTp3lPY3S-jRg32CXy4y1kYoErzEOjOj7rqVx_uL4baU3gHNLHdNvz6EMlXJKinjCNjUudNllqC1bGYvA5VW_fKWw1eWRjE-cKeXqmM_03naMqOE7BoiYdW-37HLuaP3Gj2VIvZZrZQ7E_U0v1fYTC8pv1K1H_exdM2YcHa9Z0LdFXcJ-71ZRAAjMmBOysR63h8"
+        "Scan. Learn. Collect.",
+        "Scan QR codes at heritage sites, unlock audio guides, earn check-in stamps, and build your travel passport.",
+        "https://images.unsplash.com/photo-1600112356915-089abb8fc71a?w=800"
     ),
     OnboardingPage(
         "Step Into Time",
-        "Become a modern custodian. Begin your journey to explore, protect, and celebrate the fluid beauty of our shared heritage.",
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuCZ38lU2lpO1joDDm2rwEMINXIXySoAb1Ywz8ptvbodRq-3Ppxxp-nQTSJRlDjalelwiKcCjP98A7ENrY-SLahf5timWTh_SmkaVjm8NmqQdlic_5SvAW9BWEOXhtjgELcp2Jw_ZE3loW6PolVwR5EFVP1J-kCVYtCvXtzkksY98amErLaKBXQOHjucPdUdnxBR7Ram3PXOqNbsKAXKjtXnvmwURT8NrvxRrqN6nPFjPoQm69cPcmPShRBl-XWpKYHZ2Oa1XkxZ4l0"
+        "From the ruins of Hampi to the whispering domes of Gol Gumbaz — Karnataka's heritage awaits.",
+        "https://images.unsplash.com/photo-1673779376455-b203cef903d1?w=800"
     )
 )
 

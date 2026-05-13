@@ -37,6 +37,8 @@ import coil.compose.AsyncImage
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.R
 import com.example.virasat.data.model.HeritageSite
+import com.example.virasat.util.LocationUtils
+import kotlinx.coroutines.launch
 
 @Composable
 fun SearchScreen(
@@ -65,6 +67,17 @@ fun SearchScreen(
     val allSites by produceState<List<HeritageSite>>(emptyList(), ctx) {
         value = try { repo.getAllSitesList() } catch (_: Exception) { emptyList() }
         isLoading = false
+    }
+
+    var userLocation by remember { mutableStateOf<android.location.Location?>(null) }
+    LaunchedEffect(Unit) {
+        if (ctx.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED ||
+            ctx.checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            try {
+                userLocation = LocationUtils.fetchCurrentLocation(ctx)
+            } catch (_: Exception) { }
+        }
     }
 
     val filteredSites by remember(activeFilter, searchQuery, allSites) {
@@ -259,19 +272,19 @@ fun SearchScreen(
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(0.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 24.dp)
             ) {
-                itemsIndexed(filteredSites, key = { _, site -> site.id }) { index, site ->
-                    val topMargin = when (index % 4) {
-                        0 -> 0.dp
-                        1 -> 32.dp
-                        2 -> (-32).dp
-                        else -> 0.dp
+                itemsIndexed(filteredSites, key = { _, site -> site.id }) { _, site ->
+                    val distanceText = remember(userLocation) {
+                        userLocation?.let {
+                            val km = LocationUtils.distanceKm(it.latitude, it.longitude, site.latitude, site.longitude)
+                            LocationUtils.formatDistance(km)
+                        } ?: site.district
                     }
-                    SiteCard(site = site, onClick = { onSiteClick(site.id) }, topMargin = topMargin)
+                    SiteCard(site = site, distanceText = distanceText, onClick = { onSiteClick(site.id) })
                 }
             }
         }
@@ -279,14 +292,13 @@ fun SearchScreen(
 }
 
 @Composable
-private fun SiteCard(site: HeritageSite, onClick: () -> Unit, topMargin: Dp = 0.dp) {
+private fun SiteCard(site: HeritageSite, distanceText: String = site.district, onClick: () -> Unit) {
     val cs = MaterialTheme.colorScheme
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(280.dp)
-            .offset(y = topMargin)
-            .clip(RoundedCornerShape(32.dp))
+            .height(260.dp)
+            .clip(RoundedCornerShape(24.dp))
             .clickable(onClick = onClick),
         contentAlignment = Alignment.BottomStart
     ) {
@@ -345,7 +357,7 @@ private fun SiteCard(site: HeritageSite, onClick: () -> Unit, topMargin: Dp = 0.
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = site.district,
+                text = distanceText,
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White.copy(alpha = 0.9f)
             )

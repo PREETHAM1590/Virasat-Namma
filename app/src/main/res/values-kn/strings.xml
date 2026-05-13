@@ -161,4 +161,44 @@
     <string name="saved">ಉಳಿಸಲಾಗಿದೆ</string>
     <string name="reviews">ವಿಮರ್ಶೆಗಳು</string>
     <string name="district">%1$s ಜಿಲ್ಲೆ</string>
+    <string name="language_select_title">ಭಾಷೆ\nಆಯ್ಕೆಮಾಡಿ</string>
+    <string name="language_select_subtitle">ವಿರಾಸತ್ ಅನುಭವಕ್ಕಾಗಿ ನಿಮ್ಮ ಆದ್ಯತೆಯ ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.</string>
+    <string name="language_continue">ಮುಂದುವರಿಸಿ</string>
+
+    <!-- Hardcoded strings fix -->
+    <string name="grant_permission">ಅನುಮತಿ ನೀಡಿ</string>
+    <string name="view_site_details">ತಾಣ ವಿವರ ನೋಡಿ</string>
+    <string name="check_in_here">ಇಲ್ಲಿ ಚೆಕ್ ಇನ್ ಮಾಡಿ</string>
+    <string name="scan_another_qr">ಮತ್ತೊಂದು QR ಸ್ಕ್ಯಾನ್ ಮಾಡಿ</string>
+    <string name="scan_qr_unlock">ಇತಿಹಾಸ ಅನ್ಲಾಕ್ ಮಾಡಲು QR ಸ್ಕ್ಯಾನ್ ಮಾಡಿ</string>
+    <string name="camera_permission_required">ಕ್ಯಾಮೆರಾ ಅನುಮತಿ ಅಗತ್ಯ</string>
+    <string name="badges_title">ಬ್ಯಾಡ್ಜ್‌ಗಳು &amp; ಸಾಧನೆಗಳು</string>
+    <string name="offline_title">ಆಫ್‌ಲೈನ್ &amp; ಬುಕ್‌ಮಾರ್ಕ್‌ಗಳು</string>
+    <string name="you_are_offline">ನೀವು ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿದ್ದೀರಿ</string>
+    <string name="no_bookmarked_sites">ಬುಕ್‌ಮಾರ್ಕ್ ಮಾಡಿದ ತಾಣಗಳಿಲ್ಲ</string>
+    <string name="bookmark_hint">ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಪ್ರವೇಶಿಸಲು ತಾಣಗಳನ್ನು ಬುಕ್‌ಮಾರ್ಕ್ ಮಾಡಿ</string>
+    <string name="data_sync_title">ಡೇಟಾ &amp; ಸಿಂಕ್</string>
+    <string name="syncing">ಸಿಂಕ್ ಆಗುತ್ತಿದೆ…</string>
+    <string name="sync_now">ಈಗ ಸಿಂಕ್ ಮಾಡಿ</string>
+    <string name="notifications_all">ಎಲ್ಲ ಎಚ್ಚರಿಕೆಗಳು</string>
+    <string name="notifications_mentions">ಉಲ್ಲೇಖಗಳು</string>
+    <string name="notifications_system">ಸಿಸ್ಟಮ್</string>
+    <string name="itinerary_title">ಪ್ರವಾಸ ಯೋಜಕ</string>
+    <string name="itinerary_search">ಸೇರಿಸಲು ತಾಣಗಳನ್ನು ಹುಡುಕಿ…</string>
+    <string name="itinerary_saved">ಉಳಿಸಿದ ಪ್ರವಾಸಗಳು</string>
+    <string name="itinerary_add_hint">ನಿಮ್ಮ ಪ್ರವಾಸ ಯೋಜಿಸಲು ತಾಣಗಳನ್ನು ಸೇರಿಸಿ</string>
+    <string name="itinerary_save">ಪ್ರವಾಸ ಉಳಿಸಿ</string>
+    <string name="itinerary_name_label">ಪ್ರವಾಸ ಹೆಸರು</string>
+    <string name="btn_save">ಉಳಿಸಿ</string>
+    <string name="btn_cancel">ರದ್ದುಮಾಡಿ</string>
+    <string name="btn_retry">ಮರುಪ್ರಯತ್ನಿಸಿ</string>
+    <string name="search_sites">ತಾಣಗಳನ್ನು ಹುಡುಕಿ…</string>
+    <string name="contact_name">ಹೆಸರು</string>
+    <string name="contact_name_hint">ನಿಮ್ಮ ಹೆಸರು</string>
+    <string name="contact_email">ಇಮೇಲ್</string>
+    <string name="contact_email_hint">your@email.com</string>
+    <string name="contact_message">ಸಂದೇಶ</string>
+    <string name="contact_message_hint">ನಿಮ್ಮ ಸಂದೇಶ ಬರೆಯಿರಿ…</string>
+    <string name="create_account">ಖಾತೆ ತೆರೆಯಿರಿ</string>
+    <string name="sign_in_btn">ಸೈನ್ ಇನ್</string>
 </resources>

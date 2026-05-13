@@ -1,5 +1,7 @@
 package com.example.virasat.data.repository
 
+import android.content.Context
+import com.example.virasat.data.local.VirasatDatabase
 import com.example.virasat.data.model.*
 import com.example.virasat.data.source.FirestoreDataSource
 import kotlinx.coroutines.flow.Flow
@@ -7,9 +9,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import com.example.virasat.data.source.KarnatakaSites
 
-class FirebaseHeritageRepository : HeritageRepository {
+class FirebaseHeritageRepository(context: Context) : HeritageRepository {
 
     private val firestore = FirestoreDataSource()
+    private val db = VirasatDatabase.getDatabase(context)
+    private val checkInDao = db.checkInDao()
 
     override fun getAllSites(): Flow<List<HeritageSite>> =
         firestore.observeAllSites().map { it.ifEmpty { KarnatakaSites.allSites } }
@@ -46,10 +50,21 @@ class FirebaseHeritageRepository : HeritageRepository {
         firestore.observeUniqueSiteCount()
 
     override suspend fun hasCheckedIn(siteId: String): Boolean =
-        firestore.hasCheckedIn(siteId)
+        checkInDao.getCheckInForSite(siteId) != null || firestore.hasCheckedIn(siteId)
 
     override suspend fun checkIn(site: HeritageSite) {
+        // Write to Firebase
         firestore.checkIn(site)
+        // Also persist locally in Room
+        val checkIn = CheckIn(
+            id = java.util.UUID.randomUUID().toString(),
+            siteId = site.id,
+            siteName = site.name,
+            siteLocation = site.location,
+            qrCodeId = site.qrCodeId,
+            stampIcon = site.type.name.lowercase()
+        )
+        checkInDao.insertCheckIn(checkIn)
     }
 
     override fun getAllUnlockedFacts(): Flow<List<UnlockedFact>> =

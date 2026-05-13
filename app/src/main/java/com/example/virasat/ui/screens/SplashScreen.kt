@@ -71,7 +71,7 @@ fun SplashScreen(onNavigateToLanguage: () -> Unit) {
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = "Nature & Heritage",
+                text = "Karnataka Heritage",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
             )

@@ -1,16 +1,18 @@
 package com.example.virasat.ui.theme
 
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
 
-// Design System — Soft rounded shapes
-// Cards: 24-36dp, Buttons/Chips: pill (full), Hero images: 36dp
+// Design System — Indian Temple Architecture Shapes
+// Inspired by stepped gopuram profiles and carved stone edges
+// Mix of cut corners (shikhara steps) and rounded (dome arches)
 
 val VirasatShapes = Shapes(
-    extraSmall = RoundedCornerShape(12.dp),
-    small = RoundedCornerShape(16.dp),
-    medium = RoundedCornerShape(24.dp),
-    large = RoundedCornerShape(32.dp),
-    extraLarge = RoundedCornerShape(36.dp)
+    extraSmall = RoundedCornerShape(8.dp),
+    small = CutCornerShape(topStart = 12.dp, bottomEnd = 12.dp),
+    medium = CutCornerShape(topStart = 16.dp, bottomEnd = 16.dp),
+    large = RoundedCornerShape(24.dp),
+    extraLarge = CutCornerShape(topStart = 24.dp, bottomEnd = 24.dp)
 )

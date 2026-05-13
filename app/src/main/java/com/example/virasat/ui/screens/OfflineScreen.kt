@@ -1,166 +1,85 @@
 package com.example.virasat.ui.screens
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.WifiOff
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CloudOff
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
-import com.example.virasat.ui.theme.BeVietnamPro
-import com.example.virasat.ui.theme.PlusJakartaSans
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.virasat.viewmodel.OfflineViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OfflineScreen(
-    onRetry: () -> Unit,
-    onBrowseOffline: () -> Unit
+    onBack: () -> Unit = {},
+    onSiteClick: (String) -> Unit = {},
+    viewModel: OfflineViewModel = viewModel()
 ) {
-    val scheme = MaterialTheme.colorScheme
+    val isOnline by viewModel.isOnline.collectAsState()
+    val bookmarkedSites by viewModel.bookmarkedSites.collectAsState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(scheme.background)
-    ) {
-        // Ambient background blobs
-        Box(
-            modifier = Modifier
-                .size(500.dp)
-                .offset(x = (-120).dp, y = (-160).dp)
-                .background(
-                    Brush.radialGradient(
-                        listOf(
-                            scheme.secondaryContainer.copy(alpha = 0.4f),
-                            scheme.secondaryContainer.copy(alpha = 0f)
-                        )
-                    ),
-                    CircleShape
-                )
-        )
-        Box(
-            modifier = Modifier
-                .size(600.dp)
-                .offset(x = 180.dp, y = 350.dp)
-                .background(
-                    Brush.radialGradient(
-                        listOf(
-                            scheme.surfaceBright.copy(alpha = 0.8f),
-                            scheme.surfaceBright.copy(alpha = 0f)
-                        )
-                    )
-                )
-        )
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            // Organic blob with wifi icon
-            Box(
-                modifier = Modifier
-                    .size(160.dp)
-                    .clip(RoundedCornerShape(
-                        topStartPercent = 43,
-                        topEndPercent = 57,
-                        bottomEndPercent = 35,
-                        bottomStartPercent = 65
-                    ))
-                    .background(scheme.surfaceContainerHighest),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.WifiOff,
-                    contentDescription = null,
-                    modifier = Modifier.size(72.dp),
-                    tint = scheme.onSurfaceVariant.copy(alpha = 0.6f)
-                )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Offline & Bookmarks") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Column(Modifier.fillMaxSize().padding(padding)) {
+            if (!isOnline) {
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+                ) {
+                    Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.CloudOff, null, tint = MaterialTheme.colorScheme.error)
+                        Spacer(Modifier.width(12.dp))
+                        Text("You are offline", color = MaterialTheme.colorScheme.onErrorContainer)
+                    }
+                }
             }
 
-            Spacer(modifier = Modifier.height(48.dp))
-
-            Text(
-                text = "No Internet Connection",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontFamily = PlusJakartaSans,
-                    fontWeight = FontWeight.Bold
-                ),
-                color = scheme.onSurface,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "You're offline. Some features may not be available.",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontFamily = BeVietnamPro,
-                    fontWeight = FontWeight.Normal
-                ),
-                color = scheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 32.dp)
-            )
-
-            Spacer(modifier = Modifier.height(48.dp))
-
-            // Retry pill button (primary)
-            Box(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .background(
-                        scheme.primaryContainer,
-                        RoundedCornerShape(999.dp)
-                    )
-                    .padding(horizontal = 40.dp, vertical = 18.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Retry",
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontFamily = BeVietnamPro,
-                        fontWeight = FontWeight.SemiBold,
-                        letterSpacing = (0.05).em
-                    ),
-                    color = scheme.onPrimaryContainer
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Browse Offline pill button (surface)
-            Box(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .background(
-                        scheme.surfaceContainerLow,
-                        RoundedCornerShape(999.dp)
-                    )
-                    .padding(horizontal = 40.dp, vertical = 18.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Browse Offline",
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontFamily = BeVietnamPro,
-                        fontWeight = FontWeight.SemiBold,
-                        letterSpacing = (0.05).em
-                    ),
-                    color = scheme.onSurfaceVariant
-                )
+            if (bookmarkedSites.isEmpty()) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(Icons.Default.Bookmark, null, Modifier.size(64.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
+                        Spacer(Modifier.height(16.dp))
+                        Text("No bookmarked sites yet", style = MaterialTheme.typography.titleMedium)
+                        Text("Bookmark sites to access them offline", style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            } else {
+                LazyColumn(
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(bookmarkedSites) { site ->
+                        Card(
+                            modifier = Modifier.fillMaxWidth().clickable { onSiteClick(site.id) }
+                        ) {
+                            Column(Modifier.padding(16.dp)) {
+                                Text(site.name, fontWeight = FontWeight.Bold)
+                                Text(site.location, style = MaterialTheme.typography.bodySmall)
+                                Text(site.type.name, style = MaterialTheme.typography.labelSmall)
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -113,7 +113,7 @@ fun AudioGuideScreen(
                 })
                 if (pendingStart) {
                     pendingStart = false
-                    tts?.speak(chapters[currentChapter].transcript, TextToSpeech.QUEUE_FLUSH, null, null)
+                    tts?.speak(chapters[currentChapter].transcript, TextToSpeech.QUEUE_FLUSH, null, "chapter_${currentChapter}")
                 }
             }
         }
@@ -139,7 +139,7 @@ fun AudioGuideScreen(
         progress = 0f
         tts?.stop()
         if (isPlaying && ttsReady) {
-            tts?.speak(chapters[currentChapter].transcript, TextToSpeech.QUEUE_FLUSH, null, null)
+            tts?.speak(chapters[currentChapter].transcript, TextToSpeech.QUEUE_FLUSH, null, "chapter_$currentChapter")
         }
     }
 
@@ -315,7 +315,7 @@ fun AudioGuideScreen(
                                         isPlaying = !isPlaying
                                         if (isPlaying) {
                                             if (ttsReady) {
-                                                tts?.speak(chapter.transcript, TextToSpeech.QUEUE_FLUSH, null, null)
+                                                tts?.speak(chapter.transcript, TextToSpeech.QUEUE_FLUSH, null, "chapter_$currentChapter")
                                             } else {
                                                 pendingStart = true
                                             }
@@ -384,7 +384,7 @@ fun AudioGuideScreen(
                                 progress = 0f
                                 isPlaying = true
                                 if (ttsReady) {
-                                    tts?.speak(ch.transcript, TextToSpeech.QUEUE_FLUSH, null, null)
+                                    tts?.speak(ch.transcript, TextToSpeech.QUEUE_FLUSH, null, "chapter_$index")
                                 } else {
                                     pendingStart = true
                                 }

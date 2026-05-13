@@ -11,21 +11,28 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.virasat.data.source.KarnatakaSites
+import com.example.virasat.data.di.RepositoryProvider
 
 @Composable
 fun ImageGalleryScreen(
     siteId: String,
     onBack: () -> Unit
 ) {
-    val site = KarnatakaSites.allSites.find { it.id == siteId }
+    val ctx = LocalContext.current
+    val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+    val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
+        value = try { repo.getSiteById(siteId) } catch (_: Exception) { null }
+    }
     val images = remember(site) {
         listOf(site?.imageUrl ?: "")
             .plus(site?.galleryImages ?: emptyList())
@@ -78,6 +85,7 @@ fun ImageGalleryScreen(
         // Back arrow overlay
         Box(
             modifier = Modifier
+                .statusBarsPadding()
                 .padding(16.dp)
                 .background(
                     MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),

@@ -35,9 +35,9 @@ enum class BottomNavItem(
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector
 ) {
-    HOME("home", "Explore", Icons.Default.Home, Icons.Outlined.Home),
-    MAP("map", "Heritage", Icons.Default.Star, Icons.Outlined.Star),
-    SEARCH("search", "Saved", Icons.Default.Search, Icons.Outlined.Search),
+    HOME("home", "Home", Icons.Default.Home, Icons.Outlined.Home),
+    MAP("map", "Map", Icons.Default.LocationOn, Icons.Outlined.LocationOn),
+    SEARCH("search", "Search", Icons.Default.Search, Icons.Outlined.Search),
     PROFILE("profile", "Profile", Icons.Default.Person, Icons.Outlined.Person)
 }
 

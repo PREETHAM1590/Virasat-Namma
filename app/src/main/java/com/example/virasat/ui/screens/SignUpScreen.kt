@@ -2,6 +2,8 @@ package com.example.virasat.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.res.stringResource
+import com.example.virasat.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -149,7 +151,7 @@ fun SignUpScreen(
                     name = it
                     authViewModel.clearSignUpError()
                 },
-                placeholder = { Text("Full Name", color = MaterialTheme.colorScheme.outline) },
+                placeholder = { Text(stringResource(R.string.full_name), color = MaterialTheme.colorScheme.outline) },
                 leadingIcon = { Icon(Icons.Default.Person, null, tint = MaterialTheme.colorScheme.outline) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -171,7 +173,7 @@ fun SignUpScreen(
                     email = it
                     authViewModel.clearSignUpError()
                 },
-                placeholder = { Text("Email Address", color = MaterialTheme.colorScheme.outline) },
+                placeholder = { Text(stringResource(R.string.email_address), color = MaterialTheme.colorScheme.outline) },
                 leadingIcon = { Icon(Icons.Default.Mail, null, tint = MaterialTheme.colorScheme.outline) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -194,7 +196,7 @@ fun SignUpScreen(
                     password = it
                     authViewModel.clearSignUpError()
                 },
-                placeholder = { Text("Password (min. 6 characters)", color = MaterialTheme.colorScheme.outline) },
+                placeholder = { Text("Password (min. 9 chars, A-z, 0-9, special)", color = MaterialTheme.colorScheme.outline) },
                 leadingIcon = { Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.outline) },
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -262,7 +264,7 @@ fun SignUpScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Create Account", style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp))
+                    Text(stringResource(R.string.create_account), style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp))
                     Spacer(Modifier.width(8.dp))
                     Icon(Icons.AutoMirrored.Filled.ArrowForward, null, modifier = Modifier.size(18.dp))
                 }
@@ -273,7 +275,7 @@ fun SignUpScreen(
                 Modifier.align(Alignment.CenterHorizontally),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text("Already have an account? ", style = MaterialTheme.typography.bodyMedium, color = OnSurfaceVariant)
+                Text(stringResource(R.string.have_account), style = MaterialTheme.typography.bodyMedium, color = OnSurfaceVariant)
                 Text(
                     "Sign In",
                     modifier = Modifier.clickable { onNavigateToLogin() },

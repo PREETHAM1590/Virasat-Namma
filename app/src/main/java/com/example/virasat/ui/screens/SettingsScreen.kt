@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.virasat.util.NotificationPreferences
 
 @Composable
 fun SettingsScreen(
@@ -245,6 +246,61 @@ fun SettingsScreen(
                     onCheckedChange = {
                         offlineEnabled = it
                         onDarkMode()
+                    }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Notification Categories Section
+            SettingsSectionCard {
+                Text(
+                    text = "Notification Categories",
+                    style = type.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = cs.primary,
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
+
+                var proximityEnabled by remember { mutableStateOf(NotificationPreferences.isEnabled(context, "proximity")) }
+                var weeklyFactsEnabled by remember { mutableStateOf(NotificationPreferences.isEnabled(context, "weekly_facts")) }
+                var badgeUnlocksEnabled by remember { mutableStateOf(NotificationPreferences.isEnabled(context, "badge_unlocks")) }
+
+                SettingsToggleRow(
+                    icon = Icons.Default.NearMe,
+                    iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
+                    iconTint = cs.tertiary,
+                    label = "Proximity Alerts",
+                    subtitle = "Notify when near heritage sites",
+                    checked = proximityEnabled,
+                    onCheckedChange = {
+                        proximityEnabled = it
+                        NotificationPreferences.setEnabled(context, "proximity", it)
+                    }
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                SettingsToggleRow(
+                    icon = Icons.Default.AutoStories,
+                    iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
+                    iconTint = cs.tertiary,
+                    label = "Weekly Facts",
+                    subtitle = "Receive weekly heritage facts",
+                    checked = weeklyFactsEnabled,
+                    onCheckedChange = {
+                        weeklyFactsEnabled = it
+                        NotificationPreferences.setEnabled(context, "weekly_facts", it)
+                    }
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                SettingsToggleRow(
+                    icon = Icons.Default.EmojiEvents,
+                    iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
+                    iconTint = cs.tertiary,
+                    label = "Badge Unlocks",
+                    subtitle = "Notify when you earn badges",
+                    checked = badgeUnlocksEnabled,
+                    onCheckedChange = {
+                        badgeUnlocksEnabled = it
+                        NotificationPreferences.setEnabled(context, "badge_unlocks", it)
                     }
                 )
             }

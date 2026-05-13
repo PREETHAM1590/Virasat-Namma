@@ -84,7 +84,7 @@ fun CommunityScreen(onBack: () -> Unit) {
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
-                            imageVector = Icons.Default.Eco,
+                            imageVector = Icons.Default.Search,
                             contentDescription = null,
                             tint = colorScheme.primary,
                             modifier = Modifier.size(24.dp)

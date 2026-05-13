@@ -2,6 +2,13 @@
 
 package com.example.virasat.ui.screens
 
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.RectF
+import android.graphics.Typeface
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -34,10 +41,20 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.model.HeritageSite
-import com.example.virasat.data.source.ImageUrls
 import com.example.virasat.ui.theme.Primary
 import com.example.virasat.ui.theme.PrimaryContainer
 import com.example.virasat.ui.theme.OnPrimaryContainer
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.example.virasat.data.model.SiteType
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun MapScreen(
@@ -51,6 +68,7 @@ fun MapScreen(
     }
     val cs = MaterialTheme.colorScheme
     var selectedFilter by remember { mutableStateOf("All") }
+    var selectedSite by remember { mutableStateOf<HeritageSite?>(null) }
 
     val filters = listOf("All", "Temple", "Palace", "Fort", "Monument", "UNESCO", "Jain")
     val displaySites = remember(allSites, selectedFilter) {
@@ -58,41 +76,45 @@ fun MapScreen(
         else allSites.filter { it.type.name.equals(selectedFilter, ignoreCase = true) }
     }
 
+    val karnatakaCenter = LatLng(15.0, 76.0)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(karnatakaCenter, 6.5f)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(cs.background)
     ) {
-        // Map background image
-        AsyncImage(
-            model = ImageUrls.KARNATAKA_MAP_STYLE,
-            contentDescription = "Karnataka Map",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-
-        // Subtle dark overlay on map for readability
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.08f))
-        )
-
-        // Site markers overlaid on map
-        Box(modifier = Modifier.fillMaxSize()) {
+        // Real Google Map
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPositionState,
+            properties = MapProperties(
+                isMyLocationEnabled = false
+            ),
+            uiSettings = MapUiSettings(
+                zoomControlsEnabled = true,
+                myLocationButtonEnabled = false,
+                mapToolbarEnabled = false
+            )
+        ) {
             displaySites.forEach { site ->
-                val (xOff, yOff) = site.toMapOffset()
-                MapMarker(
-                    site = site,
-                    modifier = Modifier
-                        .offset(x = xOff, y = yOff)
-                        .padding(start = 40.dp, top = 80.dp),
-                    onClick = { onSiteClick(site.id) }
+                val icon = rememberMarkerIcon(ctx, site.type)
+                Marker(
+                    state = MarkerState(position = LatLng(site.latitude, site.longitude)),
+                    title = site.name,
+                    snippet = site.district,
+                    icon = icon,
+                    onClick = {
+                        selectedSite = site
+                        true
+                    }
                 )
             }
         }
 
-        // Top overlay: back button + search pill
+        // Top overlay: back button + search pill + filters
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -215,7 +237,15 @@ fun MapScreen(
                     MapBottomCard(
                         site = site,
                         isFavourite = site.isFavourite,
-                        onClick = { onSiteClick(site.id) },
+                        onClick = {
+                            selectedSite = site
+                            cameraPositionState.move(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    LatLng(site.latitude, site.longitude), 12f
+                                )
+                            )
+                            onSiteClick(site.id)
+                        },
                         onFavouriteClick = { }
                     )
                 }
@@ -365,88 +395,78 @@ fun TypeBadge(type: String) {
     }
 }
 
-private fun HeritageSite.toMapOffset(): Pair<androidx.compose.ui.unit.Dp, androidx.compose.ui.unit.Dp> {
-    val minLat = 11.5
-    val maxLat = 17.5
-    val minLon = 73.5
-    val maxLon = 78.5
-    val xPercent = ((longitude - minLon) / (maxLon - minLon)).coerceIn(0.0, 1.0)
-    val yPercent = 1.0 - ((latitude - minLat) / (maxLat - minLat)).coerceIn(0.0, 1.0)
-    return (xPercent * 280).dp to (yPercent * 380).dp
-}
 
 @Composable
-fun MapMarker(
-    site: HeritageSite,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = modifier
-            .size(36.dp)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .size(28.dp)
-                .shadow(4.dp, CircleShape, spotColor = Primary.copy(alpha = 0.3f))
-                .clip(CircleShape)
-                .background(Primary),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                Icons.Default.LocationOn,
-                null,
-                tint = Color.White,
-                modifier = Modifier.size(16.dp)
-            )
-        }
-    }
+private fun rememberMarkerIcon(context: android.content.Context, type: SiteType): com.google.android.gms.maps.model.BitmapDescriptor {
+    return remember(type) { createMarkerBitmap(context, type) }
 }
 
-@Composable
-fun MapSiteChip(site: HeritageSite, onClick: () -> Unit) {
-    Card(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
-        ),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(44.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    Icons.Default.LocationOn,
-                    null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(22.dp)
-                )
-            }
-            Spacer(modifier = Modifier.width(14.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    site.name,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    site.district,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
+private fun createMarkerBitmap(context: android.content.Context, type: SiteType): com.google.android.gms.maps.model.BitmapDescriptor {
+    val size = 96
+    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+
+    val bgColor = when (type) {
+        SiteType.TEMPLE -> 0xFFFF6F00.toInt()
+        SiteType.PALACE -> 0xFF7B1FA2.toInt()
+        SiteType.FORT -> 0xFFE65100.toInt()
+        SiteType.MONUMENT -> 0xFF00838F.toInt()
+        SiteType.CAVE -> 0xFF4E342E.toInt()
+        SiteType.UNESCO -> 0xFF1565C0.toInt()
+        SiteType.JAIN -> 0xFFC2185B.toInt()
+        SiteType.MUSEUM -> 0xFF00695C.toInt()
+        SiteType.NATURE -> 0xFF2E7D32.toInt()
+        SiteType.TREK -> 0xFF33691E.toInt()
+        SiteType.LAKE -> 0xFF0277BD.toInt()
+        SiteType.MISC -> 0xFF5D4037.toInt()
     }
+
+    val drawableRes = when (type) {
+        SiteType.TEMPLE -> com.example.virasat.R.drawable.ic_marker_temple
+        SiteType.PALACE -> com.example.virasat.R.drawable.ic_marker_palace
+        SiteType.FORT -> com.example.virasat.R.drawable.ic_marker_fort
+        SiteType.MONUMENT -> com.example.virasat.R.drawable.ic_marker_monument
+        SiteType.CAVE -> com.example.virasat.R.drawable.ic_marker_cave
+        SiteType.UNESCO -> com.example.virasat.R.drawable.ic_marker_unesco
+        SiteType.JAIN -> com.example.virasat.R.drawable.ic_marker_temple
+        SiteType.MUSEUM -> com.example.virasat.R.drawable.ic_marker_museum
+        SiteType.NATURE -> com.example.virasat.R.drawable.ic_marker_nature
+        SiteType.TREK -> com.example.virasat.R.drawable.ic_marker_nature
+        SiteType.LAKE -> com.example.virasat.R.drawable.ic_marker_lake
+        SiteType.MISC -> com.example.virasat.R.drawable.ic_marker_monument
+    }
+
+    val cx = size / 2f
+    val circleR = 36f
+
+    // Pin background
+    val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = bgColor }
+    canvas.drawCircle(cx, cx - 10f, circleR, bgPaint)
+    val path = Path().apply {
+        moveTo(cx - 14f, cx + 20f)
+        lineTo(cx, size.toFloat() - 2f)
+        lineTo(cx + 14f, cx + 20f)
+        close()
+    }
+    canvas.drawPath(path, bgPaint)
+
+    // White border
+    val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = 0xFFFFFFFF.toInt()
+        style = Paint.Style.STROKE
+        strokeWidth = 3f
+    }
+    canvas.drawCircle(cx, cx - 10f, circleR - 2f, borderPaint)
+
+    // Draw vector icon inside circle
+    val drawable = androidx.core.content.ContextCompat.getDrawable(context, drawableRes)
+    drawable?.let {
+        val iconSize = 36
+        val left = (cx - iconSize / 2f).toInt()
+        val top = (cx - 10f - iconSize / 2f).toInt()
+        it.setBounds(left, top, left + iconSize, top + iconSize)
+        it.draw(canvas)
+    }
+
+    return BitmapDescriptorFactory.fromBitmap(bitmap)
 }

@@ -84,9 +84,21 @@ class RoomHeritageRepository(context: Context) : HeritageRepository {
         return unlockedFactDao.isFactUnlocked(factId)
     }
 
-    // Bookmark stubs - Room fallback has no bookmark support
-    override suspend fun toggleBookmark(siteId: String): Boolean = false
-    override suspend fun isBookmarked(siteId: String): Boolean = false
+    private val bookmarkDao = database.bookmarkDao()
+
+    override suspend fun toggleBookmark(siteId: String): Boolean {
+        return if (bookmarkDao.exists(siteId)) {
+            bookmarkDao.delete(siteId)
+            false
+        } else {
+            bookmarkDao.insert(com.example.virasat.data.local.BookmarkEntity(siteId))
+            true
+        }
+    }
+
+    override suspend fun isBookmarked(siteId: String): Boolean =
+        bookmarkDao.exists(siteId)
+
     override fun observeBookmarks(): kotlinx.coroutines.flow.Flow<List<String>> =
-        kotlinx.coroutines.flow.flowOf(emptyList())
+        bookmarkDao.observeAll()
 }

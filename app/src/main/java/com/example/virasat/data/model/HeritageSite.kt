@@ -32,14 +32,21 @@ enum class SiteType {
     FORT,
     MONUMENT,
     CAVE,
-    UNESCO
+    UNESCO,
+    JAIN,
+    MUSEUM,
+    NATURE,
+    TREK,
+    LAKE,
+    MISC
 }
 
+@kotlinx.serialization.Serializable
 data class Fact(
-    val id: String,
-    val title: String,
-    val description: String,
-    val isUnlocked: Boolean = false
+    @kotlinx.serialization.SerialName("id") val id: String,
+    @kotlinx.serialization.SerialName("title") val title: String,
+    @kotlinx.serialization.SerialName("desc") val description: String,
+    @kotlinx.serialization.SerialName("unlocked") val isUnlocked: Boolean = false
 )
 
 data class AudioChapter(

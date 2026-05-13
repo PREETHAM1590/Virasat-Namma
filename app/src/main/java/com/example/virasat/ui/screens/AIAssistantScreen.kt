@@ -9,9 +9,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Spa
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.*
@@ -20,23 +22,39 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.virasat.ui.theme.OnSecondaryFixed
+import com.example.virasat.data.di.RepositoryProvider
+import com.example.virasat.data.service.GeminiHeritageService
+import com.example.virasat.ui.theme.*
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AIAssistantScreen(onBack: () -> Unit) {
     var input by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    val ctx = LocalContext.current
+    val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+    val allSites by produceState<List<com.example.virasat.data.model.HeritageSite>>(emptyList(), ctx) {
+        value = repo.getAllSitesList()
+    }
+    val sitesSummary by remember(allSites) {
+        derivedStateOf {
+            allSites.take(20).joinToString("\n") { "- ${it.name} (${it.type}): ${it.shortDescription}" }
+        }
+    }
+    val scope = rememberCoroutineScope()
     val messages = remember {
         mutableStateListOf(
-            ChatMessage("Namaste. I am your Modern Custodian. How can I assist you in exploring our rich cultural heritage and natural sanctuaries today?", false, null),
-            ChatMessage("I'm looking for hidden ancient structures in the Western Ghats that are surrounded by dense forests.", true, null),
-            ChatMessage("The Western Ghats hold many architectural secrets perfectly integrated with nature. One exceptional site is the Tambdi Surla Temple.", false, "https://images.unsplash.com/photo-1561361058-4e7e3d831413?w=800"),
-            ChatMessage("It is a 12th-century Shaivite temple built in the Kadamba style, uniquely carved from black basalt, and remains deeply hidden within the Bhagwan Mahaveer Sanctuary.", false, null)
+            ChatMessage("Namaste. I am your Heritage Guide. Ask me about Karnataka's magnificent forts, temples, palaces, and monuments.", false, null),
+            ChatMessage("Tell me about Hampi.", true, null),
+            ChatMessage("Hampi was the capital of the Vijayanagara Empire in the 14th century. At its peak in 1500 CE, it was the world's second-largest medieval city after Beijing.", false, "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=400"),
+            ChatMessage("Key highlights include the stone chariot at Vittala Temple, 56 musical pillars, and the second-largest monolithic Nandi statue in India. Legend says the boulders were thrown by Hanuman during the battle in the Ramayana.", false, null)
         )
     }
 
@@ -53,15 +71,16 @@ fun AIAssistantScreen(onBack: () -> Unit) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .statusBarsPadding()
                     .padding(horizontal = 24.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBack) {
                     Icon(
-                        imageVector = Icons.Default.Spa,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
-                        tint = cs.primary,
+                        tint = cs.onSurface,
                         modifier = Modifier.size(28.dp)
                     )
                 }
@@ -151,7 +170,7 @@ fun AIAssistantScreen(onBack: () -> Unit) {
                                     modifier = Modifier.padding(start = 8.dp)
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.Spa,
+                                        imageVector = Icons.Default.AccountBalance,
                                         contentDescription = null,
                                         tint = cs.tertiary,
                                         modifier = Modifier.size(20.dp)
@@ -205,6 +224,39 @@ fun AIAssistantScreen(onBack: () -> Unit) {
                     }
                 }
 
+                // Loading indicator
+                if (isLoading) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.padding(start = 8.dp, top = 8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AccountBalance,
+                                    contentDescription = null,
+                                    tint = cs.tertiary,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Text(
+                                    "Virasat Guide is thinking...",
+                                    style = type.labelMedium,
+                                    color = cs.tertiary
+                                )
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(16.dp),
+                                    color = cs.tertiary,
+                                    strokeWidth = 2.dp
+                                )
+                            }
+                        }
+                    }
+                }
+
                 // Spacer for input area
                 item { Spacer(modifier = Modifier.height(96.dp)) }
             }
@@ -253,7 +305,7 @@ fun AIAssistantScreen(onBack: () -> Unit) {
                     onValueChange = { input = it },
                     placeholder = {
                         Text(
-                            "Ask about heritage or nature...",
+                            "Ask about Karnataka heritage...",
                             color = cs.outlineVariant
                         )
                     },
@@ -270,11 +322,16 @@ fun AIAssistantScreen(onBack: () -> Unit) {
                 )
                 IconButton(
                     onClick = {
-                        if (input.isNotBlank()) {
-                            messages.add(ChatMessage(input, true, null))
-                            val response = generateAIResponse(input)
-                            messages.add(ChatMessage(response, false, null))
+                        if (input.isNotBlank() && !isLoading) {
+                            val userMsg = input
+                            messages.add(ChatMessage(userMsg, true, null))
                             input = ""
+                            isLoading = true
+                            scope.launch {
+                                val response = GeminiHeritageService.chatWithHeritageGuide(userMsg, sitesSummary = sitesSummary)
+                                messages.add(ChatMessage(response, false, null))
+                                isLoading = false
+                            }
                         }
                     },
                     modifier = Modifier

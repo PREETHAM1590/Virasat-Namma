@@ -6,176 +6,268 @@
 
 ## Current Status
 
-**Last Updated:** May 8, 2026
-**Build Status:** `./gradlew assembleDebug` passes
+**Last Updated:** May 12, 2026
+**Build Status:** `./gradlew assembleDebug` passes ✅
 **Screens:** 45 Kotlin screen files, all wired in NavHost
-**Design System:** Stitch-generated neumorphic-organic (project 4939368762707624040)
+**Heritage Sites:** 59 Karnataka heritage sites
+**Design System:** Stitch-generated neumorphic-organic (olive/forest green palette)
+**Security:** ⚠️ 3 CRITICAL, 5 HIGH, 6 MEDIUM vulnerabilities found — See Security Analysis
 
 ---
 
-## Completed
+## Tech Stack
 
-### Stitch Design Migration (May 8, 2026)
-All 45 screens rewritten to match Google Stitch-generated design system.
+| Layer | Technology |
+|-------|-----------|
+| Language | Kotlin 2.0.0 |
+| UI | Jetpack Compose (BOM 2024.05.00) |
+| Navigation | navigation-compose 2.7.7 |
+| Design | Material 3, Stitch neumorphic-organic |
+| Images | Coil (AsyncImage) + Unsplash |
+| AI | google-genai 1.0.0 (Gemini REST API) |
+| QR | ML Kit BarcodeScanning + CameraX |
+| DB | Room (SQLite) |
+| Backend | Firebase (Firestore, Auth, Analytics) |
+| Build | Gradle 8.9, AGP 8.7.0 |
+| Min SDK | 26 (Android 8.0) |
+| Target SDK | 35 |
 
-**Color Palette (olive/lime, forest green, pale mint):**
-- Primary: `#556500` | OnPrimary: `#FFFFFF` | PrimaryContainer: `#B7D23F` | OnPrimaryContainer: `#4A5800`
-- Secondary: `#4C644F` | OnSecondary: `#FFFFFF` | SecondaryContainer: `#CEEACE` | OnSecondaryContainer: `#526A54`
-- Surface: `#F9FAF5` | OnSurface: `#1A1C19` | SurfaceContainerLowest: `#FFFFFF` | SurfaceContainerLow: `#F3F4EF`
-- NavBackground: `#0B2211` (dark forest green detached pill)
-- Error: `#BA1A1A` | ErrorContainer: `#FFDAD6`
-- Outline: `#767964` | OutlineVariant: `#C6C8B0`
+---
 
-**Typography:**
-- Headline: Plus Jakarta Sans (48sp/700 displayLarge, 32sp/600 headlineLarge)
-- Body: Be Vietnam Pro (18sp bodyLarge, 14sp/600 labelLarge)
-- Full 15-style Material 3 typography scale
+## Architecture
 
-**Shapes:**
-- Buttons/Chips: pill (`RoundedCornerShape(999.dp)`)
-- Cards: 32dp radius (`RoundedCornerShape(32.dp)`)
-- Hero images: 48dp radius bottom corners
-- Inputs: pill shape with inset neumorphic shadow
-
-**Navigation:**
-- Detached floating pill nav bar in `#0B2211`, 16dp above bottom safe area
-- 4 items: Explore, Heritage, Saved, Profile (filled icon for active)
-- Center elevated FAB for primary action
-
-**Theme files:** `ui/theme/Color.kt`, `Type.kt`, `Shape.kt`, `Theme.kt`
-
-### All 45 Screens Wired in NavHost
-- SplashScreen, LanguageScreen, OnboardingScreen (3 pages)
-- LoginScreen, SignUpScreen, ForgotPasswordScreen
-- HomeScreen, SiteDetailScreen, QrScannerScreen
-- AudioGuideScreen, TravelPassportScreen, BookmarkedSitesScreen
-- ProfileScreen, SettingsScreen, NotificationsScreen
-- MapScreen, HeritageSitesListScreen, SearchScreen
-- ReviewsScreen, CommunityScreen, LeaderboardScreen
-- MyCheckInsScreen, ImageGalleryScreen
-- CheckInSuccessScreen, BadgesScreen, HeritageGuidesScreen
-- AIAssistantScreen, QuizScreen, VirtualTourScreen, ARScreen
-- ImmersivePhotoScreen, AINarratedTourScreen (360° + Gemini AI)
-- ContactUsScreen, PrivacyPolicyScreen, TermsOfServiceScreen
-- FeedbackScreen, DataSyncScreen, HelpSupportScreen, AboutScreen
-- EmptyStateScreen, ErrorScreen, OfflineScreen, PermissionScreen
-
-### Navigation Flow
 ```
-SplashScreen → LanguageScreen → OnboardingScreen → LoginScreen → SignUpScreen → HomeScreen
-                                              (if onboarding_complete skip)
-                                                      ↓
-                                          ├── SiteDetailScreen
-                                          │      ├── AudioGuideScreen
-                                          │      ├── AINarratedTourScreen
-                                          │      ├── ImmersivePhotoScreen
-                                          │      └── ReviewsScreen
-                                          ├── SearchScreen, MapScreen
-                                          ├── HeritageSitesListScreen
-                                          ├── TravelPassportScreen
-                                          ├── CommunityScreen, LeaderboardScreen
-                                          ├── BookmarkedSitesScreen
-                                          └── ProfileScreen → SettingsScreen
+45 Compose Screens → 6 ViewModels → Repository → Room DB / Firestore
+                                        ↘ GeminiHeritageService (AI)
 ```
 
-### AI & Media Features
-- **Gemini AI Tour** — `google-genai:1.0.0` SDK via BuildConfig key
-- `GeminiHeritageService.kt`: narration, trivia, snapshot description
-- `AINarratedTourScreen.kt`: 360° Pannellum viewer + TTS + AI controls
-- **TTS**: Android `TextToSpeech` for audio narration in English/Kannada
-- **Language toggle**: English/Kannada with SharedPreferences persistence
-- **Focus modes**: overview, history, architecture, legends
+### Data Layer
+- `data/model/` — HeritageSite, CheckIn, UnlockedFact, SiteType enum
+- `data/local/` — VirasatDatabase, 3 DAOs, TypeConverters
+- `data/repository/` — HeritageRepository (Firebase + Room implementations)
+- `data/source/` — KarnatakaSites (59 sites), FirestoreDataSource, FirestoreSeeder
 
-### Core Architecture
-- Data Models: HeritageSite.kt, CheckIn.kt, UnlockedFact.kt
-- Room Database: VirasatDatabase.kt with CheckInDao, UnlockedFactDao
-- Repository: HeritageRepository.kt
-- Data Source: KarnatakaSites.kt — 6 heritage sites with real Unsplash images
-- ViewModels: HomeViewModel, DetailViewModel, PassportViewModel, QrScannerViewModel
+### Service Layer
+- `GeminiHeritageService.kt` — AI narration, trivia, chat, vision analysis
+- `FirebaseAuthService.kt` — Email + Google authentication
+- `FirebaseAnalyticsHelper.kt` — Analytics tracking
+- `WeatherService.kt` — Open-Meteo API integration
 
-### Build Fixes Applied
-- `collectAsStateWithLifecycle()` → `collectAsState()` for navigation-compose 2.7.7 compatibility
-- `LocalLifecycleOwner.current` → `context as LifecycleOwner` in QrScannerScreen
-- minSdk 26 for google-genai SDK (auto-value transitive dep)
-- META-INF/INDEX.LIST packaging excludes for google-genai conflicts
-- BuildConfig field for GEMINI_API_KEY
-- 16KB page alignment: `android.useNewPageAlignmentApi=true` (AGP 8.7.0)
+### ViewModel Layer
+- HomeViewModel — Search, type filter, district filter
+- DetailViewModel — Site loading, check-in, fact unlocking
+- PassportViewModel — Check-in stamps, counts
+- AuthViewModel — Login, signup, password reset, Google auth
+- QrScannerViewModel — QR processing, check-in logic
+- WeatherViewModel — Weather state management
 
-### Known Warnings (Non-blocking)
-- Several `@Deprecated` icon warnings (RotateRight, VolumeUp, ArrowForward, List, Help) — use AutoMirrored variants. Safe to ignore for now.
-- `updateConfiguration()` deprecated in LanguageScreen — functional.
+### UI Layer
+- 45 screens in `ui/screens/`
+- Theme: Color.kt (olive/forest green), Type.kt, Shape.kt, Theme.kt
+- Components: VirasatBottomNavBar, AnimatedWeatherWidget
 
 ---
 
-## Runtime Fixes (May 8, 2026)
+## Navigation Flow
 
-### Fixed: LoginScreen crash — `IllegalArgumentException: Padding must be non-negative`
-Decorative blob offsets used `padding(top = (-64).dp)` which crashes at runtime.
-**Fix:** Changed to `offset(x = 64.dp, y = (-64).dp)` using Modifier.offset().
+```
+SplashScreen → LanguageScreen → OnboardingScreen (3 pages)
+    ↓
+LoginScreen → SignUpScreen → ForgotPasswordScreen
+    ↓
+HomeScreen (with BottomNavBar)
+    ├── SiteDetailScreen
+    │   ├── AudioGuideScreen (TTS)
+    │   ├── AINarratedTourScreen (Gemini AI)
+    │   ├── ImmersivePhotoScreen
+    │   ├── ImageGalleryScreen
+    │   ├── ReviewsScreen
+    │   └── CheckInSuccessScreen
+    ├── SearchScreen
+    ├── MapScreen (Google Maps)
+    ├── HeritageSitesListScreen
+    ├── TravelPassportScreen (stamps)
+    ├── QrScannerScreen (ML Kit)
+    ├── BookmarkedSitesScreen
+    ├── ProfileScreen
+    │   ├── SettingsScreen
+    │   ├── BadgesScreen
+    │   ├── MyCheckInsScreen
+    │   └── CommunityScreen
+    ├── AIAssistantScreen (Gemini chat)
+    ├── QuizScreen
+    ├── ItineraryScreen
+    └── NotificationsScreen
 
-### Fixed: ~80 compilation errors across 20+ files
-Causes and fixes documented in `.claude/memory/compose_build_patterns.md`:
-1. M3 color tokens (`onSecondaryFixed`, `secondaryFixed`, `primaryFixedDim`) not in `MaterialTheme.colorScheme` — use top-level vals from Color.kt
-2. `Modifier.background()` ambiguity when color is unresolved — ensure color resolves to known `Color` type
-3. `Surface` `border` parameter needs `androidx.compose.foundation.BorderStroke`, not `androidx.compose.foundation.border.BorderStroke`
-4. Missing icon imports: `Camera` → `Videocam`, `PhotoCamera`/`ThreeSixty`/`Eco`/`AspectRatio` → available base icons
-5. `zIndex`, `graphicsLayer`, `CornerSize`, `Brush`, `clickable`, `clip` — missing imports
-6. `padding(bottom = 64.dp, horizontal = 24.dp)` invalid param order — use `padding(start=, end=, bottom=)`
+Utility Screens: EmptyState, Error, Offline, Permission, About, Privacy, Terms, Help, Contact, Feedback, DataSync
+```
 
 ---
 
-## What's Left
+## Design System
 
-### Testing (Device)
-- [ ] Verify LoginScreen no longer crashes with negative padding fix
-- [ ] Test on physical device — all 45 screens navigate without crash
-- [ ] Verify QR scanning works
-- [ ] Verify TTS audio guide
-- [ ] Verify Gemini AI narration (requires API key)
-- [ ] Test check-in flow end-to-end
-- [ ] Test language persistence across restarts
-- [ ] Test offline behavior
+### Color Palette (Olive/Forest Green)
+- Primary: `#556500` | OnPrimary: `#FFFFFF` | PrimaryContainer: `#B7D23F`
+- Secondary: `#4C644F` | OnSecondary: `#FFFFFF` | SecondaryContainer: `#CEEACE`
+- Background: `#F9FAF5` | OnSurface: `#1A1C19`
+- NavBackground: `#0B2211` (dark forest green pill nav bar)
+- Error: `#BA1A1A`
 
-### Firebase
-- [ ] User to provide real `google-services.json` (Firebase project)
-- [ ] Firebase Auth (Email + Google sign-in)
-- [ ] Firestore sync for check-ins
-- [ ] FCM for notifications
+### Typography
+- Headlines: Plus Jakarta Sans (SansSerif, bold/semi-bold)
+- Body: Be Vietnam Pro (SansSerif, regular/medium)
+- Scale: displayLarge (48sp) → labelSmall (11sp)
 
-### New Features
-- [ ] Heritage Map View (Google Maps SDK)
-- [ ] Nearby Heritage Sites (FusedLocationProvider)
-- [ ] Route & Directions (Maps Directions API)
-- [ ] Heritage Image Gallery (full-screen pager)
-- [ ] Heritage Quiz Challenge
-- [ ] User Badges & Achievements grid
-- [ ] AI Heritage Assistant Chat
-- [ ] Historical Narrative Story screens
-- [ ] Local Legends and Folklore screens
-- [ ] Heritage Events and Festivals calendar
-- [ ] Map Discovery mode
-- [ ] Offline mode (audio caching, offline-first)
-- [ ] Social sharing features
+### Shapes
+- Pill (buttons/chips): `RoundedCornerShape(999.dp)`
+- Cards: `RoundedCornerShape(24-32.dp)`
+- Hero images: `RoundedCornerShape(36.dp)` bottom corners
 
-### Deployment
-- [ ] Create keystore for release signing
-- [ ] Build release APK/AAB
-- [ ] Google Play Store listing
+---
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `MainActivity.kt` | NavHost with all 45+ routes, auth flow |
+| `app/build.gradle.kts` | Dependencies, BuildConfig, SDK versions |
+| `ui/theme/Color.kt` | 40+ M3 color tokens |
+| `KarnatakaSites.kt` | 59 heritage sites with full data |
+| `GeminiHeritageService.kt` | AI narration, trivia, chat |
+| `FirestoreDataSource.kt` | Firestore CRUD operations |
+| `firestore.rules` | Security rules (⚠️ needs fix) |
 
 ---
 
 ## Build Commands
 
-```bash
-# Build debug APK
-./gradlew assembleDebug
+```powershell
+# Quick compile check (catches Kotlin errors)
+.\gradlew.bat :app:compileDebugKotlin
+
+# Full debug APK
+.\gradlew.bat :app:assembleDebug
 
 # Install on connected device
-./gradlew installDebug
+.\gradlew.bat :app:installDebug
 
 # Clean build
-./gradlew clean assembleDebug
+.\gradlew.bat clean assembleDebug
 ```
+
+---
+
+## Security Analysis (CRITICAL)
+
+### CRITICAL Vulnerabilities (3) — Must Fix First
+
+| # | Issue | Location | Fix |
+|---|-------|----------|-----|
+| 1 | API Keys in BuildConfig | `build.gradle.kts:28-29` | Move to server proxy |
+| 2 | Firestore allow write: any auth | `firestore.rules:12` | Restrict to admin |
+| 3 | ProGuard/R8 disabled | `build.gradle.kts:45` | Enable minification |
+
+### HIGH Vulnerabilities (5)
+
+| # | Issue | Fix |
+|---|-------|-----|
+| 4 | No SSL certificate pinning | Add pinning |
+| 5 | SharedPreferences not encrypted | Use Security Crypto |
+| 6 | No root/jailbreak detection | Add SafetyNet |
+| 7 | Biometric auth not implemented | Add fingerprint/face |
+| 8 | No session/token expiry | Add token refresh |
+
+### MEDIUM Vulnerabilities (6)
+
+| # | Issue | Fix |
+|---|-------|-----|
+| 9 | allowBackup=true | Set to false |
+| 10 | No QR input validation | Add sanitization |
+| 11 | No rate limiting on AI | Add throttling |
+| 12 | Debug logs in release | Remove logs |
+| 13 | Camera permission edge cases | Add checks |
+| 14 | Firebase profile fetch validation | Add error handling |
+
+### Security Fixes Checklist
+
+- [ ] Enable R8 ProGuard (`isMinifyEnabled = true`)
+- [ ] Fix Firestore rules — admin-only write
+- [ ] Add EncryptedSharedPreferences
+- [ ] Add SSL certificate pinning
+- [ ] Add biometric authentication
+- [ ] Disable allowBackup in manifest
+- [ ] Add QR input validation
+- [ ] Add rate limiting
+
+### Dependencies — All Safe ✅
+- OkHttp 4.12.0 ✅ | Room 2.6.1 ✅ | Firebase BOM 33.1.0 ✅
+- Coil 2.6.0 ✅ | ML Kit 17.2.0 ✅ | CameraX 1.3.3 ✅ | Guava 33.2.0 ✅
+
+---
+
+## What's Left
+
+### Security Fixes (CRITICAL - Do First)
+- [ ] Enable R8 ProGuard
+- [ ] Fix Firestore rules
+- [ ] Add encrypted storage
+- [ ] Add SSL pinning
+- [ ] Add biometric auth
+- [ ] Disable allowBackup
+
+### Testing
+- [ ] Verify all 45 screens navigate
+- [ ] Test QR scanning
+- [ ] Test TTS audio guide
+- [ ] Test Gemini AI narration
+- [ ] Test check-in flow
+- [ ] Test language persistence
+- [ ] Test offline mode
+
+### Firebase
+- [ ] Provide google-services.json
+- [ ] Configure Firestore
+- [ ] Setup FCM notifications
+
+### New Features
+- [ ] Route & directions (Maps API)
+- [ ] Heritage events calendar
+- [ ] Social sharing
+- [ ] Push notifications
+
+### Deployment
+- [ ] Create release keystore
+- [ ] Build release APK/AAB
+- [ ] Play Store listing
+
+---
+
+## Session History
+
+### Session: May 5-6, 2026 — Full Implementation
+- Created all 44 screens
+- Added Material 3 design, bottom nav, language toggle
+- Integrated Gemini AI SDK
+- Added 360° viewer, TTS, AI narration/trivia
+- Updated images to real Unsplash photos
+
+### Session: May 7-8, 2026 — Stitch Design Migration
+- Complete rewrite to Stitch-generated design
+- Replaced colors with olive/forest green palette
+- Fixed ~80 compilation errors
+- Fixed LoginScreen runtime crash (negative padding)
+
+### Session: May 8, 2026 — Content & Identity Polish
+- Fixed all fake data → real Karnataka sites
+- Added route for AINarratedTourScreen in NavHost
+- Fixed CheckInSuccessScreen callback signature
+
+### Session: May 12, 2026 — Security Analysis & Update
+- Full security scan of 100+ files
+- Found 14 vulnerabilities (3 critical, 5 high, 6 medium)
+- Expanded KarnatakaSites from 6 to 59
+- Added WeatherService, AnimatedWeatherWidget
+- Updated BUILD_GUIDE.md with security report
 
 ---
 
@@ -186,52 +278,19 @@ Causes and fixes documented in `.claude/memory/compose_build_patterns.md`:
 | **SDK** | compileSdk 35, minSdk 26 |
 | **Gradle** | 8.9, AGP 8.7.0 |
 | **Kotlin** | 2.0.0 |
-| **Compose** | BOM 2024.06.00 |
-| **Navigation** | navigation-compose 2.7.7 |
+| **Compose BOM** | 2024.05.00 |
+| **Navigation** | 2.7.7 |
 | **AI SDK** | google-genai 1.0.0 |
 | **Repo** | https://github.com/PREETHAM1590/Virasat-Namma.git |
-| **Branch** | master |
-| **Gemini Key** | Settings → Developer → Set Gemini API Key |
 | **Design** | Stitch project 4939368762707624040 |
 
-### Key Files
-- `app/build.gradle.kts` — dependencies, BuildConfig, packaging
-- `MainActivity.kt` — NavHost with 45 routes, language/onboarding flow
-- `ui/theme/Color.kt` — Stitch M3 palette (40+ color tokens)
-- `ui/theme/Type.kt` — Plus Jakarta Sans + Be Vietnam Pro typography
-- `ui/theme/Shape.kt` — Neumorphic radii (8/16/24/32/48 dp)
-- `ui/theme/Theme.kt` — StitchColorScheme wired to MaterialTheme
-- `ui/components/VirasatBottomNavBar.kt` — Detached pill nav bar
-- `KarnatakaSites.kt` — 6 heritage sites data
-- `GeminiHeritageService.kt` — AI narration/trivia/snapshot
-- `AINarratedTourScreen.kt` — 360° viewer + AI controls
-
-### Architecture
+### API Keys (local.properties)
 ```
-UI Layer (45 screens) → ViewModels (4) → Repository → Room DB + KarnatakaSites
-                                              ↘ GeminiHeritageService (API)
+geminiApiKey=YOUR_KEY
+mapsApiKey=YOUR_KEY
 ```
 
----
-
-## Session Log
-
-### Session: May 5-6, 2026 — Full Implementation
-- Created BUILD_GUIDE.md
-- Built all 44 screens
-- Added Material 3 design system, bottom nav, language persistence
-- Fixed LocalLifecycleOwner crashes
-- Fixed Gemini SDK integration (google-genai 1.0.0)
-- Added 360° viewer, TTS, AI narration/trivia/snapshot
-- Updated all images to real Unsplash photos
-- Security scan: clean
-- Debug APK builds successfully
-
-### Session: May 7-8, 2026 — Stitch Design Migration
-- Complete rewrite of all 45 screens to match Stitch-generated design
-- Replaced old maroon/gold/serif with olive/lime neumorphic-organic design
-- Updated Color.kt, Type.kt, Shape.kt, Theme.kt with new tokens
-- Added detached floating nav bar component
-- Fixed ~80 compilation errors (missing imports, non-existent M3 colors, wrong icon names, Surface border type, negative padding)
-- Fixed LoginScreen runtime crash (`padding` with negative values → `offset()`)
-- Build passes clean, only deprecation warnings remain
+### Firebase Config
+- `google-services.json` required in `app/` directory
+- Firestore rules in `firestore.rules`
+- Auth: Email + Google Sign-In enabled

@@ -11,26 +11,31 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
-import com.example.virasat.data.source.KarnatakaSites
+import com.example.virasat.data.di.RepositoryProvider
+import com.example.virasat.data.model.HeritageSite
 import com.example.virasat.ui.theme.OnSecondaryFixed
 import com.example.virasat.ui.theme.SecondaryFixed
 
@@ -45,14 +50,20 @@ fun PopularSitesScreen(
     onBack: () -> Unit,
     onSiteClick: (String) -> Unit
 ) {
-    val sites = KarnatakaSites.allSites
+    val ctx = LocalContext.current
+    val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+    val sites by produceState<List<HeritageSite>>(emptyList(), ctx) {
+        value = repo.getAllSitesList()
+    }
     val listState = rememberLazyListState()
 
-    val regions = listOf(
-        RegionCard("Southern Tranquility", "Kerala & Tamil Nadu", "https://images.unsplash.com/photo-1600112356915-089abb8fc71a?w=800"),
-        RegionCard("Northern Echoes", "Himalayas & Valleys", "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=800"),
-        RegionCard("Western Sands", "Rajasthan Forts", "https://images.unsplash.com/photo-1707063880573-b15e1f533d9f?w=800")
-    )
+    val regions = remember(sites) {
+        listOf(
+            RegionCard("Vijayanagara Circuit", "Ballari, Karnataka", sites.find { it.id == "hampi" }?.imageUrl ?: "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=400"),
+            RegionCard("Hoysala Trail", "Hassan, Karnataka", sites.find { it.id == "belur-halebidu" }?.imageUrl ?: "https://images.unsplash.com/photo-1673779376455-b203cef903d1?w=400"),
+            RegionCard("Royal Mysore", "Mysuru, Karnataka", sites.find { it.id == "mysore-palace" }?.imageUrl ?: "https://images.unsplash.com/photo-1600112356915-089abb8fc71a?w=400")
+        )
+    }
 
     val cs = MaterialTheme.colorScheme
     val type = MaterialTheme.typography
@@ -70,12 +81,14 @@ fun PopularSitesScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(
-                imageVector = Icons.Default.Spa,
-                contentDescription = "Eco",
-                tint = cs.primary,
-                modifier = Modifier.size(28.dp)
-            )
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = cs.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
             Text(
                 text = "Virasat",
                 style = type.headlineLarge.copy(fontWeight = FontWeight.SemiBold),
@@ -86,14 +99,14 @@ fun PopularSitesScreen(
                     imageVector = Icons.Default.Search,
                     contentDescription = "Search",
                     tint = cs.primary,
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 24.dp)
+            contentPadding = PaddingValues(bottom = 128.dp)
         ) {
             // "Popular" header
             item {
@@ -140,9 +153,11 @@ fun PopularSitesScreen(
                                                 Brush.verticalGradient(
                                                     colors = listOf(
                                                         Color.Transparent,
+                                                        OnSecondaryFixed.copy(alpha = 0.4f),
                                                         OnSecondaryFixed.copy(alpha = 0.95f)
                                                     ),
-                                                    startY = 50f
+                                                    startY = 0f,
+                                                    endY = Float.POSITIVE_INFINITY
                                                 )
                                             )
                                     )

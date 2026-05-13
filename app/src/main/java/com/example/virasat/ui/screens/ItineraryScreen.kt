@@ -1,164 +1,148 @@
 package com.example.virasat.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.virasat.domain.ItineraryPlanner
+import com.example.virasat.viewmodel.ItineraryViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItineraryScreen(
-    onBack: () -> Unit,
-    onSiteClick: (String) -> Unit
+    onBack: () -> Unit = {},
+    onSiteClick: (String) -> Unit = {},
+    itineraryId: String? = null,
+    viewModel: ItineraryViewModel = viewModel()
 ) {
-    val items = listOf(
-        ItineraryItem("08:00 AM", "Virupaksha Temple", "Hampi, Karnataka"),
-        ItineraryItem("11:00 AM", "Vittala Temple", "Hampi, Karnataka"),
-        ItineraryItem("02:00 PM", "Hampi Bazaar", "Hampi, Karnataka"),
-        ItineraryItem("05:30 PM", "Hemakuta Hill Sunset", "Hampi, Karnataka"),
-        ItineraryItem("09:00 AM", "Badami Cave Temples", "Badami, Karnataka"),
-        ItineraryItem("02:00 PM", "Aihole Durga Temple", "Aihole, Karnataka"),
-        ItineraryItem("09:00 AM", "Chennakeshava Temple", "Belur, Karnataka"),
-        ItineraryItem("01:00 PM", "Hoysaleswara Temple", "Halebidu, Karnataka")
-    )
+    val context = LocalContext.current
+    val orderedSites by viewModel.orderedSites.collectAsState()
+    val savedItineraries by viewModel.savedItineraries.collectAsState()
+    var searchQuery by remember { mutableStateOf("") }
+    var showSaveDialog by remember { mutableStateOf(false) }
+    var itineraryName by remember { mutableStateOf("") }
+
+    LaunchedEffect(itineraryId) {
+        itineraryId?.let { viewModel.loadItinerary(it) }
+    }
 
     Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {},
-                shape = RoundedCornerShape(999.dp),
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-            ) {
-                Icon(Icons.Default.Add, "Add")
-            }
-        },
-        containerColor = MaterialTheme.colorScheme.background
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-            // Back arrow + title
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .background(
-                            MaterialTheme.colorScheme.surfaceContainerLowest,
-                            RoundedCornerShape(999.dp)
-                        )
-                        .clickable(onClick = onBack)
-                        .padding(horizontal = 16.dp, vertical = 10.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.ArrowBack,
-                        "Back",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp)
-                    )
+        topBar = {
+            TopAppBar(
+                title = { Text("Itinerary Planner") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                    }
+                },
+                actions = {
+                    if (orderedSites.isNotEmpty()) {
+                        IconButton(onClick = { showSaveDialog = true }) {
+                            Icon(Icons.Default.Save, "Save")
+                        }
+                    }
                 }
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(
-                    "My Itinerary",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+            )
+        }
+    ) { padding ->
+        Column(Modifier.fillMaxSize().padding(padding)) {
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                placeholder = { Text("Search sites to add...") },
+                leadingIcon = { Icon(Icons.Default.Search, null) },
+                singleLine = true
+            )
+
+            if (savedItineraries.isNotEmpty()) {
+                Text("Saved Itineraries", Modifier.padding(horizontal = 16.dp),
+                    style = MaterialTheme.typography.labelLarge)
+                Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                    savedItineraries.take(5).forEach { itinerary ->
+                        FilterChip(
+                            selected = false,
+                            onClick = { viewModel.loadItinerary(itinerary.id) },
+                            label = { Text(itinerary.name) },
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                    }
+                }
             }
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(items) { item ->
-                    TimelineRow(item = item, onClick = { onSiteClick(item.name) })
+            if (orderedSites.isEmpty()) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Add sites to plan your itinerary", style = MaterialTheme.typography.bodyLarge)
                 }
-                item { Spacer(modifier = Modifier.height(80.dp)) }
+            } else {
+                LazyColumn(
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    itemsIndexed(orderedSites) { index, site ->
+                        Card(Modifier.fillMaxWidth()) {
+                            Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Text("${index + 1}", fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.width(32.dp))
+                                Column(Modifier.weight(1f)) {
+                                    Text(site.name, fontWeight = FontWeight.Bold)
+                                    Text(site.location, style = MaterialTheme.typography.bodySmall)
+                                    if (index < orderedSites.size - 1) {
+                                        val next = orderedSites[index + 1]
+                                        val dist = ItineraryPlanner.haversineDistance(
+                                            site.latitude, site.longitude, next.latitude, next.longitude
+                                        )
+                                        Text("→ %.1f km".format(dist),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.primary)
+                                    }
+                                }
+                                IconButton(onClick = { viewModel.removeSite(site.id) }) {
+                                    Icon(Icons.Default.Close, "Remove")
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
-}
 
-data class ItineraryItem(val time: String, val name: String, val location: String)
-
-@Composable
-private fun TimelineRow(item: ItineraryItem, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Top
-    ) {
-        // Timeline column
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.width(56.dp)
-        ) {
-            // Dot
-            Box(
-                modifier = Modifier
-                    .size(14.dp)
-                    .background(
-                        MaterialTheme.colorScheme.primaryContainer,
-                        CircleShape
-                    )
-            )
-            // Vertical line
-            Box(
-                modifier = Modifier
-                    .width(2.dp)
-                    .height(64.dp)
-                    .background(MaterialTheme.colorScheme.outlineVariant)
-            )
-        }
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        // Card
-        Card(
-            onClick = onClick,
-            modifier = Modifier.weight(1f),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
-            ),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    item.time,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary
+    if (showSaveDialog) {
+        AlertDialog(
+            onDismissRequest = { showSaveDialog = false },
+            title = { Text("Save Itinerary") },
+            text = {
+                OutlinedTextField(
+                    value = itineraryName,
+                    onValueChange = { if (it.length <= 100) itineraryName = it },
+                    label = { Text("Itinerary name") },
+                    singleLine = true
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    item.name,
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    item.location,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    if (itineraryName.isNotBlank()) {
+                        viewModel.saveItinerary(itineraryName)
+                        showSaveDialog = false
+                        itineraryName = ""
+                    }
+                }) { Text("Save") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showSaveDialog = false }) { Text("Cancel") }
             }
-        }
+        )
     }
 }

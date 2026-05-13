@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -47,11 +48,23 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        GeminiHeritageService.initialize(BuildConfig.GEMINI_API_KEY)
-        FirebaseAnalyticsHelper.init(this)
+        // Force locale on activity resources so Compose stringResource() works
+        val lang = com.example.virasat.util.LocaleHelper.getSavedLocale(this)
+        val locale = java.util.Locale(lang)
+        java.util.Locale.setDefault(locale)
+        val config = resources.configuration
+        config.setLocale(locale)
+        @Suppress("DEPRECATION")
+        resources.updateConfiguration(config, resources.displayMetrics)
+
         window.setFormat(PixelFormat.OPAQUE)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.decorView.setBackgroundColor(android.graphics.Color.parseColor("#FFF5E6"))
+        // Defer non-critical init off main thread
+        Thread {
+            GeminiHeritageService.initialize(BuildConfig.GEMINI_API_KEY)
+            FirebaseAnalyticsHelper.init(this)
+        }.start()
         setContent {
             VirasatTheme {
                 Surface(
@@ -60,14 +73,38 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val prefs = LocalContext.current.getSharedPreferences("virasat_prefs", Context.MODE_PRIVATE)
                     val onboardingSeen = remember { prefs.getBoolean("onboarding_seen", false) }
-                    val isLoggedIn = remember { FirebaseAuthService.isLoggedIn }
+                    val languageSelected = remember { prefs.getBoolean("language_selected", false) }
+                    val authUser by FirebaseAuthService.authStateFlow()
+                        .collectAsState(initial = FirebaseAuthService.currentUser)
                     val startDest = when {
-                        !onboardingSeen -> "splash"
-                        !isLoggedIn -> "login"
+                        !onboardingSeen && !languageSelected -> "splash"
+                        !onboardingSeen && languageSelected -> "language"
+                        authUser == null -> "login"
                         else -> "home"
                     }
                     val navController = rememberNavController()
-                    val homeViewModel: com.example.virasat.viewmodel.HomeViewModel = viewModel()
+                    LaunchedEffect(authUser) {
+                        if (authUser == null && onboardingSeen) {
+                            navController.navigate("login") {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        }
+                    }
+                    // Handle deep links
+                    val activity = LocalContext.current as? android.app.Activity
+                    LaunchedEffect(Unit) {
+                        activity?.intent?.data?.let { uri ->
+                            when (uri.host) {
+                                "site" -> uri.lastPathSegment?.let { id -> navController.navigate("site_detail/$id") }
+                                "badges" -> navController.navigate("badges")
+                                "itinerary" -> navController.navigate("itinerary")
+                            }
+                        }
+                    }
+                    // Defer NavHost composition to second frame to avoid 1s+ first onMeasure
+                    var ready by remember { mutableStateOf(false) }
+                    LaunchedEffect(Unit) { ready = true }
+                    if (ready) {
                     NavHost(
                         navController = navController,
                         startDestination = startDest,
@@ -142,6 +179,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("home") {
+                            val homeViewModel: com.example.virasat.viewmodel.HomeViewModel = viewModel()
                             val homeCtx = LocalContext.current
                             LaunchedEffect(Unit) {
                                 FirestoreSeeder.seedIfNeeded(homeCtx)
@@ -213,13 +251,8 @@ class MainActivity : ComponentActivity() {
                         composable("qr_scan") {
                             QrScannerScreen(
                                 onBack = { navController.popBackStack() },
-                                onNavigateToSite = { siteIdWithParams ->
-                                    // siteIdWithParams may be "siteId?factId=xxx"
-                                    val parts = siteIdWithParams.split("?factId=")
-                                    val siteId = parts[0]
-                                    val factId = if (parts.size > 1) parts[1] else ""
-                                    val route = if (factId.isNotBlank()) "check_in_success/$siteId/$factId" else "check_in_success/$siteId/"
-                                    navController.navigate(route) {
+                                onNavigateToSite = { siteId ->
+                                    navController.navigate("site_detail/$siteId") {
                                         popUpTo("qr_scan") { inclusive = true }
                                     }
                                 }
@@ -271,8 +304,8 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("offline") {
                             OfflineScreen(
-                                onRetry = { navController.popBackStack() },
-                                onBrowseOffline = { navController.navigate("bookmarks") }
+                                onBack = { navController.popBackStack() },
+                                onSiteClick = { siteId -> navController.navigate("site_detail/$siteId") }
                             )
                         }
                         composable("profile") {
@@ -281,7 +314,7 @@ class MainActivity : ComponentActivity() {
                                 Box(modifier = Modifier.padding(p)) {
                                     ProfileScreen(
                                         onBack = { navController.popBackStack() },
-                                        onEditProfile = { },
+                                        onEditProfile = { navController.navigate("edit_profile") },
                                         onSettings = { navController.navigate("settings") },
                                         onBookmarks = { navController.navigate("bookmarks") },
                                         onPassport = { navController.navigate("passport") },
@@ -300,6 +333,12 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                             }
+                        }
+                        composable("edit_profile") {
+                            EditProfileScreen(
+                                onBack = { navController.popBackStack() },
+                                onSaved = { navController.popBackStack() }
+                            )
                         }
                         composable("settings") {
                             SettingsScreen(
@@ -468,6 +507,7 @@ class MainActivity : ComponentActivity() {
                             DataSyncScreen(onBack = { navController.popBackStack() })
                         }
                     }
+                    } // end if (ready)
                 }
             }
         }

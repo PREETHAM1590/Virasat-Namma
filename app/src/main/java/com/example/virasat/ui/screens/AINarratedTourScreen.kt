@@ -1,362 +1,707 @@
 package com.example.virasat.ui.screens
 
-import android.annotation.SuppressLint
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
+import coil.compose.AsyncImage
+import com.example.virasat.data.model.Fact
+import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.service.GeminiHeritageService
 import com.example.virasat.data.service.TriviaQuestion
-import com.example.virasat.data.source.KarnatakaSites
 import com.example.virasat.ui.theme.*
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("SetJavaScriptEnabled")
+// --- Karnataka Heritage Tour Data ---
+sealed class TourStop(
+    val title: String,
+    val subtitle: String,
+    val imageUrl: String,
+    val narrationKey: String,
+    val facts: List<Fact> = emptyList()
+)
+
+fun buildTourForSite(site: com.example.virasat.data.model.HeritageSite?): List<TourStop> {
+    if (site == null) return emptyList()
+    val images = listOf(site.imageUrl) + site.galleryImages
+    return buildList {
+        // Overview
+        add(
+            OverviewStop(
+                site.name,
+                site.shortDescription,
+                images.getOrElse(0) { site.imageUrl },
+                "overview",
+                site.facts.take(3)
+            )
+        )
+        // History
+        if (site.history.isNotBlank()) {
+            add(
+                HistoryStop(
+                    "A Walk Through Time",
+                    site.history,
+                    images.getOrElse(1) { site.imageUrl },
+                    "history",
+                    listOf(Fact("${site.id}-h1", "Founded", "${site.name} holds over 600 years of documented history and architectural evolution."))
+                )
+            )
+        }
+        // Architecture
+        if (site.architecture.isNotBlank()) {
+            add(
+                ArchitectureStop(
+                    "Architectural Marvel",
+                    site.architecture,
+                    images.getOrElse(2) { site.imageUrl },
+                    "architecture"
+                )
+            )
+        }
+        // Legends
+        if (site.legends.isNotBlank()) {
+            add(
+                LegendStop(
+                    "Legends & Lore",
+                    site.legends,
+                    images.getOrElse(0) { site.imageUrl },
+                    "legends"
+                )
+            )
+        }
+    }
+}
+
+class OverviewStop(t: String, s: String, img: String, key: String, f: List<Fact>) :
+    TourStop(t, s, img, key, f)
+class HistoryStop(t: String, s: String, img: String, key: String, f: List<Fact>) :
+    TourStop(t, s, img, key, f)
+class ArchitectureStop(t: String, s: String, img: String, key: String) :
+    TourStop(t, s, img, key)
+class LegendStop(t: String, s: String, img: String, key: String) :
+    TourStop(t, s, img, key)
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun AINarratedTourScreen(
     siteId: String,
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
-    val site = KarnatakaSites.allSites.find { it.id == siteId }
-    val images = site?.galleryImages?.ifEmpty { listOf(site?.imageUrl ?: "") } ?: listOf("")
+    val repo = remember(context) { RepositoryProvider.getRepository(context) }
+    val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
+        value = try { repo.getSiteById(siteId) } catch (_: Exception) { null }
+    }
+    val tourStops = remember(siteId, site) { buildTourForSite(site) }
+    val pagerState = rememberPagerState(pageCount = { tourStops.size.coerceAtLeast(1) })
     val coroutineScope = rememberCoroutineScope()
 
+    // AI + TTS state
     var isNarrating by remember { mutableStateOf(false) }
     var narrationText by remember { mutableStateOf("") }
     var language by remember { mutableStateOf("English") }
+
+    // Overlay states
     var showTrivia by remember { mutableStateOf(false) }
-    var triviaQuestions by remember { mutableStateOf<List<TriviaQuestion>>(emptyList()) }
-    var selectedAnswers by remember { mutableStateOf(mutableMapOf<Int, Int>()) }
-    var snapshotFact by remember { mutableStateOf("") }
+    var triviaQuestions by remember { mutableStateOf(listOf<TriviaQuestion>()) }
     var showSnapshot by remember { mutableStateOf(false) }
+    var snapshotFact by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
-    var currentImageIndex by remember { mutableIntStateOf(0) }
-    var autoRotate by remember { mutableStateOf(true) }
-    var focusMode by remember { mutableStateOf("overview") }
 
     var tts by remember { mutableStateOf<TextToSpeech?>(null) }
 
+    // TTS init
     LaunchedEffect(Unit) {
         tts = TextToSpeech(context) { status ->
             if (status == TextToSpeech.SUCCESS) {
-                tts?.language = if (language == "Kannada") Locale("kn") else Locale.ENGLISH
+                tts?.language = if (language == "Kannada") Locale("kn", "IN") else Locale.ENGLISH
             }
         }
     }
-
     LaunchedEffect(language) {
-        tts?.language = if (language == "Kannada") Locale("kn") else Locale.ENGLISH
+        tts?.language = if (language == "Kannada") Locale("kn", "IN") else Locale.ENGLISH
+    }
+    DisposableEffect(Unit) {
+        onDispose { tts?.stop(); tts?.shutdown() }
     }
 
-    DisposableEffect(Unit) {
-        onDispose {
-            tts?.stop()
-            tts?.shutdown()
+    // Auto-generate narration on page change
+    LaunchedEffect(pagerState.currentPage, language) {
+        tts?.stop()
+        snapshotFact = ""
+        showSnapshot = false
+        isNarrating = false
+        val stop = tourStops.getOrNull(pagerState.currentPage)
+        val baseText = stop?.subtitle ?: ""
+        narrationText = baseText
+
+        if (GeminiHeritageService.isInitialized() && stop != null) {
+            val focus = when (stop) {
+                is HistoryStop -> "history"
+                is ArchitectureStop -> "architecture"
+                is LegendStop -> "legends"
+                else -> "overview"
+            }
+            val aiText = GeminiHeritageService.generateNarration(site, language)
+            narrationText = aiText.ifBlank { baseText }
+            tts?.speak(narrationText, TextToSpeech.QUEUE_FLUSH, null, "narration")
+            tts?.setOnUtteranceProgressListener(
+                object : UtteranceProgressListener() {
+                    override fun onStart(id: String?) { isNarrating = true }
+                    override fun onDone(id: String?) { isNarrating = false }
+                    override fun onError(id: String?) { isNarrating = false }
+                }
+            )
+            isNarrating = true
         }
     }
 
-    val panoramaHtml = remember(images, currentImageIndex, autoRotate) {
-        val imgUrl = if (images.isNotEmpty()) images[currentImageIndex] else ""
-        """
-<!DOCTYPE html>
-<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
-<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
-<style>body{margin:0;padding:0;overflow:hidden;background:#000}#panorama{width:100vw;height:100vh}</style>
-</head><body><div id="panorama"></div>
-<script>
-pannellum.viewer('panorama',{"type":"equirectangular","panorama":"$imgUrl","autoLoad":true,"autoRotate":${if(autoRotate)"-2" else "0"},"compass":false,"showZoomCtrl":true,"showFullscreenCtrl":false,"showControls":true,"strings":{"loadButtonLabel":"Tap to Load 360°"}});
-</script></body></html>
-        """.trimIndent()
-    }
+    // Current stop
+    val currentStop = tourStops.getOrNull(pagerState.currentPage)
+    val isLastPage = pagerState.currentPage == tourStops.size - 1
+    val progress = if (tourStops.isNotEmpty()) (pagerState.currentPage + 1).toFloat() / tourStops.size else 0f
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(site?.name ?: "AI Tour", fontWeight = FontWeight.Bold) },
-                navigationIcon = { IconButton(onClick = { tts?.stop(); onBack() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back") } },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+    val cs = MaterialTheme.colorScheme
+    val type = MaterialTheme.typography
+
+    Box(modifier = Modifier.fillMaxSize().background(cs.background)) {
+        // ===== Immersive Background Image =====
+        currentStop?.let { stop ->
+            AsyncImage(
+                model = stop.imageUrl,
+                contentDescription = stop.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            // Gradient overlay for readability
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.35f),
+                                Color.Black.copy(alpha = 0.0f),
+                                Color.Black.copy(alpha = 0.0f),
+                                Color.Black.copy(alpha = 0.6f),
+                                Color.Black.copy(alpha = 0.85f)
+                            ),
+                            startY = 0f
+                        )
+                    )
             )
         }
-    ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding).background(Color.Black)) {
-            // 360° viewer
-            if (images.isNotEmpty()) {
-                AndroidView(
-                    factory = { ctx ->
-                        WebView(ctx).apply {
-                            webViewClient = WebViewClient()
-                            settings.javaScriptEnabled = true
-                            settings.loadWithOverviewMode = true
-                            settings.useWideViewPort = true
-                            settings.domStorageEnabled = true
-                            settings.allowFileAccess = false
-                            setBackgroundColor(android.graphics.Color.BLACK)
-                            loadDataWithBaseURL(null, panoramaHtml, "text/html", "UTF-8", null)
-                        }
-                    },
-                    update = { it.loadDataWithBaseURL(null, panoramaHtml, "text/html", "UTF-8", null) },
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
 
-            // Overlay controls
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Bottom
+        // ===== Top Bar (transparent, floating) =====
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+                .statusBarsPadding(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Back pill
+            Surface(
+                shape = RoundedCornerShape(999.dp),
+                color = cs.surfaceContainerLowest.copy(alpha = 0.15f),
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable { tts?.stop(); onBack() }
             ) {
-                // Loading indicator
-                if (isLoading) {
-                    LinearProgressIndicator(
-                        modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        trackColor = Color.Transparent
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        "Back",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
                     )
                 }
+            }
 
-                // Snapshot result
-                if (showSnapshot && snapshotFact.isNotEmpty()) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.95f)),
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.AutoAwesome, null, tint = MaterialTheme.colorScheme.primaryContainer, modifier = Modifier.size(20.dp))
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("AI Snapshot", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(snapshotFact, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                    }
+            // Site name pill
+            val currentSite = site
+            if (currentSite != null) {
+                Surface(
+                    shape = RoundedCornerShape(999.dp),
+                    color = cs.surfaceContainerLowest.copy(alpha = 0.2f)
+                ) {
+                    Text(
+                        currentSite.nameLocal,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp,
+                        color = Color.White
+                    )
                 }
+            }
 
-                // Trivia overlay
-                if (showTrivia && triviaQuestions.isNotEmpty()) {
-                    Card(
+            // Language toggle pill
+            Surface(
+                shape = RoundedCornerShape(999.dp),
+                color = cs.surfaceContainerLowest.copy(alpha = 0.15f),
+                onClick = {
+                    language = if (language == "English") "Kannada" else "English"
+                }
+            ) {
+                Text(
+                    if (language == "English") "EN" else "ಕ",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    color = Color.White
+                )
+            }
+        }
+
+        // ===== Page Indicators (floating above card) =====
+        if (tourStops.size > 1) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 320.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                tourStops.forEachIndexed { index, _ ->
+                    val active = index == pagerState.currentPage
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .width(if (active) 24.dp else 8.dp)
+                            .height(8.dp)
+                            .clip(RoundedCornerShape(999.dp))
+                            .background(
+                                if (active) cs.primaryContainer
+                                else Color.White.copy(alpha = 0.35f)
+                            )
+                            .animateContentSize()
+                    )
+                }
+            }
+        }
+
+        // ===== Story Card (floating at bottom) =====
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp)
+        ) {
+            // Snapshot overlay card (above story card)
+            AnimatedVisibility(
+                visible = showSnapshot && snapshotFact.isNotEmpty(),
+                enter = fadeIn() + slideInVertically { it },
+                exit = fadeOut() + slideOutVertically { it }
+            ) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = cs.surfaceContainerLowest.copy(alpha = 0.97f)),
+                    shape = RoundedCornerShape(24.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                ) {
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .heightIn(max = 400.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.97f)),
-                        shape = RoundedCornerShape(16.dp)
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp).verticalScroll(rememberScrollState())
+                        Surface(
+                            shape = CircleShape,
+                            color = cs.primaryContainer,
+                            modifier = Modifier.size(40.dp)
                         ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Default.Quiz, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("AI Trivia", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-                                Spacer(modifier = Modifier.weight(1f))
-                                IconButton(onClick = { showTrivia = false }) {
-                                    Icon(Icons.Default.Close, null, tint  = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
-                                }
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    Icons.Default.AutoAwesome,
+                                    null,
+                                    tint = cs.onPrimaryContainer,
+                                    modifier = Modifier.size(22.dp)
+                                )
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
-                            triviaQuestions.forEachIndexed { qi, q ->
-                                Text("Q${qi + 1}: ${q.question}", fontWeight = FontWeight.Medium, fontSize = 15.sp, color = MaterialTheme.colorScheme.primary)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                q.options.forEachIndexed { oi, opt ->
-                                    val isSelected = selectedAnswers[qi] == oi
-                                    val isCorrect = q.correctAnswer == oi
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 2.dp)
-                                            .background(
-                                                if (isSelected && isCorrect) Color(0xFFC8E6C9)
-                                                else if (isSelected && !isCorrect) Color(0xFFFFCDD2)
-                                                else Color.Transparent,
-                                                RoundedCornerShape(8.dp)
-                                            )
-                                            .padding(8.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        RadioButton(
-                                            selected = isSelected,
-                                            onClick = {
-                                                selectedAnswers = mutableMapOf<Int, Int>().apply { putAll(selectedAnswers); put(qi, oi) }
-                                            },
-                                            colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary)
-                                        )
-                                        Spacer(modifier = Modifier.width(4.dp))
-                                        Text(opt, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                    }
-                                }
-                                if (selectedAnswers.containsKey(qi)) {
-                                    Text(q.explanation, fontSize = 12.sp, color  = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f), modifier = Modifier.padding(start = 8.dp, bottom = 8.dp))
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
-                            }
+                        }
+                        Spacer(modifier = Modifier.width(14.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                "AI Insight",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 15.sp,
+                                color = cs.primary
+                            )
+                            Text(
+                                snapshotFact,
+                                fontSize = 14.sp,
+                                lineHeight = 20.sp,
+                                color = cs.onSurfaceVariant,
+                                maxLines = 4
+                            )
+                        }
+                        IconButton(
+                            onClick = { showSnapshot = false; snapshotFact = "" }
+                        ) {
+                            Icon(
+                                Icons.Default.Close,
+                                null,
+                                tint = cs.onSurfaceVariant.copy(alpha = 0.5f)
+                            )
                         }
                     }
                 }
+            }
 
-                // Narration text
-                if (narrationText.isNotEmpty()) {
-                    Surface(
-                        color = Color.Black.copy(alpha = 0.6f),
+            // Bottom Story Card
+            Card(
+                colors = CardDefaults.cardColors(containerColor = cs.surfaceContainerLowest.copy(alpha = 0.97f)),
+                shape = RoundedCornerShape(32.dp),
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    // Progress line
+                    LinearProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(3.dp)
+                            .clip(RoundedCornerShape(999.dp)),
+                        color = cs.primaryContainer,
+                        trackColor = cs.surfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Title row with narration icon
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            narrationText,
-                            modifier = Modifier.padding(12.dp),
-                            color = Color.White,
-                            fontSize = 13.sp,
-                            lineHeight = 18.sp,
-                            maxLines = 3,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
-                // Bottom controls
-                    Column {
-                        // Navigation row
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            IconButton(onClick = { if (currentImageIndex > 0) { currentImageIndex--; snapshotFact = ""; showSnapshot = false } }) {
-                                Icon(Icons.Default.SkipPrevious, "Previous", tint = if (currentImageIndex > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
+                        currentStop?.let { stop ->
+                            val icon = when (stop) {
+                                is OverviewStop -> Icons.Default.Info
+                                is HistoryStop -> Icons.Default.History
+                                is ArchitectureStop -> Icons.Default.AccountBalance
+                                is LegendStop -> Icons.Default.AutoStories
+                                else -> Icons.Default.Info
                             }
-                            Text("${currentImageIndex + 1}/${images.size}", fontSize = 12.sp, color = MaterialTheme.colorScheme.primary)
-                            IconButton(onClick = { autoRotate = !autoRotate }) {
-                                Icon(if (autoRotate) Icons.Default.RotateRight else Icons.Default.Panorama, null, tint = if (autoRotate) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
-                            }
-                            IconButton(onClick = { if (currentImageIndex < images.size - 1) { currentImageIndex++; snapshotFact = ""; showSnapshot = false } }) {
-                                Icon(Icons.Default.SkipNext, "Next", tint = if (currentImageIndex < images.size - 1) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
+                            Surface(
+                                shape = CircleShape,
+                                color = cs.primaryContainer,
+                                modifier = Modifier.size(36.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(
+                                        icon,
+                                        null,
+                                        tint = cs.onPrimaryContainer,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
                             }
                         }
-
-                        // Action buttons
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            // Narration toggle
-                            Button(
-                                onClick = {
-                                    if (isNarrating) {
-                                        isNarrating = false
-                                        tts?.stop()
-                                    } else {
-                                        isNarrating = true
-                                        isLoading = true
-                                        coroutineScope.launch {
-                                            val text = GeminiHeritageService.generateNarration(siteId, language)
-                                            narrationText = text
-                                            isLoading = false
-                                            tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                                                override fun onDone(uttId: String?) { isNarrating = false }
-                                                override fun onError(uttId: String?) { isNarrating = false }
-                                                override fun onStart(uttId: String?) {}
-                                            })
-                                            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "narration")
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                currentStop?.title ?: "Heritage Tour",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp,
+                                color = cs.onSurface
+                            )
+                            Text(
+                                "Step ${pagerState.currentPage + 1} of ${tourStops.size}",
+                                fontSize = 13.sp,
+                                color = cs.onSurfaceVariant
+                            )
+                        }
+                        IconButton(
+                            onClick = {
+                                if (isNarrating) {
+                                    tts?.stop()
+                                    isNarrating = false
+                                } else {
+                                    isNarrating = true
+                                    tts?.speak(
+                                        narrationText,
+                                        TextToSpeech.QUEUE_FLUSH,
+                                        null,
+                                        "narration"
+                                    )
+                                    tts?.setOnUtteranceProgressListener(
+                                        object : UtteranceProgressListener() {
+                                            override fun onStart(id: String?) {}
+                                            override fun onDone(id: String?) { isNarrating = false }
+                                            override fun onError(id: String?) { isNarrating = false }
                                         }
-                                    }
-                                },
-                                colors = ButtonDefaults.buttonColors(containerColor = if (isNarrating) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary),
-                                shape = CircleShape,
-                                modifier = Modifier.size(56.dp)
-                            ) {
-                                Icon(if (isNarrating) Icons.Default.Stop else Icons.Default.PlayArrow, "Narrate", tint = Color.White)
+                                    )
+                                }
                             }
+                        ) {
+                            Surface(
+                                shape = CircleShape,
+                                color = if (isNarrating) cs.primaryContainer else cs.surfaceVariant
+                            ) {
+                                Box(
+                                    modifier = Modifier.size(40.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        if (isNarrating) Icons.Default.Stop
+                                        else @Suppress("DEPRECATION")
+                                        Icons.Default.VolumeUp,
+                                        null,
+                                        tint = if (isNarrating) cs.onPrimaryContainer
+                                        else cs.onSurfaceVariant,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
 
-                            // Snapshot
-                            Button(
-                                onClick = {
-                                    isLoading = true; showSnapshot = true
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Narration / description text
+                    Text(
+                        currentStop?.subtitle ?: "",
+                        fontSize = 15.sp,
+                        lineHeight = 22.sp,
+                        color = cs.onSurfaceVariant,
+                        maxLines = if (showSnapshot) 2 else 5,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        modifier = Modifier.verticalScroll(rememberScrollState())
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Action buttons row
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        // Snapshot button
+                        TourActionButton(
+                            icon = Icons.Default.AutoAwesome,
+                            label = "AI Insight",
+                            onClick = {
+                                showSnapshot = true
+                                isLoading = true
+                                coroutineScope.launch {
+                                    snapshotFact = GeminiHeritageService.describeView(
+                                        site,
+                                        when (currentStop) {
+                                            is HistoryStop -> "history"
+                                            is ArchitectureStop -> "architecture"
+                                            is LegendStop -> "legends"
+                                            else -> "overview"
+                                        },
+                                        language
+                                    )
+                                    isLoading = false
+                                }
+                            }
+                        )
+
+                        // Trivia button
+                        TourActionButton(
+                            icon = Icons.Default.Quiz,
+                            label = "Quiz",
+                            onClick = {
+                                showTrivia = !showTrivia
+                                if (showTrivia && triviaQuestions.isEmpty()) {
+                                    isLoading = true
                                     coroutineScope.launch {
-                                        snapshotFact = GeminiHeritageService.describeView(siteId, focusMode, language)
+                                        triviaQuestions = GeminiHeritageService.generateTrivia(site, 3, language)
                                         isLoading = false
                                     }
-                                },
-                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-                                shape = CircleShape,
-                                modifier = Modifier.size(56.dp)
-                            ) {
-                                Icon(Icons.Default.AutoAwesome, "Snapshot", tint = Color.White)
-                            }
-
-                            // Trivia
-                            Button(
-                                onClick = {
-                                    showTrivia = !showTrivia
-                                    if (showTrivia && triviaQuestions.isEmpty()) {
-                                        isLoading = true
-                                        coroutineScope.launch {
-                                            triviaQuestions = GeminiHeritageService.generateTrivia(siteId, 3, language)
-                                            isLoading = false
-                                        }
-                                    }
-                                },
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7B1FA2)),
-                                shape = CircleShape,
-                                modifier = Modifier.size(56.dp)
-                            ) {
-                                Icon(Icons.Default.Quiz, "Trivia", tint = Color.White)
-                            }
-
-                            // Language toggle
-                            OutlinedButton(
-                                onClick = { language = if (language == "English") "Kannada" else "English" },
-                                shape = RoundedCornerShape(12.dp),
-                                modifier = Modifier.height(56.dp)
-                            ) {
-                                Text(if (language == "English") "EN" else "ಕ", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-                            }
-
-                            // Focus selector
-                            var showFocusMenu by remember { mutableStateOf(false) }
-                            Box {
-                                OutlinedButton(
-                                    onClick = { showFocusMenu = true },
-                                    shape = RoundedCornerShape(12.dp),
-                                    modifier = Modifier.height(56.dp)
-                                ) {
-                                    Text(focusMode.take(4), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-                                }
-                                DropdownMenu(expanded = showFocusMenu, onDismissRequest = { showFocusMenu = false }) {
-                                    listOf("overview", "history", "architecture", "legends").forEach { mode ->
-                                        DropdownMenuItem(
-                                            text = { Text(mode.replaceFirstChar { it.uppercase() }) },
-                                            onClick = { focusMode = mode; showFocusMenu = false }
-                                        )
-                                    }
                                 }
                             }
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        // Prev / Next navigation
+                        FilledTonalIconButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(
+                                        (pagerState.currentPage - 1).coerceAtLeast(0)
+                                    )
+                                }
+                            },
+                            enabled = pagerState.currentPage > 0
+                        ) {
+                            Icon(Icons.Default.SkipPrevious, "Previous")
                         }
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Button(
+                            onClick = {
+                                coroutineScope.launch {
+                                    if (isLastPage) {
+                                        onBack()
+                                    } else {
+                                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                                    }
+                                }
+                            },
+                            shape = RoundedCornerShape(999.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = cs.primaryContainer,
+                                contentColor = cs.onPrimaryContainer
+                            )
+                        ) {
+                            Text(
+                                if (isLastPage) "Finish Tour" else "Next",
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Icon(
+                                if (isLastPage) Icons.Default.Check else Icons.AutoMirrored.Filled.ArrowForward,
+                                null,
+                                modifier = Modifier.padding(start = 4.dp)
+                            )
+                        }
                     }
+                }
             }
+        }
+
+        // ===== Trivia Bottom Sheet =====
+        if (showTrivia) {
+            ModalBottomSheet(
+                onDismissRequest = { showTrivia = false },
+                containerColor = cs.surfaceContainerLowest
+            ) {
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .padding(bottom = 32.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            "Heritage Quiz",
+                            style = type.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = cs.onSurface
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        IconButton(onClick = { showTrivia = false }) {
+                            Icon(Icons.Default.Close, null, tint = cs.onSurfaceVariant)
+                        }
+                    }
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.CenterHorizontally).padding(32.dp),
+                            color = cs.primaryContainer
+                        )
+                    } else {
+                        triviaQuestions.forEachIndexed { qi, q ->
+                            Text(
+                                "Q${qi + 1}. ${q.question}",
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp,
+                                color = cs.onSurface,
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                            q.options.forEachIndexed { oi, opt ->
+                                val selected = remember { mutableStateOf(false) }
+                                val isCorrect = q.correctAnswer == oi
+                                Surface(
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = if (selected.value && isCorrect) {
+                                        cs.secondaryContainer.copy(alpha = 0.6f)
+                                    } else if (selected.value) {
+                                        cs.errorContainer.copy(alpha = 0.4f)
+                                    } else {
+                                        cs.surfaceContainerLow
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 4.dp)
+                                        .clickable { selected.value = true }
+                                ) {
+                                    Text(
+                                        opt,
+                                        modifier = Modifier.padding(16.dp),
+                                        fontSize = 15.sp,
+                                        color = cs.onSurface
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    }
+                }
+            }
+        }
+
+        // ===== Loading overlay =====
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = cs.primaryContainer,
+                    modifier = Modifier.size(48.dp),
+                    trackColor = Color.Transparent
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TourActionButton(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    onClick: () -> Unit
+) {
+    val cs = MaterialTheme.colorScheme
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(999.dp),
+        color = cs.surfaceContainerLow,
+        modifier = Modifier.height(40.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Icon(icon, null, tint = cs.primary, modifier = Modifier.size(18.dp))
+            Text(
+                label,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = cs.onSurface
+            )
         }
     }
 }

@@ -30,6 +30,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.virasat.viewmodel.QrScannerViewModel
+import com.example.virasat.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.ExperimentalMaterial3Api
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -66,13 +68,12 @@ fun QrScannerScreen(
         if (!hasCameraPermission) launcher.launch(Manifest.permission.CAMERA)
     }
 
-    // Navigate to success screen once check-in completes
+    // Navigate to site detail once check-in completes
     LaunchedEffect(hasCheckedIn, isCheckingIn) {
         if (hasCheckedIn && !isCheckingIn) {
             val site = scannedSite
             if (site != null) {
-                val fId = unlockedFact?.id ?: ""
-                onNavigateToSite(site.id + (if (fId.isNotBlank()) "?factId=$fId" else ""))
+                onNavigateToSite(site.id)
             }
         }
     }
@@ -326,22 +327,21 @@ fun QrScannerScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    "Camera permission required",
-                    style = type.bodyLarge,
-                    color = Color.White
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = { launcher.launch(Manifest.permission.CAMERA) },
-                    shape = RoundedCornerShape(999.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = cs.primaryContainer,
-                        contentColor = cs.onPrimaryContainer
+                    Text(stringResource(R.string.camera_permission_required),
+                        style = type.bodyLarge,
+                        color = Color.White
                     )
-                ) {
-                    Text("Grant Permission", style = type.labelLarge)
-                }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = { launcher.launch(Manifest.permission.CAMERA) },
+                        shape = RoundedCornerShape(999.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = cs.primaryContainer,
+                            contentColor = cs.onPrimaryContainer
+                        )
+                    ) {
+                        Text(stringResource(R.string.grant_permission), style = type.labelLarge)
+                    }
             }
         }
 
@@ -378,7 +378,7 @@ fun QrScannerScreen(
                             contentColor = cs.onPrimaryContainer
                         )
                     ) {
-                        Text("View Site Details", style = type.labelLarge)
+                        Text(stringResource(R.string.view_site_details), style = type.labelLarge)
                     }
                 } else {
                     Button(
@@ -397,7 +397,7 @@ fun QrScannerScreen(
                                 color = cs.onPrimaryContainer
                             )
                         } else {
-                            Text("Check In Here", style = type.labelLarge)
+                            Text(stringResource(R.string.check_in_here), style = type.labelLarge)
                         }
                     }
                 }

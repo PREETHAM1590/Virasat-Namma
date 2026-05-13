@@ -18,13 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.model.HeritageSite
 import com.example.virasat.data.model.SiteType
-import com.example.virasat.data.source.KarnatakaSites
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,8 +37,12 @@ fun HeritageSitesListScreen(
     var selectedType by remember { mutableStateOf<SiteType?>(null) }
     var isGrid by remember { mutableStateOf(false) }
 
-    val allSites = KarnatakaSites.allSites
-    val filtered = remember(query, selectedType) {
+    val ctx = LocalContext.current
+    val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+    val allSites by produceState<List<HeritageSite>>(emptyList(), ctx) {
+        value = repo.getAllSitesList()
+    }
+    val filtered = remember(query, selectedType, allSites) {
         allSites.filter { site ->
             val matchesQuery = query.isBlank() ||
                 site.name.contains(query, ignoreCase = true) ||
@@ -97,7 +102,7 @@ fun HeritageSitesListScreen(
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector = if (isGrid) Icons.Default.List else Icons.Default.GridView,
+                        imageVector = if (isGrid) @Suppress("DEPRECATION") Icons.Filled.List else Icons.Default.GridView,
                         contentDescription = if (isGrid) "List View" else "Grid View",
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)

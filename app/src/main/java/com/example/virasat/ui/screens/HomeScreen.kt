@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Route
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
@@ -33,9 +34,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,7 +68,9 @@ import com.example.virasat.ui.theme.OnSurfaceVariant
 import com.example.virasat.ui.theme.Primary
 import com.example.virasat.ui.theme.PrimaryContainer
 import com.example.virasat.ui.theme.responsiveHorizontalPadding
+import com.example.virasat.util.LocationUtils
 import com.example.virasat.viewmodel.WeatherViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -103,7 +109,18 @@ fun HomeScreen(
 
     val displaySites = if (selectedType == null) allSites else filteredSites
     val heroSite = allSites.firstOrNull()
-    val popularSites = allSites.take(6)
+    val popularSites = displaySites.take(6)
+
+    var userLocation by remember { mutableStateOf<android.location.Location?>(null) }
+    LaunchedEffect(Unit) {
+        if (context.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED ||
+            context.checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            try {
+                userLocation = LocationUtils.fetchCurrentLocation(context)
+            } catch (_: Exception) { }
+        }
+    }
 
     val userName = remember {
         val prefs = context.getSharedPreferences("virasat_prefs", Context.MODE_PRIVATE)
@@ -225,7 +242,6 @@ fun HomeScreen(
                                         val typeName = siteTypeMap[cat]
                                         val newType = if (isSelected) null else SiteType.valueOf(typeName!!)
                                         viewModel.setTypeFilter(newType)
-                                        onCategoryClick(cat)
                                     }
                                 }
                                 .padding(horizontal = 20.dp, vertical = 10.dp)
@@ -341,7 +357,7 @@ fun HomeScreen(
                         color = OnSurface
                     )
                     Text(
-                        "View All",
+                        stringResource(R.string.view_all),
                         style = MaterialTheme.typography.labelLarge,
                         color = Primary,
                         modifier = Modifier.clickable { onSitesList() }
@@ -357,7 +373,13 @@ fun HomeScreen(
                     modifier = Modifier.padding(bottom = 40.dp)
                 ) {
                     items(popularSites) { site ->
-                        PopularSiteCard(site = site, onClick = { onSiteClick(site.id) })
+                        val distanceText = remember(userLocation) {
+                            userLocation?.let {
+                                val km = LocationUtils.distanceKm(it.latitude, it.longitude, site.latitude, site.longitude)
+                                LocationUtils.formatDistance(km)
+                            } ?: site.district
+                        }
+                        PopularSiteCard(site = site, distanceText = distanceText, onClick = { onSiteClick(site.id) })
                     }
                 }
             }
@@ -378,7 +400,7 @@ fun HomeScreen(
                         color = OnSurface
                     )
                     Text(
-                        "View All",
+                        stringResource(R.string.view_all),
                         style = MaterialTheme.typography.labelLarge,
                         color = Primary,
                         modifier = Modifier.clickable { onGuides() }
@@ -404,6 +426,41 @@ fun HomeScreen(
                         Modifier.weight(1f)
                     )
                 }
+                Spacer(Modifier.height(32.dp))
+
+                // ── Itinerary Planner Card ──
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = hPadding)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(MaterialTheme.colorScheme.tertiaryContainer)
+                        .clickable { onItinerary() }
+                        .padding(20.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Route,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                            modifier = Modifier.size(36.dp)
+                        )
+                        Spacer(Modifier.width(16.dp))
+                        Column {
+                            Text(
+                                "Plan Your Itinerary",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onTertiaryContainer
+                            )
+                            Text(
+                                "Create optimised routes between heritage sites",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f)
+                            )
+                        }
+                    }
+                }
                 Spacer(Modifier.height(40.dp))
             }
         }
@@ -416,7 +473,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun PopularSiteCard(site: HeritageSite, onClick: () -> Unit) {
+private fun PopularSiteCard(site: HeritageSite, distanceText: String = site.district, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .width(220.dp)
@@ -489,7 +546,7 @@ private fun PopularSiteCard(site: HeritageSite, onClick: () -> Unit) {
                     )
                     Spacer(Modifier.width(3.dp))
                     Text(
-                        site.district,
+                        distanceText,
                         style = MaterialTheme.typography.bodySmall,
                         color = OnSurfaceVariant,
                         maxLines = 1

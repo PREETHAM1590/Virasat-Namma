@@ -1,0 +1,73 @@
+# 2026-05-12T06:08:31.167304300Z:
+test_suite_meta_data {
+  scheduled_test_case_count: 1
+}
+test_status: FAILED
+test_result {
+  test_case {
+    test_class: "BaselineProfileGenerator"
+    test_package: "com.example.virasat.baselineprofile"
+    test_method: "generateBaselineProfile"
+    start_time {
+      seconds: 1778566106
+      nanos: 779000000
+    }
+    end_time {
+      seconds: 1778566107
+      nanos: 864000000
+    }
+  }
+  test_status: FAILED
+  error {
+    error_message: "junit.framework.AssertionFailedError: Failed to grant permissions, see logcat for details\nat junit.framework.Assert.fail(Assert.java:50)\nat androidx.test.runner.permission.PermissionRequester.requestPermissions(PermissionRequester.java:111)\nat androidx.test.rule.GrantPermissionRule$RequestPermissionStatement.evaluate(GrantPermissionRule.java:135)\nat org.junit.rules.RunRules.evaluate(RunRules.java:20)\nat org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)\nat org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)\nat org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)\nat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)\nat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)\nat org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)\nat org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)\nat org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)\nat org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)\nat org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)\nat org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)\nat org.junit.runners.ParentRunner.run(ParentRunner.java:413)\nat androidx.test.ext.junit.runners.AndroidJUnit4.run(AndroidJUnit4.java:162)\nat org.junit.runners.Suite.runChild(Suite.java:128)\nat org.junit.runners.Suite.runChild(Suite.java:27)\nat org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)\nat org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)\nat org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)\nat org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)\nat org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)\nat org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)\nat org.junit.runners.ParentRunner.run(ParentRunner.java:413)\nat org.junit.runner.JUnitCore.run(JUnitCore.java:137)\nat org.junit.runner.JUnitCore.run(JUnitCore.java:115)\nat androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:67)\nat androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:58)\nat androidx.test.runner.AndroidJUnitRunner.onStart(AndroidJUnitRunner.java:446)\nat android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2212)\n"
+    error_type: "junit.framework.AssertionFailedError"
+    stack_trace: "junit.framework.AssertionFailedError: Failed to grant permissions, see logcat for details\nat junit.framework.Assert.fail(Assert.java:50)\nat androidx.test.runner.permission.PermissionRequester.requestPermissions(PermissionRequester.java:111)\nat androidx.test.rule.GrantPermissionRule$RequestPermissionStatement.evaluate(GrantPermissionRule.java:135)\nat org.junit.rules.RunRules.evaluate(RunRules.java:20)\nat org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)\nat org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)\nat org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)\nat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)\nat org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)\nat org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)\nat org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)\nat org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)\nat org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)\nat org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)\nat org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)\nat org.junit.runners.ParentRunner.run(ParentRunner.java:413)\nat androidx.test.ext.junit.runners.AndroidJUnit4.run(AndroidJUnit4.java:162)\nat org.junit.runners.Suite.runChild(Suite.java:128)\nat org.junit.runners.Suite.runChild(Suite.java:27)\nat org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)\nat org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)\nat org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)\nat org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)\nat org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)\nat org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)\nat org.junit.runners.ParentRunner.run(ParentRunner.java:413)\nat org.junit.runner.JUnitCore.run(JUnitCore.java:137)\nat org.junit.runner.JUnitCore.run(JUnitCore.java:115)\nat androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:67)\nat androidx.test.internal.runner.TestExecutor.execute(TestExecutor.java:58)\nat androidx.test.runner.AndroidJUnitRunner.onStart(AndroidJUnitRunner.java:446)\nat android.app.Instrumentation$InstrumentationThread.run(Instrumentation.java:2212)\n"
+  }
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "D:\\Android PROJECTS\\Virasat\\baselineprofile\\build\\outputs\\androidTest-results\\connected\\nonMinifiedRelease\\CPH1911 - 11\\logcat-com.example.virasat.baselineprofile.BaselineProfileGenerator-generateBaselineProfile.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "D:\\Android PROJECTS\\Virasat\\baselineprofile\\build\\outputs\\androidTest-results\\connected\\nonMinifiedRelease\\CPH1911 - 11\\device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "D:\\Android PROJECTS\\Virasat\\baselineprofile\\build\\outputs\\androidTest-results\\connected\\nonMinifiedRelease\\CPH1911 - 11\\meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "D:\\Android PROJECTS\\Virasat\\baselineprofile\\build\\outputs\\androidTest-results\\connected\\nonMinifiedRelease\\CPH1911 - 11\\cpuinfo"
+    }
+  }
+}
+output_artifact {
+  label {
+    label: "test-results.log"
+    namespace: "com.google.testing.platform.runtime.android.driver.AndroidInstrumentationDriver"
+  }
+  source_path {
+    path: "D:\\Android PROJECTS\\Virasat\\baselineprofile\\build\\outputs\\androidTest-results\\connected\\nonMinifiedRelease\\CPH1911 - 11\\testlog\\test-results.log"
+  }
+  type: TEST_DATA
+  mime_type: "text/plain"
+}

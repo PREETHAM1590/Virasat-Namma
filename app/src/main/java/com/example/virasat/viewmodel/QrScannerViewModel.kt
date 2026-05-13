@@ -28,14 +28,48 @@ class QrScannerViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun processQrCode(qrData: String) {
         viewModelScope.launch {
-            // Accepts either a bare site ID or a QR code ID (QR-HAMPI-001 etc.)
-            val site = repository.getSiteById(qrData)
-                ?: repository.getAllSitesList().find { it.qrCodeId == qrData }
+            val siteId = extractSiteId(qrData)
+            if (siteId.isBlank()) {
+                _scannedSite.value = null
+                return@launch
+            }
+
+            val site = repository.getSiteById(siteId)
+                ?: repository.getAllSitesList().find {
+                    it.qrCodeId == siteId || it.id == siteId
+                }
             _scannedSite.value = site
             if (site != null) {
                 _hasCheckedIn.value = repository.hasCheckedIn(site.id)
             }
         }
+    }
+
+    /** Extract site ID from various QR formats:
+     *  - Plain site ID: "hampi"
+     *  - QR code ID: "QR-HAMPI-001"
+     *  - URL: "https://virasat.app/site/hampi" or similar
+     *  - JSON: {"siteId": "hampi"}
+     */
+    private fun extractSiteId(raw: String): String {
+        val input = raw.trim().replace(Regex("[<>\"';&]"), "").take(200)
+        if (input.isBlank()) return ""
+
+        // URL format — extract last path segment
+        if (input.startsWith("http")) {
+            val path = input.substringAfter("://").substringAfter("/")
+            val segment = path.trimEnd('/').substringAfterLast("/")
+            return segment.take(50)
+        }
+
+        // JSON format — extract siteId field
+        if (input.startsWith("{")) {
+            val match = Regex("\"siteId\"\\s*:\\s*\"([^\"]+)\"").find(input)
+            if (match != null) return match.groupValues[1].take(50)
+        }
+
+        // Plain ID or QR code ID (QR-HAMPI-001)
+        return input.take(50)
     }
 
     fun checkIn() {

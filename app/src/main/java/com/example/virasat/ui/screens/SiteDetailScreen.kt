@@ -61,6 +61,7 @@ import kotlinx.coroutines.launch
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.source.KarnatakaSites
 import com.example.virasat.data.service.GeminiHeritageService
+import com.example.virasat.util.LocationUtils
 
 @Composable
 fun SiteDetailScreen(
@@ -89,6 +90,25 @@ fun SiteDetailScreen(
     var isFav by remember { mutableStateOf(false) }
     LaunchedEffect(siteId) {
         isFav = try { repo.isBookmarked(siteId) } catch (_: Exception) { false }
+    }
+
+    var userLocation by remember { mutableStateOf<android.location.Location?>(null) }
+    LaunchedEffect(Unit) {
+        if (ctx.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED ||
+            ctx.checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            try {
+                userLocation = LocationUtils.fetchCurrentLocation(ctx)
+            } catch (_: Exception) { }
+        }
+    }
+    val distanceText = remember(userLocation, site) {
+        userLocation?.let { loc ->
+            site?.let { s ->
+                val km = LocationUtils.distanceKm(loc.latitude, loc.longitude, s.latitude, s.longitude)
+                LocationUtils.formatDistance(km)
+            }
+        } ?: site?.district ?: ""
     }
 
     if (isLoading) {
@@ -235,7 +255,7 @@ fun SiteDetailScreen(
                         )
                         Spacer(Modifier.width(6.dp))
                         Text(
-                            s.location,
+                            distanceText,
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
