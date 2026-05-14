@@ -296,36 +296,6 @@ fun SiteDetailScreen(
                 }
                 Spacer(Modifier.height(32.dp))
 
-                // Description Card
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-                        .padding(32.dp)
-                ) {
-                    Column {
-                        Text(
-                            stringResource(R.string.detail_about),
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Spacer(Modifier.height(16.dp))
-                        Text(
-                            LocaleHelper.siteDescription(s, ctx),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(Modifier.height(16.dp))
-                        Text(
-                            LocaleHelper.siteHistory(s, ctx),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-                Spacer(Modifier.height(32.dp))
-
                 // Action Buttons Row
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -381,6 +351,36 @@ fun SiteDetailScreen(
                     }
                 }
                 Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(32.dp))
+
+                // Description Card
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+                        .padding(32.dp)
+                ) {
+                    Column {
+                        Text(
+                            stringResource(R.string.detail_about),
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            LocaleHelper.siteDescription(s, ctx),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            LocaleHelper.siteHistory(s, ctx),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
         }
     }
