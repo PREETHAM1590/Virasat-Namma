@@ -26,6 +26,10 @@ class FirebaseHeritageRepository(context: Context) : HeritageRepository {
     override suspend fun getSiteById(id: String): HeritageSite? =
         firestore.getSiteById(id) ?: KarnatakaSites.allSites.find { it.id == id }
 
+    override suspend fun getSiteByQrCode(qrCodeId: String): HeritageSite? =
+        firestore.getSiteByQrCode(qrCodeId)
+            ?: KarnatakaSites.allSites.find { it.qrCodeId == qrCodeId }
+
     override fun getSitesByType(type: String): Flow<List<HeritageSite>> =
         firestore.observeSitesByType(type)
 

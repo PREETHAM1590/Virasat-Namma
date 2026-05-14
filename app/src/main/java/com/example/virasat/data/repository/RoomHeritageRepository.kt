@@ -42,9 +42,12 @@ class RoomHeritageRepository(context: Context) : HeritageRepository {
     override suspend fun getAllSitesList(): List<HeritageSite> =
         siteDao.getAllSitesList().map { it.toModel() }
 
-    override suspend fun getSiteById(id: String): HeritageSite? {
-        return siteDao.getSiteById(id)?.toModel()
-    }
+    override suspend fun getSiteById(id: String): HeritageSite? =
+        siteDao.getSiteById(id)?.toModel()
+
+    override suspend fun getSiteByQrCode(qrCodeId: String): HeritageSite? =
+        siteDao.getSiteByQrCode(qrCodeId)?.toModel()
+            ?: KarnatakaSites.allSites.find { it.qrCodeId == qrCodeId }
 
     override fun getSitesByType(type: String): Flow<List<HeritageSite>> =
         siteDao.getSitesByType(type).map { list -> list.map { it.toModel() } }

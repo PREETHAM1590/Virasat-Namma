@@ -16,6 +16,9 @@ interface HeritageSiteDao {
     @Query("SELECT * FROM heritage_sites WHERE id = :id LIMIT 1")
     suspend fun getSiteById(id: String): HeritageSiteEntity?
 
+    @Query("SELECT * FROM heritage_sites WHERE qrCodeId = :qrCodeId LIMIT 1")
+    suspend fun getSiteByQrCode(qrCodeId: String): HeritageSiteEntity?
+
     @Query("SELECT * FROM heritage_sites WHERE type = :type ORDER BY name ASC")
     fun getSitesByType(type: String): Flow<List<HeritageSiteEntity>>
 

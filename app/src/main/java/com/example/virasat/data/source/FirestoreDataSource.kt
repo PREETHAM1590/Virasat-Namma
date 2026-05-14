@@ -68,6 +68,19 @@ class FirestoreDataSource {
             ?.copy(isFavourite = id in bookmarkedIds)
     }
 
+    /** Lookup by qrCodeId field (e.g. "QR-HAMPI-001") — O(1) indexed query. */
+    suspend fun getSiteByQrCode(qrCodeId: String): HeritageSite? {
+        val bookmarkedIds = getBookmarkedSiteIds()
+        return try {
+            val snap = sitesCollection
+                .whereEqualTo("qrCodeId", qrCodeId)
+                .limit(1)
+                .get().await()
+            snap.documents.firstOrNull()?.toHeritageSite()
+                ?.copy(isFavourite = snap.documents.firstOrNull()?.id?.let { it in bookmarkedIds } == true)
+        } catch (_: Exception) { null }
+    }
+
     fun observeSitesByType(type: String): Flow<List<HeritageSite>> = callbackFlow {
         val listener = sitesCollection
             .whereEqualTo("type", type)

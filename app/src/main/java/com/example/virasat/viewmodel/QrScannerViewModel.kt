@@ -32,17 +32,23 @@ class QrScannerViewModel(application: Application) : AndroidViewModel(applicatio
     fun processQrCode(qrData: String) {
         viewModelScope.launch {
             _qrError.value = null
-            val siteId = extractSiteId(qrData)
-            if (siteId.isBlank()) {
+            val token = extractSiteId(qrData)
+            if (token.isBlank()) {
                 _scannedSite.value = null
                 _qrError.value = "Unrecognized QR code"
                 return@launch
             }
 
-            val site = repository.getSiteById(siteId)
+            // 1. Try direct doc-ID lookup (if QR encodes plain site id like "hampi")
+            // 2. Try qrCodeId field lookup (handles "QR-HAMPI-001" format)
+            // 3. Fallback: scan all sites for either match
+            val site = repository.getSiteById(token)
+                ?: repository.getSiteByQrCode(token)
                 ?: repository.getAllSitesList().find {
-                    it.qrCodeId == siteId || it.id == siteId
+                    it.qrCodeId.equals(token, ignoreCase = true) ||
+                    it.id.equals(token, ignoreCase = true)
                 }
+
             if (site == null) {
                 _scannedSite.value = null
                 _qrError.value = "No heritage site found for this QR code"

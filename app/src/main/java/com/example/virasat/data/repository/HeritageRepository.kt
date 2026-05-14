@@ -10,6 +10,7 @@ interface HeritageRepository {
     fun getAllSites(): Flow<List<HeritageSite>>
     suspend fun getAllSitesList(): List<HeritageSite>
     suspend fun getSiteById(id: String): HeritageSite?
+    suspend fun getSiteByQrCode(qrCodeId: String): HeritageSite?
     fun getSitesByType(type: String): Flow<List<HeritageSite>>
     fun searchSites(query: String): Flow<List<HeritageSite>>
     fun getAllCheckIns(): Flow<List<CheckIn>>
