@@ -144,6 +144,7 @@
     <string name="detail_ai_tour">AI ಪ್ರವಾಸ</string>
     <string name="detail_check_in">ಚೆಕ್ ಇನ್</string>
     <string name="detail_talking_tour">ಮಾತಿನ ಪ್ರವಾಸ</string>
+    <string name="detail_quiz">ರಸಪ್ರಶ್ನೆ</string>
     <string name="detail_free">ಉಚಿತ</string>
     <string name="detail_narrated">ವಿವರಿಸಿದ ಪ್ರವಾಸ</string>
     <string name="detail_listen">ಕೇಳಿ</string>
@@ -302,6 +303,11 @@
 
     <!-- Profile -->
     <string name="profile_edit_profile">ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ</string>
+    <string name="edit_profile_title">ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ</string>
+    <string name="edit_profile_name">ಹೆಸರು</string>
+    <string name="edit_profile_email">ಇಮೇಲ್</string>
+    <string name="edit_profile_phone">ಫೋನ್</string>
+    <string name="edit_profile_bio">ಬಯೋ</string>
 
     <!-- Audio Guide Chapter Titles -->
     <string name="audio_chapter_introduction">ಪರಿಚಯ</string>

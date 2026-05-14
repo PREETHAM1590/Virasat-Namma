@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -72,7 +73,8 @@ fun SiteDetailScreen(
     onImmersiveView: (String) -> Unit,
     onGallery: (String) -> Unit,
     onReviews: (String) -> Unit,
-    onTalkingTour: (String) -> Unit
+    onTalkingTour: (String) -> Unit,
+    onQuiz: (String) -> Unit
 ) {
     val ctx = LocalContext.current
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
@@ -304,6 +306,7 @@ fun SiteDetailScreen(
                     ActionChip(stringResource(R.string.detail_gallery), Icons.Default.Image) { onGallery(siteId) }
                     ActionChip(stringResource(R.string.detail_check_in), Icons.Default.QrCodeScanner) { onCheckIn() }
                     ActionChip(stringResource(R.string.detail_talking_tour), Icons.Default.Mic) { onTalkingTour(siteId) }
+                    ActionChip(stringResource(R.string.detail_quiz), Icons.Default.Quiz) { onQuiz(siteId) }
                 }
                 Spacer(Modifier.height(32.dp))
 

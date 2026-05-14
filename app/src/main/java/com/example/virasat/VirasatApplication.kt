@@ -19,6 +19,11 @@ class VirasatApplication : Application() {
     lateinit var networkMonitor: NetworkMonitor
         private set
 
+    override fun attachBaseContext(base: android.content.Context) {
+        val lang = com.example.virasat.util.LocaleHelper.getSavedLocale(base)
+        super.attachBaseContext(com.example.virasat.util.LocaleHelper.wrap(base, lang))
+    }
+
     override fun onCreate() {
         super.onCreate()
         FirebaseApp.initializeApp(this)

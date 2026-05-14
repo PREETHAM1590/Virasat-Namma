@@ -201,7 +201,12 @@ fun LanguageScreen(
             Button(
                 onClick = {
                     LocaleHelper.setLocale(context, selectedCode)
-                    onContinue()
+                    // Mark language as selected before recreating so the
+                    // recreated activity navigates to onboarding (not language).
+                    context.getSharedPreferences("virasat_prefs", android.content.Context.MODE_PRIVATE)
+                        .edit().putBoolean("language_selected", true).apply()
+                    // Recreate so stringResource() picks up the new locale immediately.
+                    (context as? android.app.Activity)?.recreate() ?: onContinue()
                 },
                 modifier = Modifier
                     .fillMaxWidth()

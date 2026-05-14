@@ -144,6 +144,7 @@
     <string name="detail_ai_tour">AI Tour</string>
     <string name="detail_check_in">Check In</string>
     <string name="detail_talking_tour">Talking Tour</string>
+    <string name="detail_quiz">Quiz</string>
     <string name="detail_free">Free</string>
     <string name="detail_narrated">narrated tour</string>
     <string name="detail_listen">Listen</string>

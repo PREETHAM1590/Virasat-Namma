@@ -2081,7 +2081,487 @@ const sites = [
     "rating": 4.4,
     "reviews": 2100,
     "isFavourite": false
-  }
+  },
+  {
+  "id": "basavakalyana",
+  "name": "Basavakalyana",
+  "nameLocal": "ಬಸವಕಲ್ಯಾಣ",
+  "location": "Basavakalyana, Bidar",
+  "district": "Bidar",
+  "type": "MONUMENT",
+  "shortDescription": "Sacred city of Basavanna — birthplace of the 12th-century Lingayat social reform movement.",
+  "description": "Basavakalyana (formerly Kalyani) was the capital of the Kalachuri dynasty and later the Western Chalukyas of Kalyani. It is revered as the city where Basavanna, the 12th-century philosopher-saint, began his revolutionary social reform movement known as Veerashaiva or Lingayat faith.",
+  "history": "Kalyani served as the capital of the Chalukyas of Kalyani (973–1190 CE). Basavanna served as the treasury minister (Shivayogi) under King Bijjala II here. The city is dotted with Anubhava Mantapa — the first philosophical parliament of the world, convened by Basavanna around 1160 CE.",
+  "architecture": "The Basavakalyana Fort displays Chalukyan and later Bahmani architectural influence. The Anubhava Mantapa is a spiritual center. The region has several veeragallu (hero stones) and 12th-century temple ruins reflecting Chalukyan craftsmanship.",
+  "legends": "Basavanna is believed to have merged with the Shiva lingam at Kudala Sangama after his work was complete. The local Gavimath is said to be the spot where Basavanna meditated for years.",
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Basav_kalyan_entrance.jpg",
+  "galleryImages": [
+    "https://upload.wikimedia.org/wikipedia/commons/a/a2/Basav_kalyan_entrance.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/1/11/Basava_Kalyan_temple.JPG",
+    "https://upload.wikimedia.org/wikipedia/commons/e/e8/Basava_kalyan.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/3/30/Basavakalyan_Gavimath.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/0/05/Basavakalyana_Monuments.JPG",
+    "https://upload.wikimedia.org/wikipedia/commons/3/3f/Basava_Kalyan_Fort_1.1.JPG"
+  ],
+  "facts": [
+    {
+      "id": "basavakalyana-f1",
+      "title": "First Parliament of Philosophy",
+      "description": "Basavanna's Anubhava Mantapa (c. 1160 CE) is considered the world's first spiritual-democratic parliament, where saints debated philosophy regardless of caste."
+    },
+    {
+      "id": "basavakalyana-f2",
+      "title": "Lingayat Origin",
+      "description": "The Lingayat faith, today followed by ~17% of Karnataka's population, was born here through Basavanna's 12th-century reform movement."
+    },
+    {
+      "id": "basavakalyana-f3",
+      "title": "Vachana Literature",
+      "description": "Over 1,500 Vachanas (lyrical aphorisms) by Basavanna and contemporaries were composed here, forming a cornerstone of Kannada literature."
+    }
+  ],
+  "latitude": 17.87,
+  "longitude": 76.95,
+  "visitingHours": "6:00 AM - 6:00 PM",
+  "entryFee": "Free",
+  "qrCodeId": "QR-BASAVAKALYANA-001",
+  "audioGuideUrl": "",
+  "rating": 4.3,
+  "reviews": 3200,
+  "isFavourite": false
+},
+  {
+  "id": "keladi",
+  "name": "Keladi",
+  "nameLocal": "ಕೆಳದಿ",
+  "location": "Keladi, Shivamogga",
+  "district": "Shivamogga",
+  "type": "TEMPLE",
+  "shortDescription": "Ancient temple complex and capital of the Keladi Nayakas — a blend of Hoysala and Vijayanagara styles.",
+  "description": "Keladi is a small village in Shivamogga district that served as the capital of the Keladi Nayaka kingdom (1499–1763 CE). It is known for the Rameshwara and Veerabhadra temples, which combine Hoysala, Vijayanagara, and Dravidian architectural traditions.",
+  "history": "The Keladi Nayakas were successors of the Vijayanagara Empire in the western Karnataka region. Shivappa Nayaka (1645–1660) was the most notable ruler who standardized land revenue and built extensive water tanks. The kingdom fell to Hyder Ali in 1763.",
+  "architecture": "The Rameshwara Temple at Keladi is a masterpiece combining three styles: a Hoysala-style sanctum, Vijayanagara-style mandapa, and Dravidian-style gopura. The stone carvings feature intricate scrollwork and deity panels.",
+  "legends": "Legend holds that the goddess Bhavani of Keladi is the presiding deity who guided the Keladi Nayakas to victory in battles. The Nandi bull facing the shrine is said to have magically appeared overnight.",
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Keladi_temple.png",
+  "galleryImages": [
+    "https://upload.wikimedia.org/wikipedia/commons/6/6e/Keladi_temple.png",
+    "https://upload.wikimedia.org/wikipedia/commons/d/d9/MG_1143-Edit.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/c/c1/Rameshwara_Temple_Front_View.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/4/4a/Nandi_%28bull%29_facing_the_shrine_in_the_Rameshwara_Temple_at_Keladi.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/5/5a/Rameshwara_Temple_in_Keladi.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/4/49/Keladi_Rameswara_Temple_1.jpg"
+  ],
+  "facts": [
+    {
+      "id": "keladi-f1",
+      "title": "Three Architectural Styles",
+      "description": "The Rameshwara Temple uniquely blends Hoysala, Vijayanagara, and Dravidian styles in a single structure — a rare achievement in Karnataka."
+    },
+    {
+      "id": "keladi-f2",
+      "title": "Shivappa Nayaka's Revenue System",
+      "description": "Shivappa Nayaka introduced a scientific land revenue system (Sist) that was later adopted by Hyder Ali and Tipu Sultan."
+    },
+    {
+      "id": "keladi-f3",
+      "title": "Keladi Museum",
+      "description": "The Keladi Museum houses bronze idols, palm leaf manuscripts, weapons, and coins from the Keladi Nayaka period."
+    }
+  ],
+  "latitude": 14.0667,
+  "longitude": 75.3167,
+  "visitingHours": "9:00 AM - 5:30 PM",
+  "entryFee": "Free",
+  "qrCodeId": "QR-KELADI-001",
+  "audioGuideUrl": "",
+  "rating": 4.2,
+  "reviews": 1800,
+  "isFavourite": false
+},
+  {
+  "id": "ikkeri",
+  "name": "Ikkeri (Aghoreshwara Temple)",
+  "nameLocal": "ಇಕ್ಕೇರಿ",
+  "location": "Ikkeri, Shivamogga",
+  "district": "Shivamogga",
+  "type": "TEMPLE",
+  "shortDescription": "16th-century Aghoreshwara Temple — a triumph of late Chalukyan and Hoysala architecture built by the Keladi Nayakas.",
+  "description": "Ikkeri, near Sagar in Shivamogga district, was the first capital of the Keladi Nayaka kingdom. The Aghoreshwara Temple here is one of the finest examples of late Chalukyan and Hoysala temple architecture with strong Dravidian influences, built in the 16th century.",
+  "history": "Ikkeri served as the Keladi Nayaka capital before it was shifted to Keladi and later to Bidanuru. The Aghoreshwara Temple was constructed during the reign of Chaudenahalli Nayaka around 1540 CE and expanded by subsequent rulers.",
+  "architecture": "The Aghoreshwara Temple features an unusual mix of styles — a Dravidian-style entrance gopura, Hoysala-style decorative panels, and a Chalukyan-style shikhara. The temple complex includes shrines to Aghoreshwara (Shiva), Parvati, and Veerabhadra.",
+  "legends": "The temple's Nandi is said to be self-manifested (swayambhu). Local belief holds that Basavanna himself blessed this site. The Aghoreshwara lingam is believed to grant wishes to devotees who observe a three-day fast.",
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/af/Aghoreshvara_Temple%2C_Ikkeri.jpg",
+  "galleryImages": [
+    "https://upload.wikimedia.org/wikipedia/commons/a/af/Aghoreshvara_Temple%2C_Ikkeri.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/c/cd/Ikkeri_Aghoreshwara_Temple.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/c/c8/Ikkeri_Nandi.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/6/65/Aghoreshwara_temple_at_Ikkeri.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/7/74/Ikkeri_temple_Karnataka.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/0/02/Ikkeri_Aghoreshwara_Temple_2.jpg"
+  ],
+  "facts": [
+    {
+      "id": "ikkeri-f1",
+      "title": "Style Fusion",
+      "description": "Ikkeri's Aghoreshwara Temple uniquely fuses three distinct architectural styles in one structure — an architectural experiment unmatched in Karnataka."
+    },
+    {
+      "id": "ikkeri-f2",
+      "title": "Nandi Pillar",
+      "description": "The monolithic Nandi in the mandapa is exceptionally detailed, with intricate floral and geometric carvings on its base."
+    },
+    {
+      "id": "ikkeri-f3",
+      "title": "First Keladi Capital",
+      "description": "Ikkeri was the very first capital of the Keladi Nayaka kingdom (1499 CE), making it the birthplace of a dynasty that resisted both Mughal and Bijapur invasions."
+    }
+  ],
+  "latitude": 14.1667,
+  "longitude": 75.0333,
+  "visitingHours": "6:00 AM - 8:00 PM",
+  "entryFee": "Free",
+  "qrCodeId": "QR-IKKERI-001",
+  "audioGuideUrl": "",
+  "rating": 4.1,
+  "reviews": 1200,
+  "isFavourite": false
+},
+  {
+  "id": "sringeri",
+  "name": "Sringeri Sharada Peetham",
+  "nameLocal": "ಶೃಂಗೇರಿ ಶಾರದಾ ಪೀಠ",
+  "location": "Sringeri, Chikkamagaluru",
+  "district": "Chikkamagaluru",
+  "type": "TEMPLE",
+  "shortDescription": "One of the four sacred mathas founded by Adi Shankaracharya — a living 8th-century spiritual tradition.",
+  "description": "Sringeri Sharada Peetham is the first of the four sacred mathas (monasteries) established by Adi Shankaracharya in the 8th century CE. Situated on the banks of the Tunga river in the Western Ghats, it houses the Sharada (Saraswati) and Vidyashankara temples and continues as an active center of Advaita Vedanta philosophy.",
+  "history": "Founded by Adi Shankaracharya around 788 CE, Sringeri is the oldest continuously operating Advaita Vedanta institution in India. Vidyaranya Swami, the 12th Shankaracharya of Sringeri (1377 CE), is credited with inspiring the founding of the Vijayanagara Empire.",
+  "architecture": "The Vidyashankara Temple (1338 CE) is an architectural marvel — its 12 pillars are aligned so that the sun's rays fall on the corresponding zodiac pillar on each month's solar entry day. The Sharada Temple features a golden idol of the goddess and intricate Kerala-style woodwork.",
+  "legends": "Adi Shankaracharya chose Sringeri after witnessing a cobra spreading its hood to shade a frog giving birth — symbolizing the harmony of opposites. The sacred Tunga river water is said to cure diseases and grant liberation.",
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Sri_Vidyashankar_Temple%2C_Sringeri%2C_2019.jpg",
+  "galleryImages": [
+    "https://upload.wikimedia.org/wikipedia/commons/3/3b/Sri_Vidyashankar_Temple%2C_Sringeri%2C_2019.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/a/a8/Sri_Sharada_shrine_at_Sringeri.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/2/28/A_distant_view_of_the_Sringeri_Sharada_Peetham.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/0/07/Sringeri_Sharada_Peetham%2C_Sringeri%2C_Karnataka%2C_India_%282024%29.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/0/0f/Dakshinamnaya_Sri_Sharada_Peetham_1%2CSringeri%2C_Karnataka_05.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/5/52/Dakshinamnaya_Sri_Sharada_Peetham_1%2CSringeri%2C_Karnataka_01.jpg"
+  ],
+  "facts": [
+    {
+      "id": "sringeri-f1",
+      "title": "Solar Calendar Pillars",
+      "description": "The Vidyashankara Temple's 12 pillars act as a solar calendar — sunlight falls on the correct zodiac pillar on the exact day the sun enters that zodiac sign each month."
+    },
+    {
+      "id": "sringeri-f2",
+      "title": "Continuous Tradition",
+      "description": "Sringeri Matha has maintained an unbroken lineage of 36 Shankaracharyas over 1,200 years, making it the oldest living philosophical institution in India."
+    },
+    {
+      "id": "sringeri-f3",
+      "title": "Vijayanagara Connection",
+      "description": "Vidyaranya Swami of Sringeri inspired and guided Harihara I and Bukka Raya I to found the Vijayanagara Empire in 1336 CE."
+    }
+  ],
+  "latitude": 13.4167,
+  "longitude": 75.25,
+  "visitingHours": "7:00 AM - 8:30 PM",
+  "entryFee": "Free",
+  "qrCodeId": "QR-SRINGERI-001",
+  "audioGuideUrl": "",
+  "rating": 4.7,
+  "reviews": 8900,
+  "isFavourite": false
+},
+  {
+  "id": "udupi",
+  "name": "Udupi Sri Krishna Temple",
+  "nameLocal": "ಉಡುಪಿ ಶ್ರೀ ಕೃಷ್ಣ ಮಠ",
+  "location": "Udupi",
+  "district": "Udupi",
+  "type": "TEMPLE",
+  "shortDescription": "The 13th-century temple of Sri Krishna — spiritual heart of coastal Karnataka and birthplace of the Udupi cuisine tradition.",
+  "description": "The Udupi Sri Krishna Matha is a Hindu temple and monastery founded by the saint-philosopher Madhvacharya in the 13th century CE. It is one of the most important Vaishnava pilgrimage centers in South India, famous for the unique tradition of worshipping Krishna through a window of nine holes (Kanakana Kindi).",
+  "history": "Founded by Madhvacharya (1238–1317 CE), the Udupi Krishna Matha is managed by a council of eight monasteries (Ashtamathas). The paryaya festival, where each matha takes turns managing the temple for two years, has been held without interruption for over 700 years.",
+  "architecture": "The temple features Kerala-style gopura with gold-plated domes, intricate wooden carvings, and the famous Kanakana Kindi — a window with nine holes through which Kanakadasa, the 16th-century saint-poet, is said to have received Krishna's darshan after being denied entry.",
+  "legends": "The legend of Kanakana Kindi: Kanakadasa, a devotee denied entry to the temple, sang his devotion outside. Krishna, moved by his bhakti, turned to face him and broke open the wall — creating the Kanakana Kindi window still used for darshan today.",
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Brahma_ratha_of_Udupi_Krishna.jpg",
+  "galleryImages": [
+    "https://upload.wikimedia.org/wikipedia/commons/3/3e/Brahma_ratha_of_Udupi_Krishna.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/3/33/Udupi_Sri_Krishna_Temple%2C_Udupi%2C_Karnataka%2C_India_%282010%29.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/d/de/Udupi_Sri_krishna_temple_01.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/a/a8/Udupi_Krishna_Mandira.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/b/b3/Udupi_krishna_temple_04.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/e/e0/Udupi_Sri_Krishna_Matha%2C_Udupi%2C_Karnataka%2C_India_%282014%29.jpg"
+  ],
+  "facts": [
+    {
+      "id": "udupi-f1",
+      "title": "Kanakana Kindi",
+      "description": "The 9-holed window (Kanakana Kindi) was reportedly created miraculously when Krishna turned to face Kanakadasa — the saint-poet who was denied entry due to his lower caste."
+    },
+    {
+      "id": "udupi-f2",
+      "title": "Unbroken Paryaya",
+      "description": "The Paryaya festival — where 8 monasteries rotate temple management every 2 years — has continued without interruption for over 700 years."
+    },
+    {
+      "id": "udupi-f3",
+      "title": "Udupi Cuisine",
+      "description": "The Udupi vegetarian cuisine tradition, now famous worldwide, originated from the temple kitchen's practice of serving prasad to thousands of pilgrims daily."
+    }
+  ],
+  "latitude": 13.3409,
+  "longitude": 74.7497,
+  "visitingHours": "5:30 AM - 8:30 PM (6 sessions daily)",
+  "entryFee": "Free",
+  "qrCodeId": "QR-UDUPI-001",
+  "audioGuideUrl": "",
+  "rating": 4.6,
+  "reviews": 11200,
+  "isFavourite": false
+},
+  {
+  "id": "kadri-temple",
+  "name": "Kadri Manjunath Temple",
+  "nameLocal": "ಕದ್ರಿ ಮಂಜುನಾಥ ದೇವಸ್ಥಾನ",
+  "location": "Mangaluru",
+  "district": "Dakshina Kannada",
+  "type": "TEMPLE",
+  "shortDescription": "One of the oldest temples in coastal Karnataka — the 10th-century Kadri Manjunath Temple with a sacred spring.",
+  "description": "The Kadri Manjunath Temple in Mangaluru is one of the most ancient and revered temples on the Karnataka coast, dating to around 968 CE. The presiding deity is Lokeshwara (Manjunatha/Shiva), and the temple is famous for its two sacred pools and a perennial spring called Kadri Theertham.",
+  "history": "The Kadri Temple was built during the Alupa dynasty (9th–10th century CE). It was renovated by the Vijayanagara rulers in the 16th century. The temple inscription of 968 CE (earliest in Karnataka coastal history) records the installation of the bronze Lokeshwara idol.",
+  "architecture": "The temple's main idol is a magnificent bronze Lokeshwara (Avalokitesvara) dated 968 CE — one of the finest Buddhist-influenced bronze sculptures in South India, indicating the temple's Buddhist origins before it became Shaivite. The temple uses Kerala-style architecture with tiled roofs.",
+  "legends": "Legend says Parashurama, the Brahmin warrior-sage, created the coastal Karnataka land by throwing his axe into the sea. The Kadri spring is said to be his sacred bath, and drinking from it grants moksha.",
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/91/Kadri_Manjunath_Temple.jpg",
+  "galleryImages": [
+    "https://upload.wikimedia.org/wikipedia/commons/9/91/Kadri_Manjunath_Temple.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/d/d4/Kadri_temple_entrance_mangalore.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/a/a4/Kadri_temple_arch.JPG",
+    "https://upload.wikimedia.org/wikipedia/commons/3/3f/Kadri_Manjunatha.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/c/cc/Kadri_temple.JPG",
+    "https://upload.wikimedia.org/wikipedia/commons/1/11/Kadri_temple_entrance.JPG"
+  ],
+  "facts": [
+    {
+      "id": "kadri-f1",
+      "title": "968 CE Bronze Idol",
+      "description": "The bronze Lokeshwara idol at Kadri Temple, dated 968 CE, is among the finest Buddhist-influenced bronzes in South India and proves the site's Buddhist origins."
+    },
+    {
+      "id": "kadri-f2",
+      "title": "Perennial Spring",
+      "description": "The Kadri Theertham is a natural spring within the temple that has flowed continuously for over 1,000 years."
+    },
+    {
+      "id": "kadri-f3",
+      "title": "Oldest Inscription",
+      "description": "The 968 CE temple inscription is the oldest known historical record on the Karnataka coast."
+    }
+  ],
+  "latitude": 12.8785,
+  "longitude": 74.8428,
+  "visitingHours": "6:00 AM - 8:30 PM",
+  "entryFee": "Free",
+  "qrCodeId": "QR-KADRI-001",
+  "audioGuideUrl": "",
+  "rating": 4.4,
+  "reviews": 6700,
+  "isFavourite": false
+},
+  {
+  "id": "dharwad-fort",
+  "name": "Dharwad Fort",
+  "nameLocal": "ಧಾರವಾಡ ಕೋಟೆ",
+  "location": "Dharwad",
+  "district": "Dharwad",
+  "type": "FORT",
+  "shortDescription": "Historic Dharwad Fort and temples — gateway to North Karnataka's cultural heritage.",
+  "description": "Dharwad is one of Karnataka's most culturally rich cities, known for its historic fort, ancient temples, and as the birthplace of Karnataka's classical music tradition (Dharwad music style). The Banashankari Temple at Amargol and the old fort gate are significant heritage landmarks.",
+  "history": "Dharwad was a key fortified town during the Vijayanagara, Bijapur Sultanate, and later Maratha and British periods. The fort was built and expanded over centuries. The town gave its name to the Dharwad style of Hindustani classical music, which evolved here under the patronage of royals and feudal lords.",
+  "architecture": "The Dharwad Fort features double gateways — an outer gate and inner gate — in Bijapur-Maratha style. The Banashankari Temple at Amargol has a distinctive temple tank and Hoysala-influenced architecture. The Dattatreya Temple nearby is a 13th-century structure.",
+  "legends": "The presiding deity of Dharwad is Banashankari Devi, who is said to have guided the founders of the town to build their settlement here after appearing in a dream. The fort is said to be haunted by the spirits of soldiers who fell in battle.",
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Banashankari_Temple_Amargol.jpg",
+  "galleryImages": [
+    "https://upload.wikimedia.org/wikipedia/commons/2/2d/Banashankari_Temple_Amargol.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/d/d4/Two_fort_gates_inner.JPG",
+    "https://upload.wikimedia.org/wikipedia/commons/e/eb/Two_fort_gates_outer.JPG",
+    "https://upload.wikimedia.org/wikipedia/commons/c/c4/Dattatreya_temple.JPG",
+    "https://upload.wikimedia.org/wikipedia/commons/b/b0/KCD_college_front_view.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/e/ee/Karnatak_college_%28cropped%29.jpg"
+  ],
+  "facts": [
+    {
+      "id": "dharwad-f1",
+      "title": "Classical Music Capital",
+      "description": "Dharwad is the birthplace of the 'Dharwad Gharana' — a distinct style of Hindustani classical music known for its emotive rendering of ragas."
+    },
+    {
+      "id": "dharwad-f2",
+      "title": "Dharwad Peda",
+      "description": "The famous Dharwad Peda (milk sweet) has been made here for over 150 years and received a Geographical Indication (GI) tag in 2007."
+    },
+    {
+      "id": "dharwad-f3",
+      "title": "University Town",
+      "description": "Karnataka University, Dharwad (est. 1949) is housed in historic colonial buildings and is one of the oldest universities in Karnataka."
+    }
+  ],
+  "latitude": 15.4589,
+  "longitude": 75.0078,
+  "visitingHours": "Open 24 hours (Fort exterior)",
+  "entryFee": "Free",
+  "qrCodeId": "QR-DHARWAD-001",
+  "audioGuideUrl": "",
+  "rating": 4.0,
+  "reviews": 2800,
+  "isFavourite": false
+},
+  {
+  "id": "belagavi-fort",
+  "name": "Belagavi Fort",
+  "nameLocal": "ಬೆಳಗಾವಿ ಕೋಟೆ",
+  "location": "Belagavi",
+  "district": "Belagavi",
+  "type": "FORT",
+  "shortDescription": "13th-century Belagavi Fort with Jain temples inside — a strategic stronghold of the Deccan.",
+  "description": "Belagavi (formerly Belgaum) Fort is a well-preserved medieval fort in northern Karnataka, built in the 13th century CE. Unusually for a fort, it contains two beautiful Jain temples — the Kamala Basadi and another Jain shrine — along with a mosque, showcasing the region's syncretic heritage.",
+  "history": "The fort was originally built by Ratta chief Bichiraja around 1204 CE. It was later held by the Bahmanis, Adil Shahs of Bijapur, Marathas, and finally the British, who used it as a cantonment. The Indian National Congress held its historic session here in 1924, presided over by Mahatma Gandhi.",
+  "architecture": "The fort features massive laterite walls with bastions and a moat. Inside are two exquisitely carved Jain temples from the 13th century — the Kamala Basadi features a 1.5m Mahavira idol in Kayotsarga pose. The fort mosque has fine Islamic arches.",
+  "legends": "Local legend says Belagavi was founded where a shepherd found a sacred stone. The fort's invincibility is attributed to a buried talisman placed by its original builders. The 1924 Congress session is remembered as the last presided over by Gandhi himself.",
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/b/be/Belgaum_Fort.jpg",
+  "galleryImages": [
+    "https://upload.wikimedia.org/wikipedia/commons/b/be/Belgaum_Fort.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/c/c3/Fort_of_Belgaum.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/7/77/Gateway_of_Belgaum_fort.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/2/2f/Jain_Temple_Belgaum.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/5/5f/Kamal_Basadi%2C_Belagavi%2C_Karnataka.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/d/d5/Jain_Temple%2C_Belgaum.jpg"
+  ],
+  "facts": [
+    {
+      "id": "belagavi-f1",
+      "title": "Gandhi's Congress",
+      "description": "The 1924 Indian National Congress session at Belagavi was the only one presided over by Mahatma Gandhi — a landmark moment in India's independence movement."
+    },
+    {
+      "id": "belagavi-f2",
+      "title": "Jain Temples Inside a Fort",
+      "description": "The Kamala Basadi and Jain temples within the fort walls are exceptionally rare — few forts in India contain functioning religious monuments of this quality."
+    },
+    {
+      "id": "belagavi-f3",
+      "title": "Multi-Dynasty Fort",
+      "description": "Belagavi Fort was ruled by at least 7 different kingdoms — Ratta, Bahmani, Adil Shah, Vijayanagara, Maratha, Peshwa, and British — each leaving architectural traces."
+    }
+  ],
+  "latitude": 15.8497,
+  "longitude": 74.4977,
+  "visitingHours": "9:00 AM - 5:30 PM (Fort/Temples)",
+  "entryFee": "₹25 (Indian), ₹200 (Foreigner)",
+  "qrCodeId": "QR-BELAGAVI-001",
+  "audioGuideUrl": "",
+  "rating": 4.2,
+  "reviews": 4100,
+  "isFavourite": false
+},
+  {
+  "id": "gulbarga-fort",
+  "name": "Gulbarga Fort & Jama Masjid",
+  "nameLocal": "ಕಲಬುರಗಿ ಕೋಟೆ",
+  "location": "Kalaburagi",
+  "district": "Kalaburagi",
+  "type": "FORT",
+  "shortDescription": "14th-century Bahmani capital — home to the extraordinary Gulbarga Jama Masjid, unique in India.",
+  "description": "Kalaburagi (Gulbarga) was the first capital of the Bahmani Sultanate (1347–1424 CE). The Gulbarga Fort complex contains the remarkable Jama Masjid — the only mosque in India built entirely with arched corridors and domes, without open courtyards, inspired by the Great Mosque of Cordoba, Spain.",
+  "history": "Alauddin Hasan Bahman Shah founded the Bahmani Sultanate at Gulbarga in 1347, after rebelling against the Delhi Sultanate. The Jama Masjid was built by Rafi (an architect from Moorish Spain) in 1367 CE. The capital was later moved to Bidar in 1424 CE.",
+  "architecture": "The Gulbarga Jama Masjid is architecturally unique in India — its entire prayer hall is covered with 75 domes and 250 arched bays, with no open courtyard (unlike all other Indian mosques). This Cordoban-Spanish design is the only one of its kind on the subcontinent.",
+  "legends": "The Dargah of Hazrat Banda Nawaz (Gesudaraz), a 15th-century Sufi saint, adjacent to the fort, draws millions of pilgrims annually. He is believed to have performed miracles, including turning saltwater sweet for his followers.",
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/41/Bahamani_kingdom_01.jpg",
+  "galleryImages": [
+    "https://upload.wikimedia.org/wikipedia/commons/4/41/Bahamani_kingdom_01.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/9/9f/Bahamani_kingdom_02.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/2/22/Gulbarga_Fort.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/4/4f/Gulbarga_Jama_Masjid.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/4/42/Gulbarga_Jama_Mosque_in_Kalaburgi%2C_Karnataka_01.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/4/41/Gulbarga_Jama_Mosque_in_Kalaburgi%2C_Karnataka_02.jpg"
+  ],
+  "facts": [
+    {
+      "id": "gulbarga-f1",
+      "title": "India's Only Covered Mosque",
+      "description": "Gulbarga's Jama Masjid is the only mosque in India with no open courtyard — its entire space is covered by 75 domes, inspired by the Great Mosque of Cordoba."
+    },
+    {
+      "id": "gulbarga-f2",
+      "title": "Spanish Architect",
+      "description": "The Jama Masjid was designed by Rafi, an architect from Moorish Spain, in 1367 CE — the first instance of Spanish-Islamic architecture in South Asia."
+    },
+    {
+      "id": "gulbarga-f3",
+      "title": "Bahmani Capital",
+      "description": "Gulbarga served as the Bahmani Sultanate's capital for 77 years (1347–1424 CE), making it one of the most important medieval sultanate capitals in the Deccan."
+    }
+  ],
+  "latitude": 17.3297,
+  "longitude": 76.8343,
+  "visitingHours": "9:00 AM - 5:30 PM",
+  "entryFee": "₹25 (Indian), ₹200 (Foreigner)",
+  "qrCodeId": "QR-GULBARGA-001",
+  "audioGuideUrl": "",
+  "rating": 4.3,
+  "reviews": 5600,
+  "isFavourite": false
+},
+  {
+  "id": "raichur-fort",
+  "name": "Raichur Fort",
+  "nameLocal": "ರಾಯಚೂರು ಕೋಟೆ",
+  "location": "Raichur",
+  "district": "Raichur",
+  "type": "FORT",
+  "shortDescription": "The strategically vital 13th-century Raichur Fort — contested by the Bahmani, Vijayanagara, and Adil Shah kingdoms for 200 years.",
+  "description": "Raichur Fort is a massive historical fort built in the 13th century, located at the confluence of the Krishna and Tungabhadra rivers. Its strategic location made it the most contested fort in the Deccan — it changed hands between the Bahmani Sultanate, Vijayanagara Empire, and Adil Shahi dynasty multiple times over 200 years.",
+  "history": "Originally built by the Kakatiya dynasty around 1294 CE, Raichur Fort became the epicenter of the Vijayanagara-Bahmani wars. The Battle of Raichur (1520 CE) under Krishnadevaraya of Vijayanagara was a decisive victory. The fort later fell to Adil Shah of Bijapur in 1565 CE.",
+  "architecture": "The fort sits on a rocky hill 100 meters high and has an outer wall of 4.8km. Features include massive gateways, Hindu and Islamic style towers, an ancient mosque, temples, and a cannon called 'Humbli Dana' (artillery cannon) still visible on the ramparts.",
+  "legends": "The fort is said to be guarded by a powerful yaksha (spirit) who causes bad luck to those who disrespect the site. A treasure is believed hidden in a secret chamber that opens only on Diwali night. The ghost of a Vijayanagara general is said to patrol the battlements.",
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Raichur_Fort_1.jpg",
+  "galleryImages": [
+    "https://upload.wikimedia.org/wikipedia/commons/0/0d/Raichur_Fort_1.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/e/ee/Raichur_Fort_2.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/f/fa/Raichur_Fort_3.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/f/fa/Fort_Hill_Top.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/c/c4/A_tower_on_the_southern_wall_of_Raichur_fort.jpg",
+    "https://upload.wikimedia.org/wikipedia/commons/b/b8/Iron_Cannon_On_Hill_Top_Raichur.jpg"
+  ],
+  "facts": [
+    {
+      "id": "raichur-f1",
+      "title": "Most Contested Fort",
+      "description": "Raichur Fort changed hands between Bahmani, Vijayanagara, and Adil Shahi kingdoms at least 8 times over 200 years — more than any other fort in Karnataka."
+    },
+    {
+      "id": "raichur-f2",
+      "title": "Krishnadevaraya's Victory",
+      "description": "The Battle of Raichur (1520 CE) was Krishnadevaraya's greatest military triumph — 700,000 soldiers were said to have participated, making it one of medieval India's largest battles."
+    },
+    {
+      "id": "raichur-f3",
+      "title": "River Confluence",
+      "description": "Raichur Fort sits at the strategic confluence of the Krishna and Tungabhadra rivers — whoever controlled it controlled all river-borne trade in the northern Deccan."
+    }
+  ],
+  "latitude": 16.212,
+  "longitude": 77.3566,
+  "visitingHours": "9:00 AM - 5:30 PM",
+  "entryFee": "Free",
+  "qrCodeId": "QR-RAICHUR-001",
+  "audioGuideUrl": "",
+  "rating": 4.1,
+  "reviews": 2400,
+  "isFavourite": false
+}
 ];
 
 async function seed() {

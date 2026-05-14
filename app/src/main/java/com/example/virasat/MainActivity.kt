@@ -48,15 +48,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Force locale on activity resources so Compose stringResource() works
-        val lang = com.example.virasat.util.LocaleHelper.getSavedLocale(this)
-        val locale = java.util.Locale(lang)
-        java.util.Locale.setDefault(locale)
-        val config = resources.configuration
-        config.setLocale(locale)
-        @Suppress("DEPRECATION")
-        resources.updateConfiguration(config, resources.displayMetrics)
-
+        // Locale is applied in attachBaseContext; no need to repeat here.
         window.setFormat(PixelFormat.OPAQUE)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.decorView.setBackgroundColor(android.graphics.Color.parseColor("#FFF5E6"))
@@ -78,7 +70,7 @@ class MainActivity : ComponentActivity() {
                         .collectAsState(initial = FirebaseAuthService.currentUser)
                     val startDest = when {
                         !onboardingSeen && !languageSelected -> "splash"
-                        !onboardingSeen && languageSelected -> "language"
+                        !onboardingSeen && languageSelected -> "onboarding"
                         // Returning user: always start at splash so it can wait for auth
                         // to resolve (up to 3 s) before navigating to login or home (Req 1.3–1.5)
                         else -> "splash"
@@ -152,17 +144,12 @@ class MainActivity : ComponentActivity() {
                                 onContinue = {
                                     if (isSettingsFlow) {
                                         navController.popBackStack()
-                                        // Recreate the Activity so the new locale is applied to
-                                        // all subsequently composed screens (stringResource, etc.)
-                                        // without requiring a manual app restart (Req 2.2).
-                                        activity?.recreate()
+                                        // LanguageScreen already calls recreate() so the new
+                                        // locale is applied to all subsequently composed screens.
                                     } else {
-                                        // Mark language as selected so subsequent launches skip
-                                        // the language screen when onboarding is not yet seen.
-                                        prefs.edit().putBoolean("language_selected", true).apply()
-                                        navController.navigate("onboarding") {
-                                            popUpTo("language") { inclusive = true }
-                                        }
+                                        // First-time flow: LanguageScreen already set
+                                        // language_selected=true and called recreate().
+                                        // The recreated activity will navigate to onboarding.
                                     }
                                 },
                                 onBack = { navController.popBackStack() }
@@ -271,6 +258,9 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onTalkingTour = { sId ->
                                     navController.navigate("talking_tour/$sId")
+                                },
+                                onQuiz = { sId ->
+                                    navController.navigate("quiz/$sId")
                                 }
                             )
                         }
