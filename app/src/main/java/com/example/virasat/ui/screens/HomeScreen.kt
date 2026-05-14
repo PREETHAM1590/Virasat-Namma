@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Route
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
@@ -463,6 +464,40 @@ fun HomeScreen(
                     }
                 }
                 Spacer(Modifier.height(40.dp))
+            }
+        }
+
+        // QR Scan FAB ───────────────────────────────────────────
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 20.dp, bottom = 96.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .shadow(12.dp, RoundedCornerShape(999.dp), spotColor = Primary.copy(alpha = 0.35f))
+                    .clip(RoundedCornerShape(999.dp))
+                    .background(Primary)
+                    .clickable { onQrScan() }
+                    .padding(horizontal = 20.dp, vertical = 14.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        Icons.Default.QrCodeScanner,
+                        contentDescription = "Scan QR",
+                        tint = androidx.compose.ui.graphics.Color.White,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        "Scan QR",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = androidx.compose.ui.graphics.Color.White,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
         }
 
