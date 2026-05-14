@@ -10,8 +10,9 @@ import kotlinx.coroutines.withContext
 
 /**
  * Provides Kannada translations for site content.
- * Stores translations in Firestore "translations" collection (shared across all users).
- * Falls back to local cache, then Gemini AI translation if not found.
+ * Read strategy: local SharedPreferences cache → Firestore shared read → Gemini AI translation.
+ * Write strategy: local cache only. Firestore write-back removed — `translations` collection
+ * requires admin write access; client writes were causing PERMISSION_DENIED errors.
  */
 object KannadaContentProvider {
 
@@ -30,7 +31,7 @@ object KannadaContentProvider {
     }
 
     /**
-     * Get translation: Firestore shared DB → local cache → Gemini translate & save to both.
+     * Get translation: local cache → Firestore shared read → Gemini translate & cache locally.
      */
     suspend fun getTranslation(
         context: Context,
@@ -41,7 +42,7 @@ object KannadaContentProvider {
         val local = getCached(context, site.id, field)
         if (!local.isNullOrBlank()) return@withContext local
 
-        // 2. Check Firestore shared translations
+        // 2. Check Firestore shared translations (read-only)
         try {
             val doc = db.collection("translations").document(site.id).get().await()
             if (doc.exists()) {
@@ -53,7 +54,7 @@ object KannadaContentProvider {
             }
         } catch (_: Exception) { }
 
-        // 3. Translate via Gemini and store in Firestore for all users
+        // 3. Translate via Gemini and cache locally (no Firestore write — requires admin access)
         val englishText = when (field) {
             "description" -> site.description
             "shortDescription" -> site.shortDescription
@@ -64,23 +65,13 @@ object KannadaContentProvider {
         }
         if (englishText.isBlank() || !GeminiHeritageService.isInitialized()) return@withContext ""
 
-        try {
+        return@withContext try {
             val prompt = """Translate to Kannada (ಕನ್ನಡ). Output ONLY the Kannada text:
 
 $englishText"""
             val translation = GeminiHeritageService.callGemini(prompt) ?: ""
             if (translation.isNotBlank()) {
-                // Save to local cache
                 cacheLocally(context, site.id, field, translation)
-                // Save to Firestore shared collection so all users benefit
-                try {
-                    db.collection("translations").document(site.id)
-                        .update(field, translation).await()
-                } catch (_: Exception) {
-                    // Document might not exist yet, create it
-                    db.collection("translations").document(site.id)
-                        .set(mapOf(field to translation), com.google.firebase.firestore.SetOptions.merge()).await()
-                }
             }
             translation.ifBlank { englishText }
         } catch (_: Exception) {

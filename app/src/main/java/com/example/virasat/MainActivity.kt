@@ -34,7 +34,6 @@ import com.example.virasat.data.service.GeminiHeritageService
 import com.example.virasat.data.service.FirebaseAuthService
 import kotlinx.coroutines.flow.first
 import com.example.virasat.util.LocaleHelper
-import com.example.virasat.data.source.FirestoreSeeder
 import com.google.firebase.auth.FirebaseAuth
 import com.example.virasat.ui.components.BottomNavItem
 import com.example.virasat.ui.screens.*
@@ -214,10 +213,6 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("home") {
                             val homeViewModel: com.example.virasat.viewmodel.HomeViewModel = viewModel()
-                            val homeCtx = LocalContext.current
-                            LaunchedEffect(Unit) {
-                                FirestoreSeeder.seedIfNeeded(homeCtx)
-                            }
                             FirebaseAnalyticsHelper.logScreenView("home")
                             HomeScreen(
                                     onSiteClick = { siteId ->
