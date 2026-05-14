@@ -1,6 +1,5 @@
 package com.example.virasat.ui.screens
 
-import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -143,31 +142,7 @@ fun LanguageScreen(
                             color = if (isSelected) PrimaryContainer else OutlineVariant,
                             shape = RoundedCornerShape(12.dp)
                         )
-                        .clickable {
-                            selectedCode = lang.code
-                            // Apply locale without recreating activity
-                            val currentLocale = LocaleHelper.getSavedLocale(context)
-                            if (lang.code != currentLocale) {
-                                LocaleHelper.setLocale(context, lang.code)
-                                // Update activity resources in-place so stringResource() picks up new locale
-                                val locale = java.util.Locale(lang.code)
-                                java.util.Locale.setDefault(locale)
-                                val config = context.resources.configuration
-                                config.setLocale(locale)
-                                @Suppress("DEPRECATION")
-                                context.resources.updateConfiguration(config, context.resources.displayMetrics)
-                                context.getSharedPreferences("virasat_prefs", Context.MODE_PRIVATE)
-                                    .edit().putBoolean("language_selected", true).apply()
-                                // Soft-restart: finish and relaunch without animation flash
-                                (context as? Activity)?.let { activity ->
-                                    val intent = activity.intent
-                                    activity.finish()
-                                    activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                                    activity.startActivity(intent)
-                                    activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                                }
-                            }
-                        }
+                        .clickable { selectedCode = lang.code }
                         .padding(24.dp)
                 ) {
                     Row(
@@ -224,7 +199,10 @@ fun LanguageScreen(
                 .padding(horizontal = 24.dp, vertical = 32.dp)
         ) {
             Button(
-                onClick = { onContinue() },
+                onClick = {
+                    LocaleHelper.setLocale(context, selectedCode)
+                    onContinue()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),

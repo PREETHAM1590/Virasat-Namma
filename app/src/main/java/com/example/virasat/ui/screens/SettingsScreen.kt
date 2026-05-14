@@ -18,9 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.virasat.R
+import com.example.virasat.util.BiometricHelper
 import com.example.virasat.util.NotificationPreferences
 
 @Composable
@@ -38,13 +41,18 @@ fun SettingsScreen(
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val userPrefs = remember { context.getSharedPreferences("virasat_prefs", android.content.Context.MODE_PRIVATE) }
-    val userName = remember { userPrefs.getString("user_name", null) ?: "Heritage Explorer" }
+    val userName = remember { userPrefs.getString("user_name", null) ?: context.getString(R.string.profile_heritage_explorer) }
     val userEmail = remember { userPrefs.getString("user_email", null) ?: "" }
     val currentLangCode = remember { userPrefs.getString("app_locale", "en") ?: "en" }
     val currentLangName = remember { when (currentLangCode) { "kn" -> "Kannada"; "hi" -> "Hindi"; "te" -> "Telugu"; "ta" -> "Tamil"; "ml" -> "Malayalam"; else -> "English" } }
     var notificationsEnabled by remember { mutableStateOf(true) }
     var locationEnabled by remember { mutableStateOf(true) }
     var offlineEnabled by remember { mutableStateOf(false) }
+    val biometricStatus = remember { BiometricHelper.checkBiometricAvailability(context) }
+    var biometricEnabled by remember {
+        mutableStateOf(BiometricHelper.isBiometricEnabled(context))
+    }
+    var showBiometricEnrollDialog by remember { mutableStateOf(false) }
 
     val cs = MaterialTheme.colorScheme
     val type = MaterialTheme.typography
@@ -71,7 +79,7 @@ fun SettingsScreen(
                 modifier = Modifier.size(28.dp)
             )
             Text(
-                text = "Virasat",
+                text = stringResource(R.string.app_name),
                 style = type.headlineLarge.copy(fontWeight = FontWeight.SemiBold),
                 color = cs.primary
             )
@@ -93,12 +101,12 @@ fun SettingsScreen(
             // Page Title
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Settings",
+                text = stringResource(R.string.settings_title),
                 style = type.displayLarge.copy(fontWeight = FontWeight.Bold),
                 color = cs.onBackground
             )
             Text(
-                text = "Manage your preferences and account.",
+                text = stringResource(R.string.settings_subtitle),
                 style = type.bodyLarge,
                 color = cs.onSurfaceVariant,
                 modifier = Modifier.padding(top = 8.dp)
@@ -120,7 +128,7 @@ fun SettingsScreen(
                     )
                 }
                 Text(
-                    text = "Account",
+                    text = stringResource(R.string.settings_account),
                     style = type.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = cs.primary,
                     modifier = Modifier.padding(bottom = 24.dp)
@@ -155,7 +163,7 @@ fun SettingsScreen(
                             color = cs.onBackground
                         )
                         Text(
-                            text = if (userEmail.isNotBlank()) userEmail else "Tap Edit to add email",
+                            text = if (userEmail.isNotBlank()) userEmail else stringResource(R.string.settings_tap_edit),
                             style = type.bodyMedium,
                             color = cs.onSurfaceVariant
                         )
@@ -168,7 +176,7 @@ fun SettingsScreen(
                             contentColor = cs.onPrimaryContainer
                         )
                     ) {
-                        Text("Edit", style = type.labelMedium.copy(fontWeight = FontWeight.SemiBold))
+                        Text(stringResource(R.string.settings_edit), style = type.labelMedium.copy(fontWeight = FontWeight.SemiBold))
                     }
                 }
 
@@ -180,7 +188,7 @@ fun SettingsScreen(
                     icon = Icons.Default.Lock,
                     iconBg = cs.secondaryContainer.copy(alpha = 0.5f),
                     iconTint = cs.secondary,
-                    label = "Privacy & Security",
+                    label = stringResource(R.string.settings_privacy),
                     onClick = onPrivacy
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -189,7 +197,7 @@ fun SettingsScreen(
                     icon = Icons.Default.CreditCard,
                     iconBg = cs.secondaryContainer.copy(alpha = 0.5f),
                     iconTint = cs.secondary,
-                    label = "Payment Methods",
+                    label = stringResource(R.string.settings_payments),
                     onClick = onTerms
                 )
             }
@@ -199,7 +207,7 @@ fun SettingsScreen(
             // Preferences Section
             SettingsSectionCard {
                 Text(
-                    text = "Preferences",
+                    text = stringResource(R.string.settings_preferences),
                     style = type.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = cs.primary,
                     modifier = Modifier.padding(bottom = 24.dp)
@@ -209,7 +217,7 @@ fun SettingsScreen(
                     icon = Icons.Default.Language,
                     iconBg = cs.secondaryContainer.copy(alpha = 0.5f),
                     iconTint = cs.secondary,
-                    label = "Language: $currentLangName",
+                    label = stringResource(R.string.settings_language, currentLangName),
                     onClick = onLanguageSettings
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -217,8 +225,8 @@ fun SettingsScreen(
                     icon = Icons.Default.NotificationsActive,
                     iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
                     iconTint = cs.tertiary,
-                    label = "Push Notifications",
-                    subtitle = "Updates on heritage sites near you",
+                    label = stringResource(R.string.settings_notifications),
+                    subtitle = stringResource(R.string.settings_notification_subtitle),
                     checked = notificationsEnabled,
                     onCheckedChange = {
                         notificationsEnabled = it
@@ -230,8 +238,8 @@ fun SettingsScreen(
                     icon = Icons.Default.LocationOn,
                     iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
                     iconTint = cs.tertiary,
-                    label = "Location Services",
-                    subtitle = "Required for local discovery",
+                    label = stringResource(R.string.settings_location),
+                    subtitle = stringResource(R.string.settings_location_subtitle),
                     checked = locationEnabled,
                     onCheckedChange = { locationEnabled = it }
                 )
@@ -240,14 +248,70 @@ fun SettingsScreen(
                     icon = Icons.Default.DarkMode,
                     iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
                     iconTint = cs.tertiary,
-                    label = "Offline Mode",
-                    subtitle = "Download maps and guides",
+                    label = stringResource(R.string.settings_offline),
+                    subtitle = stringResource(R.string.settings_offline_subtitle),
                     checked = offlineEnabled,
                     onCheckedChange = {
                         offlineEnabled = it
                         onDarkMode()
                     }
                 )
+
+                // Biometric toggle — only shown when hardware is present
+                if (biometricStatus != BiometricHelper.BiometricStatus.NOT_AVAILABLE) {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    if (biometricStatus == BiometricHelper.BiometricStatus.NOT_ENROLLED) {
+                        // Hardware present but no biometrics enrolled — show info row, no toggle
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { showBiometricEnrollDialog = true },
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                                    .background(cs.surfaceVariant.copy(alpha = 0.5f)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Fingerprint,
+                                    contentDescription = null,
+                                    tint = cs.tertiary,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                            }
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = stringResource(R.string.settings_biometric_login),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = cs.onSurface
+                                )
+                                Text(
+                                    text = stringResource(R.string.settings_biometric_enroll),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = cs.onSurfaceVariant
+                                )
+                            }
+                        }
+                    } else {
+                        // Hardware present and biometrics enrolled — show toggle
+                        SettingsToggleRow(
+                            icon = Icons.Default.Fingerprint,
+                            iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
+                            iconTint = cs.tertiary,
+                            label = stringResource(R.string.settings_biometric_login),
+                            subtitle = stringResource(R.string.settings_biometric_subtitle),
+                            checked = biometricEnabled,
+                            onCheckedChange = { enabled ->
+                                biometricEnabled = enabled
+                                BiometricHelper.setBiometricEnabled(context, enabled)
+                            }
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(48.dp))
@@ -255,7 +319,7 @@ fun SettingsScreen(
             // Notification Categories Section
             SettingsSectionCard {
                 Text(
-                    text = "Notification Categories",
+                    text = stringResource(R.string.settings_notification_categories),
                     style = type.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = cs.primary,
                     modifier = Modifier.padding(bottom = 24.dp)
@@ -269,8 +333,8 @@ fun SettingsScreen(
                     icon = Icons.Default.NearMe,
                     iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
                     iconTint = cs.tertiary,
-                    label = "Proximity Alerts",
-                    subtitle = "Notify when near heritage sites",
+                    label = stringResource(R.string.settings_proximity_alerts),
+                    subtitle = stringResource(R.string.settings_proximity_subtitle),
                     checked = proximityEnabled,
                     onCheckedChange = {
                         proximityEnabled = it
@@ -282,8 +346,8 @@ fun SettingsScreen(
                     icon = Icons.Default.AutoStories,
                     iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
                     iconTint = cs.tertiary,
-                    label = "Weekly Facts",
-                    subtitle = "Receive weekly heritage facts",
+                    label = stringResource(R.string.settings_weekly_facts),
+                    subtitle = stringResource(R.string.settings_weekly_facts_subtitle),
                     checked = weeklyFactsEnabled,
                     onCheckedChange = {
                         weeklyFactsEnabled = it
@@ -295,8 +359,8 @@ fun SettingsScreen(
                     icon = Icons.Default.EmojiEvents,
                     iconBg = cs.surfaceVariant.copy(alpha = 0.5f),
                     iconTint = cs.tertiary,
-                    label = "Badge Unlocks",
-                    subtitle = "Notify when you earn badges",
+                    label = stringResource(R.string.settings_badge_unlocks),
+                    subtitle = stringResource(R.string.settings_badge_unlocks_subtitle),
                     checked = badgeUnlocksEnabled,
                     onCheckedChange = {
                         badgeUnlocksEnabled = it
@@ -310,7 +374,7 @@ fun SettingsScreen(
             // Support & About Section
             SettingsSectionCard {
                 Text(
-                    text = "Support & About",
+                    text = stringResource(R.string.settings_support),
                     style = type.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = cs.primary,
                     modifier = Modifier.padding(bottom = 24.dp)
@@ -320,7 +384,7 @@ fun SettingsScreen(
                     icon = Icons.Default.Help,
                     iconBg = cs.tertiaryContainer.copy(alpha = 0.3f),
                     iconTint = cs.tertiary,
-                    label = "Help Center",
+                    label = stringResource(R.string.settings_help),
                     onClick = onHelp
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -328,7 +392,7 @@ fun SettingsScreen(
                     icon = Icons.Default.Info,
                     iconBg = cs.tertiaryContainer.copy(alpha = 0.3f),
                     iconTint = cs.tertiary,
-                    label = "About Virasat",
+                    label = stringResource(R.string.settings_about),
                     onClick = onAbout
                 )
             }
@@ -354,13 +418,38 @@ fun SettingsScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    "Log Out",
+                    stringResource(R.string.settings_log_out),
                     style = type.labelMedium.copy(fontWeight = FontWeight.SemiBold, letterSpacing = 0.05.sp)
                 )
             }
 
             Spacer(modifier = Modifier.height(32.dp))
         }
+    }
+
+    // Biometric enroll dialog — shown when hardware present but no biometrics enrolled
+    if (showBiometricEnrollDialog) {
+        AlertDialog(
+            onDismissRequest = { showBiometricEnrollDialog = false },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Fingerprint,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            },
+            title = {
+                Text(stringResource(R.string.settings_biometric_login))
+            },
+            text = {
+                Text(stringResource(R.string.settings_biometric_enroll))
+            },
+            confirmButton = {
+                TextButton(onClick = { showBiometricEnrollDialog = false }) {
+                    Text(stringResource(android.R.string.ok))
+                }
+            }
+        )
     }
 }
 

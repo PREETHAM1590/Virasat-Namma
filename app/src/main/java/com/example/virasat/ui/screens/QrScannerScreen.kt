@@ -40,6 +40,7 @@ import com.google.mlkit.vision.common.InputImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicBoolean
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,10 +90,12 @@ fun QrScannerScreen(
         if (hasCameraPermission) {
             CameraPreviewWithScanner(
                 lifecycleOwner = lifecycleOwner,
+                // analysisActive is true only while no site has been scanned yet;
+                // setting it to false after a scan and back to true on reset lets
+                // the analyser resume without duplicate detections.
+                analysisActive = scannedSite == null,
                 onQrDetected = { qrValue ->
-                    if (scannedSite == null) {
-                        viewModel.processQrCode(qrValue)
-                    }
+                    viewModel.processQrCode(qrValue)
                 }
             )
 
@@ -421,6 +424,7 @@ fun QrScannerScreen(
 @Composable
 fun CameraPreviewWithScanner(
     lifecycleOwner: LifecycleOwner,
+    analysisActive: Boolean = true,
     onQrDetected: (String) -> Unit
 ) {
     val context = LocalContext.current
@@ -432,6 +436,15 @@ fun CameraPreviewWithScanner(
                 .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
                 .build()
         )
+    }
+    // AtomicBoolean flag: set to true after the first valid barcode is detected
+    // to prevent duplicate processQrCode() calls from subsequent frames.
+    val analysisPaused = remember { AtomicBoolean(false) }
+
+    // Reset the pause flag whenever the caller signals analysis should resume
+    // (e.g. after the user taps "Scan Another QR" and scannedSite is cleared).
+    LaunchedEffect(analysisActive) {
+        if (analysisActive) analysisPaused.set(false)
     }
 
     AndroidView(
@@ -451,8 +464,13 @@ fun CameraPreviewWithScanner(
         val imageAnalysis = ImageAnalysis.Builder()
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .build()
-            .also {
-                it.setAnalyzer(cameraExecutor) { imageProxy ->
+            .also { analysis ->
+                analysis.setAnalyzer(cameraExecutor) { imageProxy ->
+                    // Skip processing if analysis has been paused after first detection
+                    if (analysisPaused.get()) {
+                        imageProxy.close()
+                        return@setAnalyzer
+                    }
                     val mediaImage = imageProxy.image
                     if (mediaImage != null) {
                         val image = InputImage.fromMediaImage(
@@ -462,7 +480,11 @@ fun CameraPreviewWithScanner(
                         barcodeScanner.process(image)
                             .addOnSuccessListener { barcodes ->
                                 barcodes.firstOrNull()?.rawValue?.let { value ->
-                                    onQrDetected(value)
+                                    // Pause analysis before calling back to prevent
+                                    // duplicate scans from subsequent frames.
+                                    if (analysisPaused.compareAndSet(false, true)) {
+                                        onQrDetected(value)
+                                    }
                                 }
                             }
                             .addOnCompleteListener {

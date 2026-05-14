@@ -1,80 +1,72 @@
 package com.example.virasat.ui.screens
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Eco
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import com.example.virasat.ui.theme.PlusJakartaSans
-import com.example.virasat.ui.theme.SecondaryFixed
-import com.example.virasat.ui.theme.OnSecondaryFixed
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.example.virasat.R
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeoutOrNull
 
+/**
+ * SplashScreen — displayed for 1–3 seconds on every launch.
+ *
+ * Navigation logic (Requirements 1.1–1.5):
+ *  - If onboarding has NOT been seen → navigate to LanguageScreen (first-launch flow).
+ *  - If onboarding HAS been seen:
+ *      - Wait up to 3 s for [authStateProvider] to emit a non-null or null user.
+ *      - Authenticated within 3 s  → navigate to HomeScreen.
+ *      - Unauthenticated within 3 s → navigate to LoginScreen.
+ *      - Auth did not resolve within 3 s (timeout) → fallback to LoginScreen (Req 1.5).
+ *
+ * The minimum display time is 1 second (Req 1.1).
+ */
 @Composable
-fun SplashScreen(onNavigateToLanguage: () -> Unit) {
+fun SplashScreen(
+    onboardingSeen: Boolean,
+    authStateProvider: suspend () -> FirebaseUser?,
+    onNavigateToLanguage: () -> Unit,
+    onNavigateToLogin: () -> Unit,
+    onNavigateToHome: () -> Unit,
+) {
     LaunchedEffect(Unit) {
-        delay(1500)
-        onNavigateToLanguage()
-    }
-    Box(
-        Modifier
-            .fillMaxSize()
-            .background(SecondaryFixed),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(
-                Modifier
-                    .size(192.dp)
-                    .clip(androidx.compose.foundation.shape.GenericShape { size, _ ->
-                        val w = size.width
-                        val h = size.height
-                        moveTo(w * 0.4f, 0f)
-                        cubicTo(w * 0.7f, 0f, w * 1f, h * 0.3f, w * 0.95f, h * 0.5f)
-                        cubicTo(w * 1f, h * 0.7f, w * 0.7f, h * 1f, w * 0.5f, h * 0.95f)
-                        cubicTo(w * 0.3f, h * 1f, 0f, h * 0.7f, 0.05f, h * 0.5f)
-                        cubicTo(0f, h * 0.3f, w * 0.1f, 0f, w * 0.4f, 0f)
-                        close()
-                    })
-                    .background(OnSecondaryFixed),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Eco,
-                    contentDescription = null,
-                    modifier = Modifier.size(64.dp),
-                    tint = SecondaryFixed
-                )
+        // Always show splash for at least 1 second (Req 1.1)
+        val minDisplayMs = 1_000L
+        val maxWaitMs = 3_000L
+
+        if (!onboardingSeen) {
+            // First-launch path: splash → language → onboarding → login (Req 1.2)
+            delay(minDisplayMs)
+            onNavigateToLanguage()
+        } else {
+            // Returning user: wait up to 3 s for auth to resolve (Req 1.3, 1.4, 1.5)
+            val startTime = System.currentTimeMillis()
+            val authUser = withTimeoutOrNull(maxWaitMs) { authStateProvider() }
+            val elapsed = System.currentTimeMillis() - startTime
+            // Ensure minimum 1 s display time
+            val remaining = minDisplayMs - elapsed
+            if (remaining > 0) delay(remaining)
+
+            if (authUser != null) {
+                // Authenticated within 3 s → home (Req 1.4)
+                onNavigateToHome()
+            } else {
+                // Unauthenticated or timed out → login (Req 1.3, 1.5)
+                onNavigateToLogin()
             }
-            Spacer(Modifier.height(48.dp))
-            Text(
-                text = "Virasat",
-                style = MaterialTheme.typography.displayLarge.copy(
-                    fontFamily = PlusJakartaSans,
-                    fontWeight = FontWeight.Bold
-                ),
-                color = OnSecondaryFixed
-            )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = "Karnataka Heritage",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
-            )
         }
+    }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.splash_bg),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
     }
 }

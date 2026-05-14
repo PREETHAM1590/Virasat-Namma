@@ -19,10 +19,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.virasat.R
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.model.HeritageSite
 import com.example.virasat.data.model.SiteType
@@ -87,7 +89,7 @@ fun HeritageSitesListScreen(
             }
 
             Text(
-                "All Heritage Sites",
+                stringResource(R.string.sites_all_title),
                 style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -121,7 +123,7 @@ fun HeritageSitesListScreen(
                 value = query,
                 onValueChange = { query = it },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Search sites...") },
+                placeholder = { Text(stringResource(com.example.virasat.R.string.home_search_hint)) },
                 leadingIcon = { Icon(Icons.Default.Search, null) },
                 trailingIcon = {
                     if (query.isNotEmpty()) {
@@ -179,13 +181,13 @@ fun HeritageSitesListScreen(
 
             if (filtered.isEmpty()) {
                 EmptyStateScreen(
-                    title = "No Sites Found",
+                    title = stringResource(R.string.sites_no_found),
                     message = "Try adjusting your search or filter criteria.",
                     onAction = {
                         query = ""
                         selectedType = null
                     },
-                    actionLabel = "Clear Filters"
+                    actionLabel = stringResource(R.string.sites_clear_filters)
                 )
             } else {
                 if (isGrid) {

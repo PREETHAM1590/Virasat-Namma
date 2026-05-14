@@ -17,9 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.virasat.R
 import com.example.virasat.data.source.ImageUrls
 
 @Composable
@@ -111,7 +113,7 @@ fun NotificationsScreen(
             FilterChip(
                 selected = true,
                 onClick = { },
-                label = { Text("All Alerts") },
+                label = { Text(stringResource(R.string.notifications_all)) },
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = MaterialTheme.colorScheme.primary,
                     selectedLabelColor = MaterialTheme.colorScheme.onPrimary
@@ -120,7 +122,7 @@ fun NotificationsScreen(
             FilterChip(
                 selected = false,
                 onClick = { },
-                label = { Text("Mentions") },
+                label = { Text(stringResource(R.string.notifications_mentions)) },
                 colors = FilterChipDefaults.filterChipColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
                 )
@@ -128,7 +130,7 @@ fun NotificationsScreen(
             FilterChip(
                 selected = false,
                 onClick = { },
-                label = { Text("System") },
+                label = { Text(stringResource(R.string.notifications_system)) },
                 colors = FilterChipDefaults.filterChipColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
                 )

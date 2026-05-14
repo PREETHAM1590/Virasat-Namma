@@ -21,11 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.virasat.R
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.model.HeritageSite
 import com.example.virasat.ui.theme.BeVietnamPro
@@ -127,7 +129,7 @@ fun BookmarkedSitesScreen(
         // Page heading
         Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
             Text(
-                text = "Saved Journeys",
+                text = stringResource(R.string.saved_journeys),
                 style = MaterialTheme.typography.displayLarge.copy(
                     fontFamily = PlusJakartaSans,
                     fontWeight = FontWeight.Bold
@@ -136,7 +138,7 @@ fun BookmarkedSitesScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Revisit the sanctuaries and heritage sites you've curated for your next expedition.",
+                text = stringResource(R.string.bookmarks_subtitle),
                 style = MaterialTheme.typography.bodyLarge.copy(fontFamily = BeVietnamPro),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -166,13 +168,13 @@ fun BookmarkedSitesScreen(
                 }
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
-                    text = "No saved sites yet",
+                    text = stringResource(R.string.no_saved_sites),
                     style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Explore heritage sites and bookmark the ones you want to revisit.",
+                    text = stringResource(R.string.no_saved_hint),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -319,7 +321,7 @@ private fun SavedJourneyCard(site: SampleBookmarkedSite, onClick: () -> Unit) {
                         modifier = Modifier.clickable(onClick = onClick)
                     ) {
                         Text(
-                            "View Details",
+                            stringResource(R.string.bookmarks_view_details),
                             style = MaterialTheme.typography.labelMedium.copy(
                                 fontFamily = BeVietnamPro,
                                 fontWeight = FontWeight.SemiBold

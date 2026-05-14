@@ -12,9 +12,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.virasat.R
 
 @Composable
 fun AboutScreen(
@@ -108,15 +110,15 @@ fun AboutScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            LinkPill("Privacy Policy", onClick = onPrivacyPolicyClick)
+            LinkPill(stringResource(R.string.about_privacy_policy), onClick = onPrivacyPolicyClick)
             Spacer(modifier = Modifier.height(10.dp))
-            LinkPill("Terms of Service", onClick = onTermsClick)
+            LinkPill(stringResource(R.string.about_terms), onClick = onTermsClick)
             Spacer(modifier = Modifier.height(10.dp))
-            LinkPill("Rate the App", onClick = onRateUsClick)
+            LinkPill(stringResource(R.string.about_rate_app), onClick = onRateUsClick)
 
             Spacer(modifier = Modifier.height(48.dp))
             Text(
-                "Made with care in Karnataka",
+                stringResource(R.string.about_made_in),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

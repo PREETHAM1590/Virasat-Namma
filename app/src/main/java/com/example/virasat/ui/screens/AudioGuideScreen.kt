@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,17 +28,12 @@ import coil.compose.AsyncImage
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.model.AudioChapter
 import com.example.virasat.data.service.GeminiHeritageService
+import com.example.virasat.data.source.KarnatakaSites
 import com.example.virasat.util.LocaleHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-val chapters = listOf(
-    AudioChapter("1", "Introduction to the Site", 120, "", "Welcome to this magnificent heritage site. As you walk through these ancient corridors, imagine the centuries of history embedded in every stone."),
-    AudioChapter("2", "Historical Significance", 180, "", "Built during the peak of the Vijayanagara Empire, this structure represents the pinnacle of Dravidian architecture..."),
-    AudioChapter("3", "Architectural Marvels", 240, "", "Notice the intricate carvings on the pillars. Each sculpture tells a story from mythology..."),
-    AudioChapter("4", "Hidden Legends", 150, "", "Local folklore speaks of secret passages and mystical events that occurred here..."),
-    AudioChapter("5", "Preservation Efforts", 90, "", "Today, conservationists work tirelessly to preserve these structures for future generations...")
-)
+
 
 @Composable
 fun AudioGuideScreen(
@@ -56,22 +52,27 @@ fun AudioGuideScreen(
     val coroutineScope = rememberCoroutineScope()
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
     val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
-        value = try { repo.getSiteById(siteId) } catch (_: Exception) { null }
+        value = try {
+            repo.getSiteById(siteId) ?: KarnatakaSites.allSites.find { it.id == siteId }
+        } catch (_: Exception) {
+            KarnatakaSites.allSites.find { it.id == siteId }
+        }
     }
 
-    val chapters = remember(siteId, generatedNarration, site) {
-        val intro = site?.shortDescription ?: "Welcome to this magnificent heritage site."
+    val chapters = remember(siteId, generatedNarration, site, ctx) {
+        val intro = site?.shortDescription ?: ""
         val narration = generatedNarration.ifBlank { intro }
         fun estimateDuration(text: String): Int = (text.split(" ").size.coerceAtLeast(20) * 60 / 130).coerceAtLeast(30)
         listOf(
-            AudioChapter("1", "Introduction", estimateDuration(narration), "", narration),
-            AudioChapter("2", "Historical Significance", estimateDuration(site?.history ?: ""), "", site?.history ?: "Built during the peak of a great empire..."),
-            AudioChapter("3", "Architectural Marvels", estimateDuration(site?.architecture ?: ""), "", site?.architecture ?: "Notice the intricate carvings on the pillars..."),
-            AudioChapter("4", "Hidden Legends", estimateDuration(site?.legends ?: ""), "", site?.legends ?: "Local folklore speaks of secret passages..."),
-            AudioChapter("5", "Key Facts", 60, "", site?.facts?.take(3)?.joinToString("\n") { "${it.title}: ${it.description}" } ?: "This site holds centuries of history." )
-        )
+            AudioChapter("1", ctx.getString(com.example.virasat.R.string.audio_chapter_introduction), estimateDuration(narration), "", narration),
+            AudioChapter("2", ctx.getString(com.example.virasat.R.string.audio_chapter_history), estimateDuration(site?.history ?: ""), "", site?.history ?: ""),
+            AudioChapter("3", ctx.getString(com.example.virasat.R.string.audio_chapter_architecture), estimateDuration(site?.architecture ?: ""), "", site?.architecture ?: ""),
+            AudioChapter("4", ctx.getString(com.example.virasat.R.string.audio_chapter_legends), estimateDuration(site?.legends ?: ""), "", site?.legends ?: ""),
+            AudioChapter("5", ctx.getString(com.example.virasat.R.string.audio_chapter_facts), 60, "", site?.facts?.take(3)?.joinToString("\n") { "${it.title}: ${it.description}" } ?: "")
+        ).filter { it.transcript.isNotBlank() }
     }
-    val chapter = chapters[currentChapter]
+    val safeChapterIdx = currentChapter.coerceIn(0, (chapters.size - 1).coerceAtLeast(0))
+    val chapter = chapters.getOrNull(safeChapterIdx)
 
     val context = LocalContext.current
     var tts by remember { mutableStateOf<TextToSpeech?>(null) }
@@ -100,6 +101,8 @@ fun AudioGuideScreen(
             if (status == TextToSpeech.SUCCESS) {
                 ttsReady = true
                 setTtsLanguage()
+                tts?.setSpeechRate(0.88f)
+                tts?.setPitch(0.95f)
                 tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                     override fun onStart(utteranceId: String?) { isPlaying = true }
                     override fun onDone(utteranceId: String?) {
@@ -138,18 +141,25 @@ fun AudioGuideScreen(
     LaunchedEffect(currentChapter) {
         progress = 0f
         tts?.stop()
-        if (isPlaying && ttsReady) {
-            tts?.speak(chapters[currentChapter].transcript, TextToSpeech.QUEUE_FLUSH, null, "chapter_$currentChapter")
+        if (ttsReady && chapters.isNotEmpty()) {
+            val idx = currentChapter.coerceIn(0, chapters.lastIndex)
+            val transcript = chapters[idx].transcript
+            if (transcript.isNotBlank() && isPlaying) {
+                tts?.speak(transcript, TextToSpeech.QUEUE_FLUSH, null, "chapter_$idx")
+            }
         }
     }
 
-    LaunchedEffect(isPlaying) {
-        while (isPlaying && progress < 1f) {
-            delay(100)
-            progress += 0.001f
-        }
-        if (progress >= 1f) {
-            progress = 0f
+    LaunchedEffect(isPlaying, currentChapter) {
+        if (isPlaying) {
+            val durationMs = ((chapter?.durationSeconds ?: 60).toLong() * 1000L).coerceAtLeast(5000L)
+            val stepMs = 200L
+            val stepSize = stepMs.toFloat() / durationMs.toFloat()
+            while (isPlaying && progress < 1f) {
+                delay(stepMs)
+                progress = (progress + stepSize).coerceAtMost(1f)
+            }
+            if (progress >= 1f) progress = 0f
         }
     }
 
@@ -195,11 +205,11 @@ fun AudioGuideScreen(
                     shape = RoundedCornerShape(999.dp),
                     color = cs.primaryContainer,
                     onClick = {
-                        selectedLanguage = if (selectedLanguage == "English") "Hindi" else "English"
+                        selectedLanguage = if (selectedLanguage == "English") "Kannada" else "English"
                     }
                 ) {
                     Text(
-                        if (selectedLanguage == "English") "EN" else "HI",
+                        if (selectedLanguage == "English") "EN" else "ಕ",
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
@@ -224,7 +234,7 @@ fun AudioGuideScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         AsyncImage(
-                            model = "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=800",
+                            model = site?.imageUrl ?: "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=800",
                             contentDescription = siteName,
                             modifier = Modifier.fillMaxSize(),
                             contentScale = androidx.compose.ui.layout.ContentScale.Crop
@@ -255,7 +265,7 @@ fun AudioGuideScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    formatTime((progress * chapter.durationSeconds).toInt()),
+                                    formatTime((progress * (chapter?.durationSeconds ?: 60).toFloat()).toInt()),
                                     style = type.labelMedium,
                                     color = Color.White.copy(alpha = 0.8f)
                                 )
@@ -265,7 +275,7 @@ fun AudioGuideScreen(
                                     color = Color.White
                                 )
                                 Text(
-                                    formatTime(chapter.durationSeconds),
+                                    formatTime(chapter?.durationSeconds ?: 60),
                                     style = type.labelMedium,
                                     color = Color.White.copy(alpha = 0.8f)
                                 )
@@ -297,9 +307,9 @@ fun AudioGuideScreen(
                                 IconButton(
                                     onClick = {
                                         if (currentChapter > 0) {
-                                            currentChapter--
+                                            tts?.stop()
                                             progress = 0f
-                                            isPlaying = false
+                                            currentChapter--
                                         }
                                     }
                                 ) {
@@ -315,7 +325,7 @@ fun AudioGuideScreen(
                                         isPlaying = !isPlaying
                                         if (isPlaying) {
                                             if (ttsReady) {
-                                                tts?.speak(chapter.transcript, TextToSpeech.QUEUE_FLUSH, null, "chapter_$currentChapter")
+                                                tts?.speak(chapter?.transcript ?: "", TextToSpeech.QUEUE_FLUSH, null, "chapter_$currentChapter")
                                             } else {
                                                 pendingStart = true
                                             }
@@ -361,7 +371,7 @@ fun AudioGuideScreen(
             // Chapter Cards
             Spacer(Modifier.height(32.dp))
             Text(
-                "Chapters",
+                stringResource(com.example.virasat.R.string.audio_chapters),
                 style = type.headlineMedium,
                 color = cs.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
@@ -450,7 +460,7 @@ fun AudioGuideScreen(
                                 )
                             }
                             Text(
-                                if (isCurrent) "Now Playing" else formatTime(ch.durationSeconds),
+                                if (isCurrent) stringResource(com.example.virasat.R.string.audio_now_playing) else formatTime(ch.durationSeconds),
                                 style = type.labelMedium,
                                 color = cs.onSurfaceVariant
                             )

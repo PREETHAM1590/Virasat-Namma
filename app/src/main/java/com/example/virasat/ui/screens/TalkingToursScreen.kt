@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.example.virasat.R
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.service.GeminiHeritageService
 import com.example.virasat.data.service.TriviaQuestion
@@ -80,16 +82,16 @@ fun TalkingToursScreen(
     var snapshotQuestions by remember { mutableStateOf(listOf<TriviaQuestion>()) }
     var answeredQuestions by remember { mutableStateOf(setOf<Int>()) }
 
-    val tourStops = remember(site) {
+    val tourStops = remember(site, context) {
         val s = site ?: return@remember emptyList()
         buildList {
-            add(TalkingTourStop("Welcome", Icons.Default.Tour, s.shortDescription, s.nameLocal.takeIf { it.isNotBlank() }))
-            if (s.description.isNotBlank()) add(TalkingTourStop("About", Icons.Default.Info, s.description))
-            if (s.history.isNotBlank()) add(TalkingTourStop("History", Icons.Default.HistoryEdu, s.history))
-            if (s.architecture.isNotBlank()) add(TalkingTourStop("Architecture", Icons.Default.AccountBalance, s.architecture))
-            if (s.legends.isNotBlank()) add(TalkingTourStop("Legends", Icons.Default.AutoStories, s.legends))
+            add(TalkingTourStop(context.getString(com.example.virasat.R.string.tour_stop_welcome), Icons.Default.Tour, s.shortDescription, s.nameLocal.takeIf { it.isNotBlank() }))
+            if (s.description.isNotBlank()) add(TalkingTourStop(context.getString(com.example.virasat.R.string.tour_stop_about), Icons.Default.Info, s.description))
+            if (s.history.isNotBlank()) add(TalkingTourStop(context.getString(com.example.virasat.R.string.tour_stop_history), Icons.Default.HistoryEdu, s.history))
+            if (s.architecture.isNotBlank()) add(TalkingTourStop(context.getString(com.example.virasat.R.string.tour_stop_architecture), Icons.Default.AccountBalance, s.architecture))
+            if (s.legends.isNotBlank()) add(TalkingTourStop(context.getString(com.example.virasat.R.string.tour_stop_legends), Icons.Default.AutoStories, s.legends))
             s.facts.take(3).forEach { f ->
-                add(TalkingTourStop("Did You Know?", Icons.Default.Lightbulb, f.description, f.title))
+                add(TalkingTourStop(context.getString(com.example.virasat.R.string.tour_stop_did_you_know), Icons.Default.Lightbulb, f.description, f.title))
             }
         }
     }
@@ -374,7 +376,7 @@ fun TalkingToursScreen(
                         )
                         Spacer(Modifier.weight(1f))
                         Text(
-                            text = "${currentStopIndex + 1} of ${tourStops.size}",
+                            text = stringResource(com.example.virasat.R.string.tour_stop_of, currentStopIndex + 1, tourStops.size),
                             style = MaterialTheme.typography.labelSmall,
                             color = Color.White.copy(.45f)
                         )
@@ -464,10 +466,10 @@ fun TalkingToursScreen(
                                         tts?.stop()
                                         isSpeaking = false
                                         scope.launch {
-                                            val focus = when (stop.title.lowercase()) {
-                                                "history" -> "history"
-                                                "architecture" -> "architecture"
-                                                "legends" -> "legends"
+                                            val focus = when (currentStopIndex) {
+                                                2 -> "history"
+                                                3 -> "architecture"
+                                                4 -> "legends"
                                                 else -> "overview"
                                             }
                                             val aiText = GeminiHeritageService.describeView(s, focus, language)
@@ -489,7 +491,7 @@ fun TalkingToursScreen(
                                 } else {
                                     Icon(
                                         Icons.Default.CameraAlt,
-                                        "AI Snapshot",
+                                        stringResource(R.string.ai_snapshot),
                                         tint = cs.onPrimary,
                                         modifier = Modifier.size(28.dp)
                                     )
@@ -602,7 +604,7 @@ fun TalkingToursScreen(
                 .padding(bottom = 148.dp)
         ) {
             Text(
-                text = "Tap to get AI insights",
+                text = stringResource(R.string.ai_tap_insights),
                 style = MaterialTheme.typography.labelSmall,
                 color = Color.White.copy(.45f),
                 fontSize = 10.sp
@@ -709,13 +711,13 @@ private fun SnapshotOverlay(
                     Spacer(Modifier.width(10.dp))
                     Column {
                         Text(
-                            "AI Snapshot",
+                            stringResource(R.string.ai_snapshot),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
                         )
                         Text(
-                            "Powered by Gemini",
+                            stringResource(R.string.ai_powered_gemini),
                             style = MaterialTheme.typography.labelSmall,
                             color = Color.White.copy(.45f)
                         )
@@ -754,7 +756,7 @@ private fun SnapshotOverlay(
                     Icon(Icons.Default.Quiz, null, tint = cs.primary, modifier = Modifier.size(16.dp))
                     Spacer(Modifier.width(6.dp))
                     Text(
-                        "Questions to Consider",
+                        stringResource(R.string.ai_questions_consider),
                         style = MaterialTheme.typography.labelLarge,
                         color = cs.primary,
                         fontWeight = FontWeight.Bold,

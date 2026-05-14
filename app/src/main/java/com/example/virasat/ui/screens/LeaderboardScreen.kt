@@ -15,8 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.virasat.R
 
 @Composable
 fun LeaderboardScreen(onBack: () -> Unit) {
@@ -59,7 +61,7 @@ fun LeaderboardScreen(onBack: () -> Unit) {
             }
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = "Leaderboard",
+                text = stringResource(com.example.virasat.R.string.leaderboard_title),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -81,7 +83,7 @@ fun LeaderboardScreen(onBack: () -> Unit) {
 
             item {
                 Text(
-                    text = "Everyone else",
+                    text = stringResource(R.string.leaderboard_others),
                     style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)

@@ -196,7 +196,7 @@ fun SignUpScreen(
                     password = it
                     authViewModel.clearSignUpError()
                 },
-                placeholder = { Text("Password (min. 9 chars, A-z, 0-9, special)", color = MaterialTheme.colorScheme.outline) },
+                placeholder = { Text(stringResource(com.example.virasat.R.string.password_hint), color = MaterialTheme.colorScheme.outline) },
                 leadingIcon = { Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.outline) },
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {

@@ -17,6 +17,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -47,8 +48,16 @@ fun ForgotPasswordScreen(
     var sent by remember { mutableStateOf(false) }
     val scheme = MaterialTheme.colorScheme
     
-    LaunchedEffect(resetState.success) {
-        if (resetState.success) sent = true
+    LaunchedEffect(resetState.success, resetState.error) {
+        // Show confirmation regardless of whether the address is registered (Req 3.9).
+        // Only suppress confirmation for genuine network errors (Req 3.10).
+        if (resetState.success) {
+            sent = true
+        } else if (resetState.error != null && "Network error" !in (resetState.error ?: "")) {
+            // Non-network errors (e.g. user not found) — still show confirmation
+            // so we don't reveal whether an email is registered
+            sent = true
+        }
     }
 
     Box(
@@ -241,7 +250,7 @@ fun ForgotPasswordScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(
-                            text = "Send Reset Link",
+                            text = stringResource(com.example.virasat.R.string.forgot_send_reset_link),
                             style = MaterialTheme.typography.labelLarge.copy(
                                 fontFamily = BeVietnamPro,
                                 fontWeight = FontWeight.Bold,

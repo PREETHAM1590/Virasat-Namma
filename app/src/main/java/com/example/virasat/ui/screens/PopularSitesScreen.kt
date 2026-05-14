@@ -29,11 +29,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
+import com.example.virasat.R
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.model.HeritageSite
 import com.example.virasat.ui.theme.OnSecondaryFixed
@@ -111,7 +113,7 @@ fun PopularSitesScreen(
             // "Popular" header
             item {
                 Text(
-                    text = "Popular",
+                    text = stringResource(com.example.virasat.R.string.popular_title),
                     style = type.displayLarge.copy(fontWeight = FontWeight.Bold),
                     color = cs.onBackground,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
@@ -197,7 +199,7 @@ fun PopularSitesScreen(
             // "Discover Regions" header
             item {
                 Text(
-                    text = "Discover Regions",
+                    text = stringResource(R.string.popular_discover_regions),
                     style = type.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = cs.onBackground,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp)

@@ -123,14 +123,14 @@ fun CheckInSuccessScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
-                "Check-in Successful!",
+                stringResource(R.string.checkin_success_title),
                 style = MaterialTheme.typography.displayLarge.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                "Your visit to ${site?.name ?: "the heritage site"} has been officially recorded.",
+                stringResource(R.string.checkin_visit_recorded, site?.name ?: ""),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.secondary,
                 textAlign = TextAlign.Center,
@@ -190,7 +190,7 @@ fun CheckInSuccessScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        "Continue Exploring",
+                        stringResource(R.string.continue_exploring),
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.SemiBold)
                     )
                     Icon(

@@ -90,7 +90,7 @@ fun ProfileScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Hero Profile Card with overlapping avatar
         Box(
@@ -101,7 +101,7 @@ fun ProfileScreen(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 64.dp),
+                    .padding(top = 50.dp),
                 shape = RoundedCornerShape(16.dp),
                 color = cs.surfaceContainerLowest,
                 shadowElevation = 4.dp
@@ -109,7 +109,7 @@ fun ProfileScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 80.dp, bottom = 32.dp)
+                        .padding(top = 64.dp, bottom = 24.dp)
                         .padding(horizontal = 24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -128,28 +128,38 @@ fun ProfileScreen(
                 }
             }
 
-            // Overlapping avatar (centered, half in card half above)
+            // Overlapping avatar (centered, overlapping card top)
             Box(
                 modifier = Modifier
-                    .size(128.dp)
+                    .size(100.dp)
                     .align(Alignment.TopCenter)
-                    .offset(y = (-32).dp)
+                    .offset(y = 14.dp)
                     .clip(CircleShape)
                     .shadow(8.dp, CircleShape)
                     .background(cs.primary),
                 contentAlignment = Alignment.Center
             ) {
-                val initials = userName.split(" ").take(2).mapNotNull { it.firstOrNull()?.uppercase() }.joinToString("")
-                Text(
-                    text = initials.ifBlank { "HE" },
-                    style = type.headlineLarge,
-                    color = cs.onPrimary,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-                )
+                val profileImagePath = userPrefs.getString("user_profile_image", null)
+                if (profileImagePath != null) {
+                    AsyncImage(
+                        model = profileImagePath,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    val initials = userName.split(" ").take(2).mapNotNull { it.firstOrNull()?.uppercase() }.joinToString("")
+                    Text(
+                        text = initials.ifBlank { "HE" },
+                        style = type.headlineLarge,
+                        color = cs.onPrimary,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                    )
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         // Edit profile button
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -179,12 +189,11 @@ fun ProfileScreen(
             }
         }
 
-        // Floating Profile Stats (overlapping card)
+        // Floating Profile Stats
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-                .offset(y = (-20).dp),
+                .padding(horizontal = 24.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Trails pill
@@ -260,7 +269,7 @@ fun ProfileScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         // Menu buttons (rounded-full white containers)
         Column(

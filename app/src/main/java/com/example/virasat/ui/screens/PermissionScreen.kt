@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
@@ -90,7 +91,7 @@ fun PermissionScreen(
             Spacer(modifier = Modifier.height(48.dp))
 
             Text(
-                text = "Camera Access",
+                text = stringResource(com.example.virasat.R.string.permission_camera_access),
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontFamily = PlusJakartaSans,
                     fontWeight = FontWeight.Bold
@@ -127,7 +128,7 @@ fun PermissionScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Allow",
+                    text = stringResource(com.example.virasat.R.string.permission_allow),
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontFamily = BeVietnamPro,
                         fontWeight = FontWeight.SemiBold,
@@ -140,7 +141,7 @@ fun PermissionScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Maybe Later",
+                text = stringResource(com.example.virasat.R.string.permission_maybe_later),
                 style = MaterialTheme.typography.labelLarge.copy(
                     fontFamily = BeVietnamPro,
                     fontWeight = FontWeight.SemiBold

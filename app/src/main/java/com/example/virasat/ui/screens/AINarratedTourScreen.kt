@@ -26,12 +26,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.virasat.data.model.Fact
+import com.example.virasat.R
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.service.GeminiHeritageService
 import com.example.virasat.data.service.TriviaQuestion
@@ -48,7 +50,7 @@ sealed class TourStop(
     val facts: List<Fact> = emptyList()
 )
 
-fun buildTourForSite(site: com.example.virasat.data.model.HeritageSite?): List<TourStop> {
+fun buildTourForSite(site: com.example.virasat.data.model.HeritageSite?, context: android.content.Context? = null): List<TourStop> {
     if (site == null) return emptyList()
     val images = listOf(site.imageUrl) + site.galleryImages
     return buildList {
@@ -78,7 +80,7 @@ fun buildTourForSite(site: com.example.virasat.data.model.HeritageSite?): List<T
         if (site.architecture.isNotBlank()) {
             add(
                 ArchitectureStop(
-                    "Architectural Marvel",
+                    context?.getString(R.string.tour_architectural_marvel) ?: "Architectural Marvel",
                     site.architecture,
                     images.getOrElse(2) { site.imageUrl },
                     "architecture"
@@ -89,7 +91,7 @@ fun buildTourForSite(site: com.example.virasat.data.model.HeritageSite?): List<T
         if (site.legends.isNotBlank()) {
             add(
                 LegendStop(
-                    "Legends & Lore",
+                    context?.getString(R.string.tour_legends_lore) ?: "Legends & Lore",
                     site.legends,
                     images.getOrElse(0) { site.imageUrl },
                     "legends"
@@ -119,7 +121,7 @@ fun AINarratedTourScreen(
     val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
         value = try { repo.getSiteById(siteId) } catch (_: Exception) { null }
     }
-    val tourStops = remember(siteId, site) { buildTourForSite(site) }
+    val tourStops = remember(siteId, site) { buildTourForSite(site, context) }
     val pagerState = rememberPagerState(pageCount = { tourStops.size.coerceAtLeast(1) })
     val coroutineScope = rememberCoroutineScope()
 
@@ -354,7 +356,7 @@ fun AINarratedTourScreen(
                         Spacer(modifier = Modifier.width(14.dp))
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                "AI Insight",
+                                stringResource(R.string.ai_insight),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 15.sp,
                                 color = cs.primary
@@ -431,13 +433,13 @@ fun AINarratedTourScreen(
                         Spacer(modifier = Modifier.width(12.dp))
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                currentStop?.title ?: "Heritage Tour",
+                                currentStop?.title ?: stringResource(R.string.tour_heritage_tour),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp,
                                 color = cs.onSurface
                             )
                             Text(
-                                "Step ${pagerState.currentPage + 1} of ${tourStops.size}",
+                                stringResource(R.string.tour_step_of, pagerState.currentPage + 1, tourStops.size),
                                 fontSize = 13.sp,
                                 color = cs.onSurfaceVariant
                             )
@@ -510,7 +512,7 @@ fun AINarratedTourScreen(
                         // Snapshot button
                         TourActionButton(
                             icon = Icons.Default.AutoAwesome,
-                            label = "AI Insight",
+                            label = stringResource(R.string.ai_insight),
                             onClick = {
                                 showSnapshot = true
                                 isLoading = true

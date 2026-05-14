@@ -38,10 +38,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.virasat.R
 import com.example.virasat.ui.theme.PlusJakartaSans
 
 @Composable
@@ -109,7 +111,7 @@ fun ContactUsScreen(
             // Header
             if (!sent) {
                 Text(
-                    text = "Get in Touch",
+                    text = stringResource(R.string.contact_get_in_touch),
                     style = MaterialTheme.typography.displaySmall.copy(
                         fontFamily = PlusJakartaSans,
                         fontWeight = FontWeight.Bold
@@ -183,8 +185,8 @@ fun ContactUsScreen(
                             OutlinedTextField(
                                 value = name,
                                 onValueChange = { name = it },
-                                label = { Text("Name", style = MaterialTheme.typography.bodyMedium) },
-                                placeholder = { Text("Your name", style = MaterialTheme.typography.bodyMedium) },
+                                label = { Text(stringResource(com.example.virasat.R.string.contact_name), style = MaterialTheme.typography.bodyMedium) },
+                                placeholder = { Text(stringResource(R.string.contact_name_hint), style = MaterialTheme.typography.bodyMedium) },
                                 singleLine = true,
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(999.dp),
@@ -203,8 +205,8 @@ fun ContactUsScreen(
                             OutlinedTextField(
                                 value = email,
                                 onValueChange = { email = it },
-                                label = { Text("Email", style = MaterialTheme.typography.bodyMedium) },
-                                placeholder = { Text("your@email.com", style = MaterialTheme.typography.bodyMedium) },
+                                label = { Text(stringResource(com.example.virasat.R.string.contact_email), style = MaterialTheme.typography.bodyMedium) },
+                                placeholder = { Text(stringResource(com.example.virasat.R.string.contact_email_hint), style = MaterialTheme.typography.bodyMedium) },
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Email,
                                     imeAction = ImeAction.Next
@@ -227,8 +229,8 @@ fun ContactUsScreen(
                             OutlinedTextField(
                                 value = message,
                                 onValueChange = { message = it },
-                                label = { Text("Message", style = MaterialTheme.typography.bodyMedium) },
-                                placeholder = { Text("Write your message...", style = MaterialTheme.typography.bodyMedium) },
+                                label = { Text(stringResource(com.example.virasat.R.string.contact_message), style = MaterialTheme.typography.bodyMedium) },
+                                placeholder = { Text(stringResource(com.example.virasat.R.string.contact_message_hint), style = MaterialTheme.typography.bodyMedium) },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(140.dp),
@@ -274,7 +276,7 @@ fun ContactUsScreen(
                             )
                         } else {
                             Text(
-                                text = "Send Message",
+                                text = stringResource(R.string.contact_send_message),
                                 style = MaterialTheme.typography.labelLarge.copy(
                                     fontFamily = PlusJakartaSans,
                                     fontWeight = FontWeight.SemiBold

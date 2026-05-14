@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -120,7 +121,7 @@ fun CommunityScreen(onBack: () -> Unit) {
             // Header Text
             Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
                 Text(
-                    text = "Community",
+                    text = stringResource(com.example.virasat.R.string.community_title),
                     style = typography.displayLarge.copy(fontWeight = FontWeight.Bold),
                     color = colorScheme.onSurface
                 )

@@ -1,13 +1,19 @@
 package com.example.virasat.ui.screens
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
@@ -15,12 +21,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.virasat.R
+import java.io.File
 
 @Composable
 fun EditProfileScreen(
@@ -33,6 +42,23 @@ fun EditProfileScreen(
     var email by remember { mutableStateOf(prefs.getString("user_email", "") ?: "") }
     var phone by remember { mutableStateOf(prefs.getString("user_phone", "") ?: "") }
     var bio by remember { mutableStateOf(prefs.getString("user_bio", "") ?: "") }
+    var profileImageUri by remember { mutableStateOf(prefs.getString("user_profile_image", null)?.let { Uri.parse(it) }) }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            // Copy to app-private storage for persistence
+            try {
+                val inputStream = ctx.contentResolver.openInputStream(uri)
+                val file = File(ctx.filesDir, "profile_image.jpg")
+                inputStream?.use { input -> file.outputStream().use { output -> input.copyTo(output) } }
+                profileImageUri = Uri.fromFile(file)
+            } catch (_: Exception) {
+                profileImageUri = uri
+            }
+        }
+    }
 
     val cs = MaterialTheme.colorScheme
     val type = MaterialTheme.typography
@@ -80,6 +106,7 @@ fun EditProfileScreen(
                         .putString("user_email", email.trim())
                         .putString("user_phone", phone.trim())
                         .putString("user_bio", bio.trim())
+                        .putString("user_profile_image", profileImageUri?.toString())
                         .apply()
                     onSaved()
                 },
@@ -100,7 +127,7 @@ fun EditProfileScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Avatar placeholder
+        // Avatar with image picker
         Box(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
@@ -108,16 +135,44 @@ fun EditProfileScreen(
             Box(
                 modifier = Modifier
                     .size(120.dp)
-                    .clip(RoundedCornerShape(999.dp))
-                    .background(cs.primaryContainer),
+                    .clip(CircleShape)
+                    .background(cs.primaryContainer)
+                    .clickable { imagePickerLauncher.launch("image/*") },
                 contentAlignment = Alignment.Center
             ) {
-                val initials = name.split(" ").take(2).mapNotNull { it.firstOrNull()?.uppercase() }.joinToString("")
-                Text(
-                    text = initials.ifBlank { "?" },
-                    style = type.headlineLarge,
-                    color = cs.onPrimaryContainer,
-                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                if (profileImageUri != null) {
+                    AsyncImage(
+                        model = profileImageUri,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    val initials = name.split(" ").take(2).mapNotNull { it.firstOrNull()?.uppercase() }.joinToString("")
+                    Text(
+                        text = initials.ifBlank { "?" },
+                        style = type.headlineLarge,
+                        color = cs.onPrimaryContainer,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                    )
+                }
+            }
+            // Camera icon badge
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .offset(x = 40.dp, y = 40.dp)
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .background(cs.primary)
+                    .clickable { imagePickerLauncher.launch("image/*") },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.CameraAlt,
+                    contentDescription = null,
+                    tint = cs.onPrimary,
+                    modifier = Modifier.size(18.dp)
                 )
             }
         }

@@ -19,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -113,7 +114,7 @@ fun AIAssistantScreen(onBack: () -> Unit) {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Today",
+                            text = stringResource(com.example.virasat.R.string.ai_today),
                             style = type.labelMedium.copy(
                                 fontWeight = FontWeight.SemiBold,
                                 letterSpacing = 0.05.sp

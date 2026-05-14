@@ -12,9 +12,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.virasat.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -30,7 +32,7 @@ fun DataSyncScreen(onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Data & Sync", style = MaterialTheme.typography.headlineMedium) },
+                title = { Text(stringResource(R.string.data_sync_title), style = MaterialTheme.typography.headlineMedium) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -178,11 +180,11 @@ fun DataSyncScreen(onBack: () -> Unit) {
                         strokeWidth = 2.dp
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Syncing...", fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.syncing), fontWeight = FontWeight.Bold)
                 } else {
                     Icon(Icons.Default.CloudSync, null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Sync Now", fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.sync_now), fontWeight = FontWeight.Bold)
                 }
             }
 

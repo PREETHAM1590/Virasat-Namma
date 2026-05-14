@@ -149,7 +149,7 @@ fun HomeScreen(
                             color = OnSurfaceVariant
                         )
                         Text(
-                            "Heritage\nis Power",
+                            stringResource(R.string.home_tagline),
                             style = MaterialTheme.typography.displayLarge.copy(lineHeight = 50.sp),
                             color = Primary,
                             fontWeight = FontWeight.Bold
@@ -412,17 +412,17 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     TrailCard(
-                        "Hampi Heritage Walk",
+                        stringResource(R.string.home_hampi_walk),
                         MaterialTheme.colorScheme.secondaryContainer,
                         MaterialTheme.colorScheme.onSecondaryContainer,
-                        "Explore the Vijayanagara ruins — stone chariot, musical pillars, and boulder landscapes.",
+                        stringResource(R.string.home_hampi_desc),
                         Modifier.weight(1f)
                     )
                     TrailCard(
-                        "Temple Town Circuit",
+                        stringResource(R.string.home_temple_circuit),
                         PrimaryContainer,
                         OnPrimaryContainer,
-                        "Belur & Halebidu — 12th century Hoysala temples with sculptures that defy imagination.",
+                        stringResource(R.string.home_temple_desc),
                         Modifier.weight(1f)
                     )
                 }
@@ -448,13 +448,13 @@ fun HomeScreen(
                         Spacer(Modifier.width(16.dp))
                         Column {
                             Text(
-                                "Plan Your Itinerary",
+                                stringResource(R.string.home_plan_itinerary),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onTertiaryContainer
                             )
                             Text(
-                                "Create optimised routes between heritage sites",
+                                stringResource(R.string.home_plan_itinerary_desc),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f)
                             )
@@ -474,6 +474,8 @@ fun HomeScreen(
 
 @Composable
 private fun PopularSiteCard(site: HeritageSite, distanceText: String = site.district, onClick: () -> Unit) {
+    val context = LocalContext.current
+    val displayName = LocaleHelper.siteName(site.name, site.nameLocal, context)
     Box(
         modifier = Modifier
             .width(220.dp)
@@ -490,7 +492,7 @@ private fun PopularSiteCard(site: HeritageSite, distanceText: String = site.dist
             ) {
                 AsyncImage(
                     model = site.imageUrl,
-                    contentDescription = site.name,
+                    contentDescription = displayName,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
@@ -530,7 +532,7 @@ private fun PopularSiteCard(site: HeritageSite, distanceText: String = site.dist
             }
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    site.name,
+                    displayName,
                     style = MaterialTheme.typography.titleMedium,
                     color = OnSurface,
                     fontWeight = FontWeight.SemiBold,

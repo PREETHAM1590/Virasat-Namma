@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -40,7 +41,7 @@ fun ItineraryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Itinerary Planner") },
+                title = { Text(stringResource(com.example.virasat.R.string.itinerary_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
@@ -61,13 +62,13 @@ fun ItineraryScreen(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
-                placeholder = { Text("Search sites to add...") },
+                placeholder = { Text(stringResource(com.example.virasat.R.string.itinerary_search)) },
                 leadingIcon = { Icon(Icons.Default.Search, null) },
                 singleLine = true
             )
 
             if (savedItineraries.isNotEmpty()) {
-                Text("Saved Itineraries", Modifier.padding(horizontal = 16.dp),
+                Text(stringResource(com.example.virasat.R.string.itinerary_saved), Modifier.padding(horizontal = 16.dp),
                     style = MaterialTheme.typography.labelLarge)
                 Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
                     savedItineraries.take(5).forEach { itinerary ->
@@ -83,7 +84,7 @@ fun ItineraryScreen(
 
             if (orderedSites.isEmpty()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Add sites to plan your itinerary", style = MaterialTheme.typography.bodyLarge)
+                    Text(stringResource(com.example.virasat.R.string.itinerary_add_hint), style = MaterialTheme.typography.bodyLarge)
                 }
             } else {
                 LazyColumn(
@@ -122,12 +123,12 @@ fun ItineraryScreen(
     if (showSaveDialog) {
         AlertDialog(
             onDismissRequest = { showSaveDialog = false },
-            title = { Text("Save Itinerary") },
+            title = { Text(stringResource(com.example.virasat.R.string.itinerary_save)) },
             text = {
                 OutlinedTextField(
                     value = itineraryName,
                     onValueChange = { if (it.length <= 100) itineraryName = it },
-                    label = { Text("Itinerary name") },
+                    label = { Text(stringResource(com.example.virasat.R.string.itinerary_name_label)) },
                     singleLine = true
                 )
             },
@@ -138,10 +139,10 @@ fun ItineraryScreen(
                         showSaveDialog = false
                         itineraryName = ""
                     }
-                }) { Text("Save") }
+                }) { Text(stringResource(com.example.virasat.R.string.btn_save)) }
             },
             dismissButton = {
-                TextButton(onClick = { showSaveDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showSaveDialog = false }) { Text(stringResource(com.example.virasat.R.string.btn_cancel)) }
             }
         )
     }

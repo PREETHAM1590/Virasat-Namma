@@ -18,9 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.virasat.R
 import com.example.virasat.data.di.RepositoryProvider
 
 @Composable
@@ -71,7 +73,7 @@ fun QuizScreen(onBack: () -> Unit) {
             }
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = "Heritage Quiz",
+                text = stringResource(R.string.quiz_title),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -101,12 +103,12 @@ fun QuizScreen(onBack: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Question ${currentQuestion + 1} / ${questions.size}",
+                        text = stringResource(R.string.quiz_question_progress, currentQuestion + 1, questions.size),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "Score: $score",
+                        text = stringResource(R.string.quiz_score, score),
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -177,7 +179,7 @@ fun QuizScreen(onBack: () -> Unit) {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Check Answer",
+                            text = stringResource(R.string.quiz_check_answer),
                             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                             color = if (active) MaterialTheme.colorScheme.onPrimaryContainer
                             else MaterialTheme.colorScheme.onSurfaceVariant
@@ -204,7 +206,7 @@ fun QuizScreen(onBack: () -> Unit) {
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = if (currentQuestion < questions.size - 1) "Next Question" else "See Results",
+                            text = if (currentQuestion < questions.size - 1) stringResource(R.string.quiz_next_question) else stringResource(R.string.quiz_see_results),
                             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -320,13 +322,13 @@ private fun QuizResult(
         val isExcellent = score >= total * 0.8
 
         Text(
-            text = if (isExcellent) "Excellent!" else "Quiz Complete",
+            text = if (isExcellent) stringResource(R.string.quiz_excellent) else stringResource(R.string.quiz_complete),
             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "You scored $score out of $total",
+            text = stringResource(R.string.quiz_score_result, score, total),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -344,7 +346,7 @@ private fun QuizResult(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Try Again",
+                text = stringResource(R.string.quiz_try_again),
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
@@ -364,7 +366,7 @@ private fun QuizResult(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Back to Home",
+                text = stringResource(R.string.quiz_back_home),
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.onSurface
             )

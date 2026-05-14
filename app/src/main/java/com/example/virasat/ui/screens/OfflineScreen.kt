@@ -12,9 +12,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.virasat.R
 import com.example.virasat.viewmodel.OfflineViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +32,7 @@ fun OfflineScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Offline & Bookmarks") },
+                title = { Text(stringResource(R.string.offline_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
@@ -48,7 +50,7 @@ fun OfflineScreen(
                     Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.CloudOff, null, tint = MaterialTheme.colorScheme.error)
                         Spacer(Modifier.width(12.dp))
-                        Text("You are offline", color = MaterialTheme.colorScheme.onErrorContainer)
+                        Text(stringResource(R.string.you_are_offline), color = MaterialTheme.colorScheme.onErrorContainer)
                     }
                 }
             }
@@ -59,8 +61,8 @@ fun OfflineScreen(
                         Icon(Icons.Default.Bookmark, null, Modifier.size(64.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
                         Spacer(Modifier.height(16.dp))
-                        Text("No bookmarked sites yet", style = MaterialTheme.typography.titleMedium)
-                        Text("Bookmark sites to access them offline", style = MaterialTheme.typography.bodySmall)
+                        Text(stringResource(R.string.no_bookmarked_sites), style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.bookmark_hint), style = MaterialTheme.typography.bodySmall)
                     }
                 }
             } else {

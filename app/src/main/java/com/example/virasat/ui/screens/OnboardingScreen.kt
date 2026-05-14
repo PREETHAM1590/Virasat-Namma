@@ -31,9 +31,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
+import com.example.virasat.R
 import com.example.virasat.ui.theme.Surface
 import com.example.virasat.ui.theme.Primary
 import com.example.virasat.ui.theme.OnSurfaceVariant
@@ -180,7 +182,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
 
                 // Seamless action pill
                 val isLastPage = pagerState.currentPage == onboardingPages.size - 1
-                val actionLabel = if (isLastPage) "Get Started" else "Next"
+                val actionLabel = if (isLastPage) stringResource(R.string.onboarding_get_started) else stringResource(R.string.onboarding_next)
 
                 Box(
                     modifier = Modifier

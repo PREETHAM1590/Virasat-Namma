@@ -17,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,7 +49,7 @@ fun TermsOfServiceScreen(onBack: () -> Unit) {
         }
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-            text = "Terms of Service",
+            text = stringResource(com.example.virasat.R.string.terms_of_service_title),
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontFamily = PlusJakartaSans,
                 fontWeight = FontWeight.SemiBold

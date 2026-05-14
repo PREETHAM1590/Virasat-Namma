@@ -32,6 +32,7 @@ import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.service.FirebaseAnalyticsHelper
 import com.example.virasat.data.service.GeminiHeritageService
 import com.example.virasat.data.service.FirebaseAuthService
+import kotlinx.coroutines.flow.first
 import com.example.virasat.util.LocaleHelper
 import com.example.virasat.data.source.FirestoreSeeder
 import com.google.firebase.auth.FirebaseAuth
@@ -79,11 +80,17 @@ class MainActivity : ComponentActivity() {
                     val startDest = when {
                         !onboardingSeen && !languageSelected -> "splash"
                         !onboardingSeen && languageSelected -> "language"
-                        authUser == null -> "login"
-                        else -> "home"
+                        // Returning user: always start at splash so it can wait for auth
+                        // to resolve (up to 3 s) before navigating to login or home (Req 1.3–1.5)
+                        else -> "splash"
                     }
                     val navController = rememberNavController()
-                    LaunchedEffect(authUser) {
+                    // Track whether NavHost has rendered at least once
+                    var navGraphReady by remember { mutableStateOf(false) }
+                    // Re-run whenever authUser changes OR when navGraphReady flips to true,
+                    // so a sign-out that occurs before the NavHost is ready is not missed.
+                    LaunchedEffect(authUser, navGraphReady) {
+                        if (!navGraphReady) return@LaunchedEffect
                         if (authUser == null && onboardingSeen) {
                             navController.navigate("login") {
                                 popUpTo(0) { inclusive = true }
@@ -105,6 +112,7 @@ class MainActivity : ComponentActivity() {
                     var ready by remember { mutableStateOf(false) }
                     LaunchedEffect(Unit) { ready = true }
                     if (ready) {
+                    LaunchedEffect(Unit) { navGraphReady = true }
                     NavHost(
                         navController = navController,
                         startDestination = startDest,
@@ -113,8 +121,26 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable("splash") {
                             SplashScreen(
+                                onboardingSeen = onboardingSeen,
+                                authStateProvider = {
+                                    // Collect the first emission from authStateFlow.
+                                    // Firebase emits immediately if a cached session exists,
+                                    // or after network round-trip if not. withTimeoutOrNull
+                                    // inside SplashScreen caps the wait at 3 s (Req 1.5).
+                                    FirebaseAuthService.authStateFlow().first()
+                                },
                                 onNavigateToLanguage = {
                                     navController.navigate("language") {
+                                        popUpTo("splash") { inclusive = true }
+                                    }
+                                },
+                                onNavigateToLogin = {
+                                    navController.navigate("login") {
+                                        popUpTo("splash") { inclusive = true }
+                                    }
+                                },
+                                onNavigateToHome = {
+                                    navController.navigate("home") {
                                         popUpTo("splash") { inclusive = true }
                                     }
                                 }
@@ -122,11 +148,19 @@ class MainActivity : ComponentActivity() {
                         }
                         composable("language") {
                             val isSettingsFlow = navController.previousBackStackEntry?.destination?.route == "settings"
+                            val activity = LocalContext.current as? android.app.Activity
                             LanguageScreen(
                                 onContinue = {
                                     if (isSettingsFlow) {
                                         navController.popBackStack()
+                                        // Recreate the Activity so the new locale is applied to
+                                        // all subsequently composed screens (stringResource, etc.)
+                                        // without requiring a manual app restart (Req 2.2).
+                                        activity?.recreate()
                                     } else {
+                                        // Mark language as selected so subsequent launches skip
+                                        // the language screen when onboarding is not yet seen.
+                                        prefs.edit().putBoolean("language_selected", true).apply()
                                         navController.navigate("onboarding") {
                                             popUpTo("language") { inclusive = true }
                                         }
@@ -239,9 +273,6 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onReviews = { sId ->
                                     navController.navigate("reviews/$sId")
-                                },
-                                onAiTour = { sId ->
-                                    navController.navigate("ai_tour/$sId")
                                 },
                                 onTalkingTour = { sId ->
                                     navController.navigate("talking_tour/$sId")

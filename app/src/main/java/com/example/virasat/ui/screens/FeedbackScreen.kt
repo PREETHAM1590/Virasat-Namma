@@ -18,6 +18,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -141,7 +142,7 @@ fun FeedbackScreen(
             } else {
                 // Headline
                 Text(
-                    text = "Your Experience",
+                    text = stringResource(com.example.virasat.R.string.feedback_your_experience),
                     style = MaterialTheme.typography.headlineLarge.copy(
                         fontFamily = PlusJakartaSans,
                         fontWeight = FontWeight.Bold
@@ -243,7 +244,7 @@ fun FeedbackScreen(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            text = "Submit Feedback",
+                            text = stringResource(com.example.virasat.R.string.feedback_submit),
                             style = MaterialTheme.typography.labelLarge.copy(
                                 fontFamily = BeVietnamPro,
                                 fontWeight = FontWeight.SemiBold,

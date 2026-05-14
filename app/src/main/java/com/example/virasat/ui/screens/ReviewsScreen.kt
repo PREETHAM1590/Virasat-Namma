@@ -43,9 +43,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.virasat.R
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.ui.theme.PlusJakartaSans
 
@@ -97,7 +99,7 @@ fun ReviewsScreen(
                 )
             }
             Text(
-                text = "Share Your Journey",
+                text = stringResource(R.string.reviews_share_journey),
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontFamily = PlusJakartaSans,
                     fontWeight = FontWeight.SemiBold
@@ -159,7 +161,7 @@ fun ReviewsScreen(
                             }
                         }
                         Text(
-                            text = "${site?.reviews ?: 0} reviews",
+                            text = stringResource(R.string.reviews_count, site?.reviews ?: 0),
                             style = MaterialTheme.typography.bodySmall,
                             color = scheme.onSurfaceVariant.copy(alpha = 0.6f)
                         )
@@ -184,7 +186,7 @@ fun ReviewsScreen(
                     ) {
                         // Rating section
                         Text(
-                            text = "Rate your experience",
+                            text = stringResource(R.string.reviews_rate_experience),
                             style = MaterialTheme.typography.labelLarge.copy(
                                 fontWeight = FontWeight.SemiBold
                             ),
@@ -251,13 +253,13 @@ fun ReviewsScreen(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Add,
-                                        contentDescription = "Add Photos",
+                                        contentDescription = stringResource(R.string.reviews_add_photos),
                                         tint = scheme.primary,
                                         modifier = Modifier.size(24.dp)
                                     )
                                 }
                                 Text(
-                                    text = "Add Photos",
+                                    text = stringResource(R.string.reviews_add_photos),
                                     style = MaterialTheme.typography.labelLarge.copy(
                                         fontWeight = FontWeight.SemiBold
                                     ),
@@ -272,7 +274,7 @@ fun ReviewsScreen(
                             onValueChange = { reviewText = it },
                             placeholder = {
                                 Text(
-                                    "Write your experience...",
+                                    stringResource(R.string.reviews_write_placeholder),
                                     style = MaterialTheme.typography.bodyLarge
                                 )
                             },
@@ -308,7 +310,7 @@ fun ReviewsScreen(
                     enabled = userRating > 0
                 ) {
                     Text(
-                        text = "Post Review",
+                        text = stringResource(R.string.reviews_post),
                         style = MaterialTheme.typography.labelLarge.copy(
                             fontFamily = PlusJakartaSans,
                             fontWeight = FontWeight.SemiBold
@@ -321,7 +323,7 @@ fun ReviewsScreen(
             // Existing reviews header
             item {
                 Text(
-                    text = "Recent Reviews",
+                    text = stringResource(R.string.reviews_recent),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontFamily = PlusJakartaSans,
                         fontWeight = FontWeight.SemiBold

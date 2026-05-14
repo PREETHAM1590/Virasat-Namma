@@ -25,7 +25,6 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Image
@@ -61,7 +60,6 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.source.KarnatakaSites
-import com.example.virasat.data.service.GeminiHeritageService
 import com.example.virasat.util.LocationUtils
 
 @Composable
@@ -73,7 +71,6 @@ fun SiteDetailScreen(
     onImmersiveView: (String) -> Unit,
     onGallery: (String) -> Unit,
     onReviews: (String) -> Unit,
-    onAiTour: (String) -> Unit,
     onTalkingTour: (String) -> Unit
 ) {
     val ctx = LocalContext.current
@@ -327,7 +324,6 @@ fun SiteDetailScreen(
                 ) {
                     ActionChip(stringResource(R.string.detail_gallery), Icons.Default.Image) { onGallery(siteId) }
                     ActionChip(stringResource(R.string.detail_check_in), Icons.Default.QrCodeScanner) { onCheckIn() }
-                    ActionChip(stringResource(R.string.detail_ai_tour), Icons.Default.ChatBubble) { onAiTour(siteId) }
                     ActionChip(stringResource(R.string.detail_talking_tour), Icons.Default.Mic) { onTalkingTour(siteId) }
                 }
                 Spacer(Modifier.height(32.dp))
