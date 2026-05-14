@@ -37,7 +37,8 @@ fun SettingsScreen(
     onPrivacy: () -> Unit = {},
     onTerms: () -> Unit = {},
     onDataSync: () -> Unit = {},
-    onLogout: () -> Unit = {}
+    onLogout: () -> Unit = {},
+    onEditProfile: () -> Unit = {}
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val userPrefs = remember { context.getSharedPreferences("virasat_prefs", android.content.Context.MODE_PRIVATE) }
@@ -169,7 +170,7 @@ fun SettingsScreen(
                         )
                     }
                     Button(
-                        onClick = { onLogout() },
+                        onClick = { onEditProfile() },
                         shape = RoundedCornerShape(999.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = cs.primaryContainer,

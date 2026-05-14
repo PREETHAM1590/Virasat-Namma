@@ -171,9 +171,11 @@ fun AINarratedTourScreen(
                 is LegendStop -> "legends"
                 else -> "overview"
             }
-            val aiText = GeminiHeritageService.generateNarration(site, language)
+            // Use chapter-specific narration (generateChapterNarration) instead of
+            // generic intro narration so each stop gets relevant content.
+            val aiText = GeminiHeritageService.generateChapterNarration(site, focus, language)
             narrationText = aiText.ifBlank { baseText }
-            tts?.speak(narrationText, TextToSpeech.QUEUE_FLUSH, null, "narration")
+            // Set listener BEFORE speak() to avoid race where onStart fires before listener registered
             tts?.setOnUtteranceProgressListener(
                 object : UtteranceProgressListener() {
                     override fun onStart(id: String?) { isNarrating = true }
@@ -181,6 +183,7 @@ fun AINarratedTourScreen(
                     override fun onError(id: String?) { isNarrating = false }
                 }
             )
+            tts?.speak(narrationText, TextToSpeech.QUEUE_FLUSH, null, "narration")
             isNarrating = true
         }
     }

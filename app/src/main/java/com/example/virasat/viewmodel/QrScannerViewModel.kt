@@ -116,6 +116,10 @@ class QrScannerViewModel(application: Application) : AndroidViewModel(applicatio
         return facts.last()
     }
 
+    fun clearQrError() {
+        _qrError.value = null
+    }
+
     fun reset() {
         _scannedSite.value = null
         _isCheckingIn.value = false

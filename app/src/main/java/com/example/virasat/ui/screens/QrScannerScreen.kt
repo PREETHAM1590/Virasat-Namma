@@ -72,9 +72,12 @@ fun QrScannerScreen(
         if (!hasCameraPermission) launcher.launch(Manifest.permission.CAMERA)
     }
 
-    // Show error snackbar on unrecognized/invalid QR
+    // Show error snackbar on unrecognized/invalid QR; clear after shown so same error re-fires
     LaunchedEffect(qrError) {
-        if (qrError != null) snackbarHostState.showSnackbar(qrError!!)
+        if (qrError != null) {
+            snackbarHostState.showSnackbar(qrError!!)
+            viewModel.clearQrError()
+        }
     }
 
     // Navigate to site detail once check-in completes
@@ -444,6 +447,9 @@ fun CameraPreviewWithScanner(
     val context = LocalContext.current
     val previewView = remember { PreviewView(context) }
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
+    DisposableEffect(Unit) {
+        onDispose { cameraExecutor.shutdown() }
+    }
     val barcodeScanner = remember {
         BarcodeScanning.getClient(
             BarcodeScannerOptions.Builder()

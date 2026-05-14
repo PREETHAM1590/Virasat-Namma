@@ -30,8 +30,8 @@ fun BadgesScreen(
         val currentUnlocked = badges.filter { it.isUnlocked }.map { it.definition.id }.toSet()
         val newlyUnlocked = currentUnlocked - previousUnlocked
         if (newlyUnlocked.isNotEmpty() && previousUnlocked.isNotEmpty()) {
-            val badge = badges.first { it.definition.id in newlyUnlocked }
-            snackbarHostState.showSnackbar("Congratulations! You earned: ${badge.definition.name}")
+            val badge = badges.firstOrNull { it.definition.id in newlyUnlocked }
+            if (badge != null) snackbarHostState.showSnackbar("Congratulations! You earned: ${badge.definition.name}")
         }
         previousUnlocked = currentUnlocked
     }
