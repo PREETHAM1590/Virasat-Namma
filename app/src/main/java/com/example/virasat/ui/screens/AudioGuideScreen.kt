@@ -1,5 +1,7 @@
 package com.example.virasat.ui.screens
 
+import android.content.Intent
+import android.provider.Settings
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import java.util.Locale
@@ -33,7 +35,7 @@ import com.example.virasat.util.LocaleHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
+private val CHAPTER_KEYS = listOf("introduction", "history", "architecture", "legends", "facts")
 
 @Composable
 fun AudioGuideScreen(
@@ -46,10 +48,19 @@ fun AudioGuideScreen(
     var currentChapter by remember { mutableIntStateOf(0) }
     var isPlaying by remember { mutableStateOf(false) }
     var progress by remember { mutableFloatStateOf(0f) }
-    var selectedLanguage by remember { mutableStateOf(when(savedLocale) { "kn" -> "Kannada"; "hi" -> "Hindi"; else -> "English" }) }
-    var generatedNarration by remember { mutableStateOf("") }
+    var selectedLanguage by remember {
+        mutableStateOf(when (savedLocale) { "kn" -> "Kannada"; "hi" -> "Hindi"; else -> "English" })
+    }
+    // Gemini transcripts: chapterKey -> generated text
+    var geminiTranscripts by remember { mutableStateOf<Map<String, String>>(emptyMap()) }
     var isGenerating by remember { mutableStateOf(false) }
+    var generatingChapter by remember { mutableStateOf("") }
+    // TTS state
+    var ttsUnsupported by remember { mutableStateOf(false) }
+    var showTtsHint by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
     val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
         value = try {
@@ -59,16 +70,30 @@ fun AudioGuideScreen(
         }
     }
 
-    val chapters = remember(siteId, generatedNarration, site, ctx) {
-        val intro = site?.shortDescription ?: ""
-        val narration = generatedNarration.ifBlank { intro }
-        fun estimateDuration(text: String): Int = (text.split(" ").size.coerceAtLeast(20) * 60 / 130).coerceAtLeast(30)
+    fun estimateDuration(text: String): Int =
+        (text.split(" ").size.coerceAtLeast(20) * 60 / 130).coerceAtLeast(30)
+
+    // Chapters: use Gemini transcripts if available, else site data
+    val chapters = remember(siteId, geminiTranscripts, site, ctx) {
+        fun transcript(key: String, fallback: String): String =
+            geminiTranscripts[key]?.ifBlank { fallback } ?: fallback
+        val introText = transcript("introduction", site?.shortDescription ?: "")
+        val historyText = transcript("history", site?.history ?: "")
+        val archText = transcript("architecture", site?.architecture ?: "")
+        val legendsText = transcript("legends", site?.legends ?: "")
+        val factsText = transcript("facts",
+            site?.facts?.take(3)?.joinToString("\n") { "${it.title}: ${it.description}" } ?: "")
         listOf(
-            AudioChapter("1", ctx.getString(com.example.virasat.R.string.audio_chapter_introduction), estimateDuration(narration), "", narration),
-            AudioChapter("2", ctx.getString(com.example.virasat.R.string.audio_chapter_history), estimateDuration(site?.history ?: ""), "", site?.history ?: ""),
-            AudioChapter("3", ctx.getString(com.example.virasat.R.string.audio_chapter_architecture), estimateDuration(site?.architecture ?: ""), "", site?.architecture ?: ""),
-            AudioChapter("4", ctx.getString(com.example.virasat.R.string.audio_chapter_legends), estimateDuration(site?.legends ?: ""), "", site?.legends ?: ""),
-            AudioChapter("5", ctx.getString(com.example.virasat.R.string.audio_chapter_facts), 60, "", site?.facts?.take(3)?.joinToString("\n") { "${it.title}: ${it.description}" } ?: "")
+            AudioChapter("1", ctx.getString(com.example.virasat.R.string.audio_chapter_introduction),
+                estimateDuration(introText), "", introText),
+            AudioChapter("2", ctx.getString(com.example.virasat.R.string.audio_chapter_history),
+                estimateDuration(historyText), "", historyText),
+            AudioChapter("3", ctx.getString(com.example.virasat.R.string.audio_chapter_architecture),
+                estimateDuration(archText), "", archText),
+            AudioChapter("4", ctx.getString(com.example.virasat.R.string.audio_chapter_legends),
+                estimateDuration(legendsText), "", legendsText),
+            AudioChapter("5", ctx.getString(com.example.virasat.R.string.audio_chapter_facts),
+                estimateDuration(factsText), "", factsText)
         ).filter { it.transcript.isNotBlank() }
     }
     val safeChapterIdx = currentChapter.coerceIn(0, (chapters.size - 1).coerceAtLeast(0))
@@ -78,20 +103,20 @@ fun AudioGuideScreen(
     var tts by remember { mutableStateOf<TextToSpeech?>(null) }
     var ttsReady by remember { mutableStateOf(false) }
 
-    fun setTtsLanguage() {
+    fun setTtsLanguage(): Boolean {
         val locale = when (selectedLanguage) {
             "Kannada" -> Locale("kn", "IN")
-            "Hindi" -> Locale("hi", "IN")
-            "Tamil" -> Locale("ta", "IN")
-            "Telugu" -> Locale("te", "IN")
-            else -> Locale.ENGLISH
+            "Hindi"   -> Locale("hi", "IN")
+            "Tamil"   -> Locale("ta", "IN")
+            "Telugu"  -> Locale("te", "IN")
+            else      -> Locale.ENGLISH
         }
         val result = tts?.setLanguage(locale)
-        // Fallback to English if language not supported by device TTS engine
-        if (result == android.speech.tts.TextToSpeech.LANG_NOT_SUPPORTED ||
-            result == android.speech.tts.TextToSpeech.LANG_MISSING_DATA) {
-            tts?.setLanguage(Locale.ENGLISH)
-        }
+        return if (result == TextToSpeech.LANG_NOT_SUPPORTED ||
+                   result == TextToSpeech.LANG_MISSING_DATA) {
+            tts?.setLanguage(Locale.ENGLISH)  // fallback so speech still works
+            true  // unsupported
+        } else false
     }
 
     var pendingStart by remember { mutableStateOf(false) }
@@ -100,7 +125,11 @@ fun AudioGuideScreen(
         tts = TextToSpeech(context) { status ->
             if (status == TextToSpeech.SUCCESS) {
                 ttsReady = true
-                setTtsLanguage()
+                val unsupported = setTtsLanguage()
+                if (unsupported && selectedLanguage != "English") {
+                    ttsUnsupported = true
+                    showTtsHint = true
+                }
                 tts?.setSpeechRate(0.88f)
                 tts?.setPitch(0.95f)
                 tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
@@ -108,27 +137,61 @@ fun AudioGuideScreen(
                     override fun onDone(utteranceId: String?) {
                         isPlaying = false
                         progress = 0f
-                        if (currentChapter < chapters.lastIndex) {
-                            currentChapter++
-                        }
+                        if (currentChapter < chapters.lastIndex) currentChapter++
                     }
                     override fun onError(utteranceId: String?) { isPlaying = false }
                 })
                 if (pendingStart) {
                     pendingStart = false
-                    tts?.speak(chapters[currentChapter].transcript, TextToSpeech.QUEUE_FLUSH, null, "chapter_${currentChapter}")
+                    tts?.speak(chapters.getOrNull(currentChapter)?.transcript ?: "",
+                        TextToSpeech.QUEUE_FLUSH, null, "chapter_$currentChapter")
                 }
             }
         }
     }
 
-    LaunchedEffect(selectedLanguage) {
-        if (ttsReady) setTtsLanguage()
-        if (GeminiHeritageService.isInitialized()) {
-            isGenerating = true
-            generatedNarration = GeminiHeritageService.generateNarration(site, selectedLanguage)
-            isGenerating = false
+    // Show snackbar when TTS language unsupported
+    LaunchedEffect(showTtsHint) {
+        if (showTtsHint) {
+            val msg = if (selectedLanguage == "Kannada")
+                "\u0c95\u0ca8\u0ccd\u0ca8\u0ca1 \u0ca7\u0ccd\u0cb5\u0ca8\u0cbf \u0ca1\u0cc7\u0c9f\u0cbe \u0cbf\u0cb2\u0ccd\u0cb2 \u2014 \u0c87\u0c82\u0c97\u0ccd\u0cb2\u0cbf\u0cb7\u0ccd \u0ca7\u0ccd\u0cb5\u0ca8\u0cbf \u0cac\u0cb3\u0cb8\u0cb2\u0cbe\u0c97\u0cc1\u0ca4\u0ccd\u0ca4\u0cbf\u0ca6\u0cc6. \u0cb8\u0cc6\u0c9f\u0ccd\u0c9f\u0cbf\u0c82\u0c97\u0ccd\u0cb8\u0ccd \u0ca8\u0cb2\u0ccd\u0cb2\u0cbf Kannada TTS \u0ca1\u0ccc\u0ca8\u0ccd\u0cb2\u0ccb\u0ca1\u0ccd \u0cae\u0cbe\u0ca1\u0cbf."
+                else "Kannada voice not installed on this device — using English TTS. Download Kannada TTS in Settings."
+            val result = snackbarHostState.showSnackbar(
+                message = msg,
+                actionLabel = "Settings",
+                duration = SnackbarDuration.Long
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                ctx.startActivity(Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                })
+            }
+            showTtsHint = false
         }
+    }
+
+    // When language changes: update TTS locale + fetch all chapter narrations from Gemini
+    LaunchedEffect(selectedLanguage, site) {
+        if (site == null) return@LaunchedEffect
+        if (ttsReady) {
+            val unsupported = setTtsLanguage()
+            if (unsupported && selectedLanguage != "English") {
+                ttsUnsupported = true; showTtsHint = true
+            } else {
+                ttsUnsupported = false
+            }
+        }
+        if (!GeminiHeritageService.isInitialized()) return@LaunchedEffect
+        isGenerating = true
+        val newTranscripts = mutableMapOf<String, String>()
+        for (key in CHAPTER_KEYS) {
+            generatingChapter = key
+            val text = GeminiHeritageService.generateChapterNarration(site, key, selectedLanguage)
+            if (text.isNotBlank()) newTranscripts[key] = text
+        }
+        geminiTranscripts = newTranscripts
+        isGenerating = false
+        generatingChapter = ""
     }
 
     DisposableEffect(Unit) {
@@ -141,10 +204,10 @@ fun AudioGuideScreen(
     LaunchedEffect(currentChapter) {
         progress = 0f
         tts?.stop()
-        if (ttsReady && chapters.isNotEmpty()) {
+        if (ttsReady && chapters.isNotEmpty() && isPlaying) {
             val idx = currentChapter.coerceIn(0, chapters.lastIndex)
             val transcript = chapters[idx].transcript
-            if (transcript.isNotBlank() && isPlaying) {
+            if (transcript.isNotBlank()) {
                 tts?.speak(transcript, TextToSpeech.QUEUE_FLUSH, null, "chapter_$idx")
             }
         }
@@ -166,10 +229,14 @@ fun AudioGuideScreen(
     val cs = MaterialTheme.colorScheme
     val type = MaterialTheme.typography
 
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFE2EFE1))
+            .padding(paddingValues)
     ) {
         Column(
             modifier = Modifier
@@ -209,7 +276,7 @@ fun AudioGuideScreen(
                     }
                 ) {
                     Text(
-                        if (selectedLanguage == "English") "EN" else "ಕ",
+                        if (selectedLanguage == "English") "EN" else "\u0c95",
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
@@ -218,7 +285,64 @@ fun AudioGuideScreen(
                 }
             }
 
-            // Hero Section: Massive Circle with floating controls
+            // Gemini generating status bar
+            if (isGenerating) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(cs.secondaryContainer)
+                        .padding(horizontal = 24.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        color = cs.onSecondaryContainer,
+                        strokeWidth = 2.dp
+                    )
+                    Text(
+                        text = if (selectedLanguage == "Kannada")
+                            "\u0c97\u0cc6\u0cae\u0cbf\u0ca8\u0cbf AI \u0cb5\u0cbf\u0cb5\u0cb0\u0ca3 \u0ca4\u0caf\u0cbe\u0cb0\u0cbf\u0cb8\u0cc1\u0ca4\u0ccd\u0ca4\u0cbf\u0ca6\u0cc6..."
+                            else "Gemini AI generating audio descriptions...",
+                        style = type.labelMedium,
+                        color = cs.onSecondaryContainer
+                    )
+                }
+            }
+
+            // TTS unsupported warning banner
+            if (ttsUnsupported && selectedLanguage != "English") {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(cs.errorContainer)
+                        .clickable {
+                            ctx.startActivity(Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS).apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            })
+                        }
+                        .padding(horizontal = 24.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        Icons.Default.Warning,
+                        null,
+                        tint = cs.onErrorContainer,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text = if (selectedLanguage == "Kannada")
+                            "\u0c95\u0ca8\u0ccd\u0ca8\u0ca1 TTS \u0cac\u0cc7\u0c95\u0cbe\u0c97\u0cc1\u0ca4\u0ccd\u0ca4\u0cc6 \u2014 Settings \u0ca4\u0cc6\u0cb0\u0cc6\u0caf\u0cb2\u0cc1 \u0c92\u0ca4\u0ccd\u0ccd\u0ccc\u0ca6\u0cbf \u0c95\u0ccd\u0cb2\u0cbf\u0c95\u0ccd \u0cae\u0cbe\u0ca1\u0cbf"
+                            else "Kannada voice not installed — tap to open Settings and download Kannada TTS",
+                        style = type.labelSmall,
+                        color = cs.onErrorContainer,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+
+            // Hero Section
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -234,22 +358,23 @@ fun AudioGuideScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         AsyncImage(
-                            model = site?.imageUrl ?: "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=800",
+                            model = site?.imageUrl
+                                ?: "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=800",
                             contentDescription = siteName,
                             modifier = Modifier.fillMaxSize(),
                             contentScale = androidx.compose.ui.layout.ContentScale.Crop
                         )
-                        // Neumorphic inner shadow overlay
                         Box(
                             Modifier
                                 .fillMaxSize()
                                 .clip(CircleShape)
-                                .background(Color.Black.copy(alpha = 0.2f)))
+                                .background(Color.Black.copy(alpha = 0.2f))
+                        )
                     }
 
                     Spacer(Modifier.height(24.dp))
 
-                    // Floating Playback Controls
+                    // Playback Controls
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -258,7 +383,6 @@ fun AudioGuideScreen(
                             .padding(24.dp)
                     ) {
                         Column {
-                            // Time + Title row
                             Row(
                                 Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -269,11 +393,20 @@ fun AudioGuideScreen(
                                     style = type.labelMedium,
                                     color = Color.White.copy(alpha = 0.8f)
                                 )
-                                Text(
-                                    siteName,
-                                    style = type.headlineMedium,
-                                    color = Color.White
-                                )
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(
+                                        siteName,
+                                        style = type.titleMedium,
+                                        color = Color.White,
+                                        maxLines = 1
+                                    )
+                                    Text(
+                                        chapter?.title ?: "",
+                                        style = type.labelSmall,
+                                        color = Color.White.copy(alpha = 0.7f),
+                                        maxLines = 1
+                                    )
+                                }
                                 Text(
                                     formatTime(chapter?.durationSeconds ?: 60),
                                     style = type.labelMedium,
@@ -281,7 +414,6 @@ fun AudioGuideScreen(
                                 )
                             }
                             Spacer(Modifier.height(16.dp))
-                            // Progress bar
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -298,46 +430,32 @@ fun AudioGuideScreen(
                                 )
                             }
                             Spacer(Modifier.height(20.dp))
-                            // Controls
                             Row(
                                 Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceEvenly,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                IconButton(
-                                    onClick = {
-                                        if (currentChapter > 0) {
-                                            tts?.stop()
-                                            progress = 0f
-                                            currentChapter--
-                                        }
+                                IconButton(onClick = {
+                                    if (currentChapter > 0) {
+                                        tts?.stop(); progress = 0f; currentChapter--
                                     }
-                                ) {
-                                    Icon(
-                                        Icons.Default.Replay10,
-                                        "Rewind",
-                                        modifier = Modifier.size(32.dp),
-                                        tint = Color(0xFFE2EFE1)
-                                    )
+                                }) {
+                                    Icon(Icons.Default.Replay10, "Rewind",
+                                        modifier = Modifier.size(32.dp), tint = Color(0xFFE2EFE1))
                                 }
                                 Button(
                                     onClick = {
                                         isPlaying = !isPlaying
                                         if (isPlaying) {
                                             if (ttsReady) {
-                                                tts?.speak(chapter?.transcript ?: "", TextToSpeech.QUEUE_FLUSH, null, "chapter_$currentChapter")
-                                            } else {
-                                                pendingStart = true
-                                            }
-                                        } else {
-                                            tts?.stop()
-                                        }
+                                                tts?.speak(chapter?.transcript ?: "",
+                                                    TextToSpeech.QUEUE_FLUSH, null, "chapter_$currentChapter")
+                                            } else { pendingStart = true }
+                                        } else { tts?.stop() }
                                     },
                                     modifier = Modifier.size(64.dp),
                                     shape = CircleShape,
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = cs.primaryContainer
-                                    )
+                                    colors = ButtonDefaults.buttonColors(containerColor = cs.primaryContainer)
                                 ) {
                                     Icon(
                                         if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
@@ -346,21 +464,13 @@ fun AudioGuideScreen(
                                         tint = Color(0xFF0B2211)
                                     )
                                 }
-                                IconButton(
-                                    onClick = {
-                                        if (currentChapter < chapters.lastIndex) {
-                                            currentChapter++
-                                            progress = 0f
-                                            isPlaying = false
-                                        }
+                                IconButton(onClick = {
+                                    if (currentChapter < chapters.lastIndex) {
+                                        currentChapter++; progress = 0f; isPlaying = false
                                     }
-                                ) {
-                                    Icon(
-                                        Icons.Default.Forward10,
-                                        "Forward",
-                                        modifier = Modifier.size(32.dp),
-                                        tint = Color(0xFFE2EFE1)
-                                    )
+                                }) {
+                                    Icon(Icons.Default.Forward10, "Forward",
+                                        modifier = Modifier.size(32.dp), tint = Color(0xFFE2EFE1))
                                 }
                             }
                         }
@@ -383,6 +493,8 @@ fun AudioGuideScreen(
             ) {
                 chapters.forEachIndexed { index, ch ->
                     val isCurrent = index == currentChapter
+                    val chKey = CHAPTER_KEYS.getOrNull(index) ?: ""
+                    val chGenerating = isGenerating && generatingChapter == chKey
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -395,9 +507,7 @@ fun AudioGuideScreen(
                                 isPlaying = true
                                 if (ttsReady) {
                                     tts?.speak(ch.transcript, TextToSpeech.QUEUE_FLUSH, null, "chapter_$index")
-                                } else {
-                                    pendingStart = true
-                                }
+                                } else { pendingStart = true }
                             }
                             .padding(24.dp)
                     ) {
@@ -407,25 +517,21 @@ fun AudioGuideScreen(
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             if (isCurrent) {
-                                // Active card: left accent bar within card
                                 Box(
                                     modifier = Modifier
-                                        .width(4.dp)
-                                        .height(48.dp)
+                                        .width(4.dp).height(48.dp)
                                         .clip(RoundedCornerShape(999.dp))
                                         .background(cs.primaryContainer)
                                 )
                                 Box(
                                     modifier = Modifier
-                                        .size(48.dp)
-                                        .clip(CircleShape)
+                                        .size(48.dp).clip(CircleShape)
                                         .background(cs.primaryContainer.copy(alpha = 0.2f)),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Icon(
                                         @Suppress("DEPRECATION")
-                                    Icons.Default.VolumeUp,
-                                        null,
+                                        Icons.Default.VolumeUp, null,
                                         modifier = Modifier.size(24.dp),
                                         tint = cs.primaryContainer
                                     )
@@ -434,16 +540,23 @@ fun AudioGuideScreen(
                                 Spacer(Modifier.width(4.dp))
                                 Box(
                                     modifier = Modifier
-                                        .size(48.dp)
-                                        .clip(CircleShape)
+                                        .size(48.dp).clip(CircleShape)
                                         .background(cs.surfaceVariant),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(
-                                        String.format("%02d", index + 1),
-                                        style = type.labelMedium,
-                                        color = cs.onSurfaceVariant
-                                    )
+                                    if (chGenerating) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.size(20.dp),
+                                            color = cs.primary,
+                                            strokeWidth = 2.dp
+                                        )
+                                    } else {
+                                        Text(
+                                            String.format("%02d", index + 1),
+                                            style = type.labelMedium,
+                                            color = cs.onSurfaceVariant
+                                        )
+                                    }
                                 }
                             }
                             Column(modifier = Modifier.weight(1f)) {
@@ -454,13 +567,15 @@ fun AudioGuideScreen(
                                     fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Normal
                                 )
                                 Text(
-                                    ch.transcript.take(50) + "...",
+                                    if (chGenerating) (if (selectedLanguage == "Kannada") "\u0c97\u0cc6\u0cae\u0cbf\u0ca8\u0cbf \u0ca4\u0caf\u0cbe\u0cb0\u0cbf\u0cb8\u0cc1\u0ca4\u0ccd\u0ca4\u0cbf\u0ca6\u0cc6..." else "Generating with Gemini AI...")
+                                    else ch.transcript.take(55) + "\u2026",
                                     style = type.bodyMedium,
                                     color = cs.onSurfaceVariant
                                 )
                             }
                             Text(
-                                if (isCurrent) stringResource(com.example.virasat.R.string.audio_now_playing) else formatTime(ch.durationSeconds),
+                                if (isCurrent) stringResource(com.example.virasat.R.string.audio_now_playing)
+                                else formatTime(ch.durationSeconds),
                                 style = type.labelMedium,
                                 color = cs.onSurfaceVariant
                             )
@@ -471,6 +586,7 @@ fun AudioGuideScreen(
             Spacer(Modifier.height(32.dp))
         }
     }
+    } // end Scaffold
 }
 
 fun formatTime(seconds: Int): String {

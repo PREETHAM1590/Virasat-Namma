@@ -3,6 +3,7 @@ package com.example.virasat.data.service
 import android.graphics.Bitmap
 import android.util.Base64
 import com.example.virasat.data.model.HeritageSite
+import com.example.virasat.data.model.QuizQuestion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
@@ -22,17 +23,11 @@ object GeminiHeritageService {
     private var requestCount = 0
     private val maxRequestsPerMinute = 10
 
-    // SSL Certificate Pinner - Uncomment and add actual hash for production
-    // Get hash via: openssl s_client -servername generativelanguage.googleapis.com -connect generativelanguage.googleapis.com:443 | openssl x509 -fingerprint -sha256 -noout
-    // private val certificatePinner = CertificatePinner.Builder()
-    //     .add("generativelanguage.googleapis.com", "sha256/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=")
-    //     .build()
-
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)
-        // .certificatePinner(certificatePinner) // Enable when you have real hash
+        // No .certificatePinner(...) — system trust store used
         .build()
 
     private fun checkRateLimit(): Boolean {
@@ -348,6 +343,163 @@ Site-specific context provided: ${siteContext.ifBlank { "None" }}"""
                 correctAnswer = 0,
                 explanation = fact.description
             )
+        }
+    }
+
+    // ---------------------------------------------------------------------------
+    // Quiz generation via Gemini
+    // ---------------------------------------------------------------------------
+
+    suspend fun generateQuizForSite(
+        site: HeritageSite?,
+        count: Int = 8,
+        language: String = "English",
+        allSiteNames: List<String> = emptyList()
+    ): List<QuizQuestion> = withContext(Dispatchers.IO) {
+        if (!isInitialized() || site == null) return@withContext emptyList()
+        try {
+            val context = getSiteContext(site)
+            val distractors = allSiteNames.filter { it != site.name }.shuffled().take(20)
+                .joinToString(", ")
+            val prompt = """You are a heritage quiz creator for the Karnataka heritage app.
+Based on this site, create exactly $count diverse multiple-choice quiz questions in $language.
+Cover history, architecture, legends, district, facts, and notable features.
+
+Site context:
+$context
+
+Other Karnataka site names for wrong options (use freely):
+$distractors
+
+Return ONLY a JSON array, no markdown, no code fences:
+[
+  {
+    "question": "...",
+    "options": ["...", "...", "...", "..."],
+    "correctAnswer": 0,
+    "explanation": "..."
+  }
+]
+Rules:
+- correctAnswer is 0-based index of the right option
+- All 4 options plausible, only 1 correct
+- Questions in $language only
+- No duplicate questions"""
+            val response = callGemini(prompt)
+            if (response.isBlank()) return@withContext emptyList()
+            parseQuizJson(response, count)
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
+    suspend fun generateGeneralKarnatakaQuiz(
+        count: Int = 8,
+        language: String = "English",
+        allSites: List<HeritageSite> = emptyList()
+    ): List<QuizQuestion> = withContext(Dispatchers.IO) {
+        if (!isInitialized()) return@withContext emptyList()
+        try {
+            val siteSummary = allSites.take(20).joinToString("\n") {
+                "- ${it.name} (${it.nameLocal}): ${it.district}, ${it.type.name}, ${it.shortDescription.take(80)}"
+            }
+            val prompt = """You are a heritage quiz creator for the Karnataka heritage app.
+Create exactly $count diverse multiple-choice questions in $language about Karnataka's heritage sites.
+Cover UNESCO sites, famous temples, forts, palaces, districts, history, and architecture.
+
+Available sites:
+$siteSummary
+
+Return ONLY a JSON array, no markdown, no code fences:
+[
+  {
+    "question": "...",
+    "options": ["...", "...", "...", "..."],
+    "correctAnswer": 0,
+    "explanation": "..."
+  }
+]
+Rules:
+- correctAnswer is 0-based index of the right option
+- All 4 options plausible, only 1 correct
+- Questions in $language only"""
+            val response = callGemini(prompt)
+            if (response.isBlank()) return@withContext emptyList()
+            parseQuizJson(response, count)
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
+    private fun parseQuizJson(text: String, count: Int): List<QuizQuestion> {
+        val cleaned = text.replace("```json", "").replace("```", "").trim()
+        return try {
+            val json = JSONArray(cleaned)
+            (0 until minOf(json.length(), count)).mapNotNull { i ->
+                try {
+                    val obj = json.getJSONObject(i)
+                    val options = mutableListOf<String>()
+                    val optArr = obj.getJSONArray("options")
+                    for (j in 0 until optArr.length()) options.add(optArr.getString(j))
+                    if (options.size < 2) return@mapNotNull null
+                    val correctIdx = obj.getInt("correctAnswer").coerceIn(0, options.lastIndex)
+                    QuizQuestion(
+                        question = obj.getString("question"),
+                        options = options,
+                        correctAnswer = correctIdx,
+                        explanation = obj.optString("explanation", "")
+                    )
+                } catch (_: Exception) { null }
+            }
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
+    // ---------------------------------------------------------------------------
+    // Per-chapter audio narration
+    // ---------------------------------------------------------------------------
+
+    suspend fun generateChapterNarration(
+        site: HeritageSite?,
+        chapterKey: String,   // "introduction" | "history" | "architecture" | "legends" | "facts"
+        language: String = "English"
+    ): String = withContext(Dispatchers.IO) {
+        if (!isInitialized() || site == null) return@withContext ""
+        try {
+            val baseText = when (chapterKey) {
+                "history"      -> site.history
+                "architecture" -> site.architecture
+                "legends"      -> site.legends
+                "facts"        -> site.facts.take(4).joinToString(" | ") { "${it.title}: ${it.description}" }
+                else           -> site.shortDescription   // introduction
+            }
+            if (baseText.isBlank()) return@withContext ""
+            val siteName = if (language.contains("Kannada", ignoreCase = true)) site.nameLocal.ifBlank { site.name } else site.name
+            val chapterLabel = when (chapterKey) {
+                "history"      -> if (language.contains("Kannada", ignoreCase = true)) "ಇತಿಹಾಸ" else "History"
+                "architecture" -> if (language.contains("Kannada", ignoreCase = true)) "ವಾಸ್ತುಶಿಲ್ಪ" else "Architecture"
+                "legends"      -> if (language.contains("Kannada", ignoreCase = true)) "ದಂತಕಥೆಗಳು" else "Legends"
+                "facts"        -> if (language.contains("Kannada", ignoreCase = true)) "ಸ್ವಾರಸ್ಯಕರ ಸಂಗತಿಗಳು" else "Interesting Facts"
+                else           -> if (language.contains("Kannada", ignoreCase = true)) "ಪರಿಚಯ" else "Introduction"
+            }
+            val prompt = """You are a live heritage audio guide for Karnataka, India.
+Speak naturally in $language about the $chapterLabel of $siteName.
+
+Source material:
+$baseText
+
+Requirements:
+- Write ONLY in $language — no English if the language is Kannada
+- Conversational, warm spoken-word narration (not an essay)
+- 120-160 words — exactly right for a 60-second audio clip
+- No bullet points, no headings, no markdown
+- Naturally mention the site name $siteName once
+- End with one sentence inviting visitors to observe or explore"""
+            val response = callGemini(prompt)
+            response.ifBlank { baseText }
+        } catch (_: Exception) {
+            ""
         }
     }
 }

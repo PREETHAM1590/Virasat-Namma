@@ -24,22 +24,64 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.virasat.R
 import com.example.virasat.data.di.RepositoryProvider
+import com.example.virasat.data.model.HeritageSite
+import com.example.virasat.data.model.QuizQuestion
+import com.example.virasat.data.model.SiteType
+import com.example.virasat.data.service.GeminiHeritageService
+import com.example.virasat.util.LocaleHelper
 
 @Composable
-fun QuizScreen(onBack: () -> Unit) {
+fun QuizScreen(
+    siteId: String = "",
+    onBack: () -> Unit
+) {
     var currentQuestion by remember { mutableIntStateOf(0) }
     var score by remember { mutableIntStateOf(0) }
     var selectedAnswer by remember { mutableStateOf<Int?>(null) }
     var showResult by remember { mutableStateOf(false) }
     var answered by remember { mutableStateOf(false) }
+    var isLoadingGemini by remember { mutableStateOf(false) }
 
     val ctx = LocalContext.current
+    val savedLocale = LocaleHelper.getSavedLocale(ctx)
+    val language = when (savedLocale) { "kn" -> "Kannada"; else -> "English" }
+
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
-    val allSites by produceState<List<com.example.virasat.data.model.HeritageSite>>(emptyList(), ctx) {
+    val allSites by produceState<List<HeritageSite>>(emptyList(), ctx) {
         value = repo.getAllSitesList()
     }
-    val questions = remember(allSites) {
-        generateQuizQuestionsFromSites(allSites).shuffled().take(8)
+    val site by produceState<HeritageSite?>(null, siteId, allSites) {
+        value = if (siteId.isNotBlank()) allSites.find { it.id == siteId }
+                    ?: repo.getSiteById(siteId)
+                else null
+    }
+
+    var questions by remember { mutableStateOf<List<QuizQuestion>>(emptyList()) }
+
+    LaunchedEffect(site, allSites) {
+        if (allSites.isEmpty()) return@LaunchedEffect
+        if (GeminiHeritageService.isInitialized()) {
+            isLoadingGemini = true
+            val result = if (site != null) {
+                GeminiHeritageService.generateQuizForSite(
+                    site = site,
+                    count = 8,
+                    language = language,
+                    allSiteNames = allSites.map { it.name }
+                )
+            } else {
+                GeminiHeritageService.generateGeneralKarnatakaQuiz(
+                    count = 8,
+                    language = language,
+                    allSites = allSites
+                )
+            }
+            isLoadingGemini = false
+            questions = if (result.isNotEmpty()) result
+                        else generateQuizQuestionsFromSites(allSites).shuffled().take(8)
+        } else {
+            questions = generateQuizQuestionsFromSites(allSites).shuffled().take(8)
+        }
     }
 
     Column(
@@ -56,10 +98,7 @@ fun QuizScreen(onBack: () -> Unit) {
         ) {
             Box(
                 modifier = Modifier
-                    .background(
-                        MaterialTheme.colorScheme.surfaceContainerLowest,
-                        RoundedCornerShape(999.dp)
-                    )
+                    .background(MaterialTheme.colorScheme.surfaceContainerLowest, RoundedCornerShape(999.dp))
                     .clickable(onClick = onBack)
                     .padding(horizontal = 16.dp, vertical = 10.dp),
                 contentAlignment = Alignment.Center
@@ -72,11 +111,20 @@ fun QuizScreen(onBack: () -> Unit) {
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = stringResource(R.string.quiz_title),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            Column {
+                Text(
+                    text = stringResource(R.string.quiz_title),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                if (site != null) {
+                    Text(
+                        text = site!!.name,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
         }
 
         Column(
@@ -85,17 +133,42 @@ fun QuizScreen(onBack: () -> Unit) {
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
         ) {
+            if (isLoadingGemini || questions.isEmpty()) {
+                Spacer(modifier = Modifier.height(80.dp))
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = if (isLoadingGemini)
+                            (if (language == "Kannada") "\u0caa\u0ccd\u0cb0\u0cb6\u0ccd\u0ca8\u0cc6\u0c97\u0cb3\u0ca8\u0ccd\u0ca8\u0cc1 \u0ca4\u0caf\u0cbe\u0cb0\u0cbf\u0cb8\u0cb2\u0cbe\u0c97\u0cc1\u0ca4\u0ccd\u0ca4\u0cbf\u0ca6\u0cc6..." else "Generating quiz with Gemini AI...")
+                        else
+                            (if (language == "Kannada") "\u0cb2\u0ccb\u0ca1\u0ccd \u0c86\u0c97\u0cc1\u0ca4\u0ccd\u0ca4\u0cbf\u0ca6\u0cc6..." else "Loading..."),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                return@Column
+            }
+
             if (showResult) {
                 QuizResult(
                     score = score,
                     total = questions.size,
                     onRetry = {
-                        currentQuestion = 0; score = 0; selectedAnswer = null; answered = false; showResult = false
+                        currentQuestion = 0; score = 0; selectedAnswer = null
+                        answered = false; showResult = false
+                        if (!GeminiHeritageService.isInitialized()) {
+                            questions = generateQuizQuestionsFromSites(allSites).shuffled().take(8)
+                        }
                     },
                     onBack = onBack
                 )
             } else {
-                val q = questions[currentQuestion]
+                val q = questions[currentQuestion.coerceIn(0, questions.lastIndex)]
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -118,10 +191,7 @@ fun QuizScreen(onBack: () -> Unit) {
 
                 LinearProgressIndicator(
                     progress = { (currentQuestion + 1).toFloat() / questions.size },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(8.dp)
-                        .clip(RoundedCornerShape(999.dp)),
+                    modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(999.dp)),
                     color = MaterialTheme.colorScheme.primary,
                     trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
                 )
@@ -130,9 +200,7 @@ fun QuizScreen(onBack: () -> Unit) {
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerLowest
-                    ),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
                     shape = RoundedCornerShape(24.dp)
                 ) {
                     Column(modifier = Modifier.padding(24.dp)) {
@@ -148,15 +216,36 @@ fun QuizScreen(onBack: () -> Unit) {
 
                 q.options.forEachIndexed { index, option ->
                     AnswerPill(
-                        index = index,
-                        option = option,
+                        index = index, option = option,
                         isSelected = selectedAnswer == index,
                         isCorrect = index == q.correctAnswer,
-                        answered = answered,
-                        enabled = !answered,
+                        answered = answered, enabled = !answered,
                         onClick = { selectedAnswer = index }
                     )
                     Spacer(modifier = Modifier.height(10.dp))
+                }
+
+                if (answered && q.explanation.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                text = if (language == "Kannada") "\u0cb5\u0cbf\u0cb5\u0cb0\u0ca3\u0cc6" else "Explanation",
+                                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = q.explanation,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -182,31 +271,26 @@ fun QuizScreen(onBack: () -> Unit) {
                             text = stringResource(R.string.quiz_check_answer),
                             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                             color = if (active) MaterialTheme.colorScheme.onPrimaryContainer
-                            else MaterialTheme.colorScheme.onSurfaceVariant
+                                    else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 } else {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(
-                                MaterialTheme.colorScheme.primaryContainer,
-                                RoundedCornerShape(999.dp)
-                            )
+                            .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(999.dp))
                             .clickable {
                                 if (currentQuestion < questions.size - 1) {
-                                    currentQuestion++
-                                    selectedAnswer = null
-                                    answered = false
-                                } else {
-                                    showResult = true
-                                }
+                                    currentQuestion++; selectedAnswer = null; answered = false
+                                } else { showResult = true }
                             }
                             .padding(vertical = 16.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = if (currentQuestion < questions.size - 1) stringResource(R.string.quiz_next_question) else stringResource(R.string.quiz_see_results),
+                            text = if (currentQuestion < questions.size - 1)
+                                stringResource(R.string.quiz_next_question)
+                            else stringResource(R.string.quiz_see_results),
                             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -221,13 +305,8 @@ fun QuizScreen(onBack: () -> Unit) {
 
 @Composable
 private fun AnswerPill(
-    index: Int,
-    option: String,
-    isSelected: Boolean,
-    isCorrect: Boolean,
-    answered: Boolean,
-    enabled: Boolean,
-    onClick: () -> Unit
+    index: Int, option: String, isSelected: Boolean, isCorrect: Boolean,
+    answered: Boolean, enabled: Boolean, onClick: () -> Unit
 ) {
     val bg by animateColorAsState(
         targetValue = when {
@@ -235,8 +314,7 @@ private fun AnswerPill(
             answered && isSelected && !isCorrect -> MaterialTheme.colorScheme.errorContainer
             isSelected -> MaterialTheme.colorScheme.primaryContainer
             else -> MaterialTheme.colorScheme.surfaceContainerLowest
-        },
-        label = "pill_bg"
+        }, label = "pill_bg"
     )
     val content by animateColorAsState(
         targetValue = when {
@@ -244,8 +322,7 @@ private fun AnswerPill(
             answered && isSelected && !isCorrect -> MaterialTheme.colorScheme.onErrorContainer
             isSelected -> MaterialTheme.colorScheme.onPrimaryContainer
             else -> MaterialTheme.colorScheme.onSurface
-        },
-        label = "pill_content"
+        }, label = "pill_content"
     )
     val letterBg by animateColorAsState(
         targetValue = when {
@@ -253,8 +330,7 @@ private fun AnswerPill(
             answered && isSelected && !isCorrect -> MaterialTheme.colorScheme.error
             isSelected -> MaterialTheme.colorScheme.primary
             else -> MaterialTheme.colorScheme.outlineVariant
-        },
-        label = "letter_bg"
+        }, label = "letter_bg"
     )
     val letterContent by animateColorAsState(
         targetValue = when {
@@ -262,10 +338,8 @@ private fun AnswerPill(
             answered && isSelected && !isCorrect -> MaterialTheme.colorScheme.onError
             isSelected -> MaterialTheme.colorScheme.onPrimary
             else -> MaterialTheme.colorScheme.onSurfaceVariant
-        },
-        label = "letter_content"
+        }, label = "letter_content"
     )
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -273,14 +347,9 @@ private fun AnswerPill(
             .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .background(letterBg, CircleShape),
+                modifier = Modifier.size(32.dp).background(letterBg, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -290,37 +359,21 @@ private fun AnswerPill(
                 )
             }
             Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = option,
-                style = MaterialTheme.typography.bodyLarge,
-                color = content,
-                modifier = Modifier.weight(1f)
-            )
-            if (answered && isCorrect) {
-                Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary)
-            } else if (answered && isSelected && !isCorrect) {
-                Icon(Icons.Default.Close, null, tint = MaterialTheme.colorScheme.error)
-            }
+            Text(text = option, style = MaterialTheme.typography.bodyLarge, color = content, modifier = Modifier.weight(1f))
+            if (answered && isCorrect) Icon(Icons.Default.Check, null, tint = MaterialTheme.colorScheme.primary)
+            else if (answered && isSelected && !isCorrect) Icon(Icons.Default.Close, null, tint = MaterialTheme.colorScheme.error)
         }
     }
 }
 
 @Composable
-private fun QuizResult(
-    score: Int,
-    total: Int,
-    onRetry: () -> Unit,
-    onBack: () -> Unit
-) {
+private fun QuizResult(score: Int, total: Int, onRetry: () -> Unit, onBack: () -> Unit) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 48.dp),
+        modifier = Modifier.fillMaxSize().padding(vertical = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         val isExcellent = score >= total * 0.8
-
         Text(
             text = if (isExcellent) stringResource(R.string.quiz_excellent) else stringResource(R.string.quiz_complete),
             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
@@ -333,16 +386,10 @@ private fun QuizResult(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(modifier = Modifier.height(48.dp))
-
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    MaterialTheme.colorScheme.primaryContainer,
-                    RoundedCornerShape(999.dp)
-                )
-                .clickable(onClick = onRetry)
-                .padding(vertical = 16.dp),
+            modifier = Modifier.fillMaxWidth()
+                .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(999.dp))
+                .clickable(onClick = onRetry).padding(vertical = 16.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -351,18 +398,11 @@ private fun QuizResult(
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
-
         Spacer(modifier = Modifier.height(12.dp))
-
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    MaterialTheme.colorScheme.surfaceContainerLowest,
-                    RoundedCornerShape(999.dp)
-                )
-                .clickable(onClick = onBack)
-                .padding(vertical = 16.dp),
+            modifier = Modifier.fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surfaceContainerLowest, RoundedCornerShape(999.dp))
+                .clickable(onClick = onBack).padding(vertical = 16.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -374,58 +414,41 @@ private fun QuizResult(
     }
 }
 
-data class QuizQuestion(val question: String, val options: List<String>, val correctAnswer: Int)
-
-private fun generateQuizQuestionsFromSites(allSites: List<com.example.virasat.data.model.HeritageSite>): List<QuizQuestion> {
+private fun generateQuizQuestionsFromSites(allSites: List<HeritageSite>): List<QuizQuestion> {
     val questions = mutableListOf<QuizQuestion>()
+    if (allSites.isEmpty()) return questions
 
-    // Generate questions from site facts
     allSites.shuffled().take(15).forEach { site ->
         site.facts.take(2).forEach { fact ->
             val wrongSites = allSites.filter { it.id != site.id }.shuffled().take(3)
-            val opts = listOf(site.name) + wrongSites.map { it.name }
-            val shuffledOpts = opts.shuffled()
-            questions.add(
-                QuizQuestion(
-                    question = "${site.name} is known for: ${fact.title}. Which site is this?",
-                    options = shuffledOpts,
-                    correctAnswer = shuffledOpts.indexOf(site.name)
-                )
-            )
+            val opts = (listOf(site.name) + wrongSites.map { it.name }).shuffled()
+            questions.add(QuizQuestion(
+                question = "${site.name} is known for: ${fact.title}. Which site is this?",
+                options = opts,
+                correctAnswer = opts.indexOf(site.name)
+            ))
         }
     }
-
-    // Add some district-based questions
     allSites.shuffled().take(10).forEach { site ->
-        val wrongDistricts = allSites.filter { it.district != site.district }.map { it.district }.distinct().shuffled().take(3)
-        val opts = listOf(site.district) + wrongDistricts
-        val shuffledOpts = opts.shuffled()
-        questions.add(
-            QuizQuestion(
-                question = "${site.name} is located in which district?",
-                options = shuffledOpts,
-                correctAnswer = shuffledOpts.indexOf(site.district)
-            )
-        )
+        val wrongDistricts = allSites.filter { it.district != site.district }
+            .map { it.district }.distinct().shuffled().take(3)
+        if (wrongDistricts.size < 3) return@forEach
+        val opts = (listOf(site.district) + wrongDistricts).shuffled()
+        questions.add(QuizQuestion(
+            question = "${site.name} is located in which district?",
+            options = opts,
+            correctAnswer = opts.indexOf(site.district)
+        ))
     }
-
-    // Add type-based questions
     allSites.shuffled().take(10).forEach { site ->
-        val otherTypes = com.example.virasat.data.model.SiteType.values().filter { it != site.type }.shuffled().take(3)
-        val opts = listOf(site.type.name.replaceFirstChar { it.uppercase() }) + otherTypes.map { it.name.replaceFirstChar { it.uppercase() } }
-        val shuffledOpts = opts.shuffled()
-        questions.add(
-            QuizQuestion(
-                question = "What type of heritage site is ${site.name}?",
-                options = shuffledOpts,
-                correctAnswer = shuffledOpts.indexOf(site.type.name.replaceFirstChar { it.uppercase() })
-            )
-        )
+        val otherTypes = SiteType.values().filter { it != site.type }.shuffled().take(3)
+        val correctName = site.type.name.replaceFirstChar { it.uppercase() }
+        val opts = (listOf(correctName) + otherTypes.map { it.name.replaceFirstChar { c -> c.uppercase() } }).shuffled()
+        questions.add(QuizQuestion(
+            question = "What type of heritage site is ${site.name}?",
+            options = opts,
+            correctAnswer = opts.indexOf(correctName)
+        ))
     }
-
-    return questions.ifEmpty {
-        listOf(
-            QuizQuestion("Which empire built Hampi as its capital?", listOf("Chola", "Vijayanagara", "Mughal", "Maurya"), 1)
-        )
-    }
+    return questions
 }

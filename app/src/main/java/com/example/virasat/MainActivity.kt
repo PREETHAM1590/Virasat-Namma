@@ -454,6 +454,11 @@ class MainActivity : ComponentActivity() {
                             FirebaseAnalyticsHelper.logScreenView("quiz")
                             QuizScreen(onBack = { navController.popBackStack() })
                         }
+                        composable("quiz/{siteId}") { backStackEntry ->
+                            val siteId = backStackEntry.arguments?.getString("siteId") ?: ""
+                            FirebaseAnalyticsHelper.logScreenView("quiz")
+                            QuizScreen(siteId = siteId, onBack = { navController.popBackStack() })
+                        }
                         composable("notifications") {
                             Scaffold(bottomBar = { com.example.virasat.ui.components.VirasatBottomNavBar("notifications") { navController.navigate(it.route) { popUpTo("home") { inclusive = false } } } }) { p ->
                                 Box(modifier = Modifier.padding(p)) {
