@@ -13,5 +13,6 @@ data class CheckIn(
     val siteLocation: String,
     val timestamp: Long = System.currentTimeMillis(),
     val qrCodeId: String,
-    val stampIcon: String = "default"
+    val stampIcon: String = "default",
+    val imageUrl: String = ""
 )

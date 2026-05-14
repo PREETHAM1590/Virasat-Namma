@@ -69,7 +69,8 @@ class RoomHeritageRepository(context: Context) : HeritageRepository {
             siteName = site.name,
             siteLocation = site.location,
             qrCodeId = site.qrCodeId,
-            stampIcon = site.type.name.lowercase()
+            stampIcon = site.type.name.lowercase(),
+            imageUrl = site.imageUrl
         )
         checkInDao.insertCheckIn(checkIn)
     }

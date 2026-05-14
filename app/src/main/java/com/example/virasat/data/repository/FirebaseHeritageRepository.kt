@@ -8,6 +8,7 @@ import androidx.room.withTransaction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import com.example.virasat.data.source.KarnatakaSites
 
 class FirebaseHeritageRepository(context: Context) : HeritageRepository {
@@ -41,8 +42,13 @@ class FirebaseHeritageRepository(context: Context) : HeritageRepository {
         )
     }
 
+    // Room is offline cache; Firestore is live source-of-truth.
+    // merge() emits Room first (instant), then Firestore updates replace as they arrive.
     override fun getAllCheckIns(): Flow<List<CheckIn>> =
-        firestore.observeCheckIns()
+        kotlinx.coroutines.flow.merge(
+            checkInDao.getAllCheckIns(),
+            firestore.observeCheckIns()
+        )
 
     override fun getCheckInCount(): Flow<Int> =
         firestore.observeCheckInCount()
@@ -63,7 +69,8 @@ class FirebaseHeritageRepository(context: Context) : HeritageRepository {
             siteName = site.name,
             siteLocation = site.location,
             qrCodeId = site.qrCodeId,
-            stampIcon = site.type.name.lowercase()
+            stampIcon = site.type.name.lowercase(),
+            imageUrl = site.imageUrl
         )
         checkInDao.insertCheckIn(checkIn)
     }

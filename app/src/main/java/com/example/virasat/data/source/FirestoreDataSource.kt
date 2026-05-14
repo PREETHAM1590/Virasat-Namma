@@ -154,7 +154,8 @@ class FirestoreDataSource {
                             siteLocation = doc.getString("siteLocation") ?: "",
                             timestamp = doc.getLong("timestamp") ?: System.currentTimeMillis(),
                             qrCodeId = doc.getString("qrCodeId") ?: "",
-                            stampIcon = doc.getString("stampIcon") ?: "default"
+                            stampIcon = doc.getString("stampIcon") ?: "default",
+                            imageUrl = doc.getString("imageUrl") ?: ""
                         )
                     } ?: emptyList()
                     trySend(checkIns)
@@ -203,7 +204,8 @@ class FirestoreDataSource {
             "siteLocation" to site.location,
             "timestamp" to System.currentTimeMillis(),
             "qrCodeId" to site.qrCodeId,
-            "stampIcon" to site.type.name.lowercase()
+            "stampIcon" to site.type.name.lowercase(),
+            "imageUrl" to site.imageUrl
         )
         col.add(data).await()
         // Update user's checkInCount in profile

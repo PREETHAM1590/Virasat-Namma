@@ -18,10 +18,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.example.virasat.data.di.RepositoryProvider
+import com.example.virasat.data.source.ImageUrls
 import com.example.virasat.ui.theme.PlusJakartaSans
 import com.example.virasat.ui.theme.BeVietnamPro
 import java.text.SimpleDateFormat
@@ -50,7 +55,8 @@ fun MyCheckInsScreen(
                     location = ci.siteLocation,
                     date = DATE_FMT.format(Date(ci.timestamp)),
                     siteId = ci.siteId,
-                    status = if (now - ci.timestamp < sevenDaysMs) CheckInStatus.RECENT else CheckInStatus.VERIFIED
+                    status = if (now - ci.timestamp < sevenDaysMs) CheckInStatus.RECENT else CheckInStatus.VERIFIED,
+                    imageUrl = ci.imageUrl
                 )
             }
     }
@@ -152,22 +158,29 @@ fun CheckInCard(entry: CheckInEntry, onClick: () -> Unit) {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
+            SubcomposeAsyncImage(
+                model = entry.imageUrl.ifBlank { ImageUrls.TEMPLE_SILHOUETTE },
+                contentDescription = entry.name,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(44.dp)
-                    .background(
-                        MaterialTheme.colorScheme.primaryContainer,
-                        CircleShape
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.QrCodeScanner,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(22.dp)
-                )
-            }
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                loading = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(12.dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.QrCodeScanner,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                }
+            )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -233,5 +246,6 @@ data class CheckInEntry(
     val location: String,
     val date: String,
     val siteId: String = "",
-    val status: CheckInStatus = CheckInStatus.VERIFIED
+    val status: CheckInStatus = CheckInStatus.VERIFIED,
+    val imageUrl: String = ""
 )

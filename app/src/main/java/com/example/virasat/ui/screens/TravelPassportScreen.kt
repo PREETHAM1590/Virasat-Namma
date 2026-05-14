@@ -385,7 +385,7 @@ private fun JourneyItem(checkIn: CheckIn, onClick: () -> Unit) {
                 modifier = Modifier.size(112.dp)
             ) {
                 AsyncImage(
-                    model = ImageUrls.TEMPLE_SILHOUETTE,
+                    model = checkIn.imageUrl.ifBlank { ImageUrls.TEMPLE_SILHOUETTE },
                     contentDescription = checkIn.siteName,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()

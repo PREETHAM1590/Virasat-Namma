@@ -129,7 +129,11 @@ fun AudioGuideScreen(
 
     LaunchedEffect(Unit) {
         if (tts != null) return@LaunchedEffect
-        val newTts = TextToSpeech(context) { status ->
+        // Use a holder so the init callback can reference the instance safely
+        // (capturing `tts` state directly can race; holder is set before callback fires)
+        val holder = arrayOfNulls<TextToSpeech>(1)
+        val engine = TextToSpeech(context) { status ->
+            val t = holder[0] ?: return@TextToSpeech
             if (status == TextToSpeech.SUCCESS) {
                 if (chapters.isEmpty()) return@TextToSpeech
                 ttsReady = true
@@ -138,10 +142,10 @@ fun AudioGuideScreen(
                     ttsUnsupported = true
                     showTtsHint = true
                 }
-                newTts.setSpeechRate(0.88f)
-                newTts.setPitch(0.95f)
+                t.setSpeechRate(0.88f)
+                t.setPitch(0.95f)
                 // Callbacks fire on TTS thread — post to main to safely mutate Compose state (#3)
-                newTts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                t.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                     override fun onStart(utteranceId: String?) {
                         mainHandler.post { if (chapters.isNotEmpty()) isPlaying = true }
                     }
@@ -159,12 +163,13 @@ fun AudioGuideScreen(
                 })
                 if (pendingStart && chapters.isNotEmpty()) {
                     pendingStart = false
-                    newTts.speak(chapters.getOrNull(currentChapter)?.transcript ?: "",
+                    t.speak(chapters.getOrNull(currentChapter)?.transcript ?: "",
                         TextToSpeech.QUEUE_FLUSH, null, "chapter_$currentChapter")
                 }
             }
         }
-        tts = newTts
+        holder[0] = engine
+        tts = engine
     }
 
     // Show snackbar when TTS language unsupported
@@ -528,6 +533,7 @@ fun AudioGuideScreen(
                             .clip(RoundedCornerShape(16.dp))
                             .background(cs.surfaceContainerLowest)
                             .clickable {
+                                if (chapters.isEmpty()) return@clickable
                                 tts?.stop()
                                 currentChapter = index
                                 progress = 0f
