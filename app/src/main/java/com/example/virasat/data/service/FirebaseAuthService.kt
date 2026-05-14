@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -43,16 +44,23 @@ object FirebaseAuthService {
                 .build()
             user.updateProfile(profileUpdate).await()
 
-            // Create user profile in Firestore
-            db.collection("users").document(user.uid)
-                .set(mapOf(
-                    "uid" to user.uid,
-                    "name" to name,
-                    "email" to email,
-                    "createdAt" to System.currentTimeMillis(),
-                    "checkInCount" to 0,
-                    "badgesEarned" to 0
-                )).await()
+            // Create user profile in Firestore — if this fails, delete the auth account
+            // to avoid partial state (Requirement 3.2)
+            try {
+                db.collection("users").document(user.uid)
+                    .set(mapOf(
+                        "uid" to user.uid,
+                        "name" to name,
+                        "email" to email,
+                        "createdAt" to FieldValue.serverTimestamp(),
+                        "checkInCount" to 0,
+                        "badgesEarned" to 0
+                    )).await()
+            } catch (firestoreEx: Exception) {
+                // Roll back: delete the Firebase Auth account so no partial state exists
+                try { user.delete().await() } catch (_: Exception) { /* best-effort */ }
+                return Result.failure(firestoreEx)
+            }
 
             Result.success(user)
         } catch (e: Exception) {
@@ -111,7 +119,7 @@ object FirebaseAuthService {
                         "uid" to user.uid,
                         "name" to (user.displayName ?: ""),
                         "email" to (user.email ?: ""),
-                        "createdAt" to System.currentTimeMillis(),
+                        "createdAt" to FieldValue.serverTimestamp(),
                         "checkInCount" to 0,
                         "badgesEarned" to 0
                     )).await()
@@ -135,16 +143,23 @@ object FirebaseAuthService {
     }
 
     // ── Friendly error messages ────────────────────────────────────────────
+    // Returns a human-readable string with NO raw Firebase error code constants
+    // (no substring matching [A-Z_]{5,}) — Requirement 3.4, 3.11
     fun friendlyError(e: Exception): String {
         val msg = e.message ?: "Unknown error"
+        val msgLower = msg.lowercase()
         return when {
-            "email address is already in use" in msg -> "This email is already registered. Try logging in."
-            "password is invalid" in msg || "INVALID_LOGIN_CREDENTIALS" in msg -> "Incorrect email or password."
-            "no user record" in msg || "USER_NOT_FOUND" in msg -> "No account found with this email."
-            "badly formatted" in msg -> "Invalid email address."
-            "weak-password" in msg || "WEAK_PASSWORD" in msg -> "Password must be at least 6 characters."
-            "network error" in msg.lowercase() -> "Network error. Check your connection."
-            "TOO_MANY_REQUESTS" in msg -> "Too many attempts. Try again later."
+            "email address is already in use" in msgLower -> "This email is already registered. Try logging in."
+            "password is invalid" in msgLower || "invalid login credentials" in msgLower ||
+                "invalid credential" in msgLower -> "Incorrect email or password."
+            "no user record" in msgLower || "user not found" in msgLower -> "No account found with this email."
+            "badly formatted" in msgLower || "invalid email" in msgLower -> "Invalid email address."
+            "weak-password" in msgLower || "weak password" in msgLower ||
+                "password should be at least" in msgLower -> "Password must be at least 6 characters."
+            "network error" in msgLower || "unable to resolve host" in msgLower ||
+                "failed to connect" in msgLower -> "Network error. Check your connection."
+            "too many requests" in msgLower || "too many attempts" in msgLower -> "Too many attempts. Try again later."
+            "sign-in failed" in msgLower -> "Sign-in failed. Please try again."
             else -> "Authentication failed. Please try again."
         }
     }

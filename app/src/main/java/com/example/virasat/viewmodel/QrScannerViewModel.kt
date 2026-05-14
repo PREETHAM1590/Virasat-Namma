@@ -16,6 +16,9 @@ class QrScannerViewModel(application: Application) : AndroidViewModel(applicatio
     private val _scannedSite = MutableStateFlow<HeritageSite?>(null)
     val scannedSite: StateFlow<HeritageSite?> = _scannedSite
 
+    private val _qrError = MutableStateFlow<String?>(null)
+    val qrError: StateFlow<String?> = _qrError
+
     private val _isCheckingIn = MutableStateFlow(false)
     val isCheckingIn: StateFlow<Boolean> = _isCheckingIn
 
@@ -28,9 +31,11 @@ class QrScannerViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun processQrCode(qrData: String) {
         viewModelScope.launch {
+            _qrError.value = null
             val siteId = extractSiteId(qrData)
             if (siteId.isBlank()) {
                 _scannedSite.value = null
+                _qrError.value = "Unrecognized QR code"
                 return@launch
             }
 
@@ -38,8 +43,11 @@ class QrScannerViewModel(application: Application) : AndroidViewModel(applicatio
                 ?: repository.getAllSitesList().find {
                     it.qrCodeId == siteId || it.id == siteId
                 }
-            _scannedSite.value = site
-            if (site != null) {
+            if (site == null) {
+                _scannedSite.value = null
+                _qrError.value = "No heritage site found for this QR code"
+            } else {
+                _scannedSite.value = site
                 _hasCheckedIn.value = repository.hasCheckedIn(site.id)
             }
         }
@@ -52,24 +60,29 @@ class QrScannerViewModel(application: Application) : AndroidViewModel(applicatio
      *  - JSON: {"siteId": "hampi"}
      */
     private fun extractSiteId(raw: String): String {
-        val input = raw.trim().replace(Regex("[<>\"';&]"), "").take(200)
+        // Hard limit then strip non-printable / control chars
+        val input = raw.trim().take(500).replace(Regex("[\\x00-\\x1F\\x7F]"), "")
         if (input.isBlank()) return ""
 
-        // URL format — extract last path segment
-        if (input.startsWith("http")) {
+        // URL format — extract last path segment and sanitize
+        if (input.startsWith("http://", ignoreCase = true) ||
+            input.startsWith("https://", ignoreCase = true)
+        ) {
             val path = input.substringAfter("://").substringAfter("/")
             val segment = path.trimEnd('/').substringAfterLast("/")
-            return segment.take(50)
+            // Whitelist: alphanumeric, dash, underscore only for path segments
+            return segment.replace(Regex("[^a-zA-Z0-9\\-_]"), "").take(50)
         }
 
         // JSON format — extract siteId field
         if (input.startsWith("{")) {
-            val match = Regex("\"siteId\"\\s*:\\s*\"([^\"]+)\"").find(input)
-            if (match != null) return match.groupValues[1].take(50)
+            val match = Regex("\"siteId\"\\s*:\\s*\"([a-zA-Z0-9\\-_]{1,50})\"").find(input)
+            if (match != null) return match.groupValues[1]
+            return ""
         }
 
-        // Plain ID or QR code ID (QR-HAMPI-001)
-        return input.take(50)
+        // Plain ID or QR code ID (QR-HAMPI-001): whitelist alphanumeric, dash, underscore
+        return input.replace(Regex("[^a-zA-Z0-9\\-_]"), "").take(50)
     }
 
     fun checkIn() {
@@ -105,7 +118,9 @@ class QrScannerViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun reset() {
         _scannedSite.value = null
+        _isCheckingIn.value = false
         _hasCheckedIn.value = false
         _unlockedFact.value = null
+        _qrError.value = null
     }
 }

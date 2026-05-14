@@ -39,31 +39,26 @@ object LocaleHelper {
 
     fun siteDescription(site: com.example.virasat.data.model.HeritageSite, context: Context): String {
         if (getSavedLocale(context) != "kn") return site.description
-        val cached = com.example.virasat.data.source.KannadaContentProvider.getCached(context, site.id, "description")
-        return cached ?: site.descriptionLocal.ifBlank { site.description }
+        return com.example.virasat.data.source.KannadaContentProvider.getCached(context, site.id, "description") ?: site.description
     }
 
     fun siteShortDescription(site: com.example.virasat.data.model.HeritageSite, context: Context): String {
         if (getSavedLocale(context) != "kn") return site.shortDescription
-        val cached = com.example.virasat.data.source.KannadaContentProvider.getCached(context, site.id, "shortDescription")
-        return cached ?: site.shortDescriptionLocal.ifBlank { site.shortDescription }
+        return com.example.virasat.data.source.KannadaContentProvider.getCached(context, site.id, "shortDescription") ?: site.shortDescription
     }
 
     fun siteHistory(site: com.example.virasat.data.model.HeritageSite, context: Context): String {
         if (getSavedLocale(context) != "kn") return site.history
-        val cached = com.example.virasat.data.source.KannadaContentProvider.getCached(context, site.id, "history")
-        return cached ?: site.historyLocal.ifBlank { site.history }
+        return com.example.virasat.data.source.KannadaContentProvider.getCached(context, site.id, "history") ?: site.history
     }
 
     fun siteArchitecture(site: com.example.virasat.data.model.HeritageSite, context: Context): String {
         if (getSavedLocale(context) != "kn") return site.architecture
-        val cached = com.example.virasat.data.source.KannadaContentProvider.getCached(context, site.id, "architecture")
-        return cached ?: site.architectureLocal.ifBlank { site.architecture }
+        return com.example.virasat.data.source.KannadaContentProvider.getCached(context, site.id, "architecture") ?: site.architecture
     }
 
     fun siteLegends(site: com.example.virasat.data.model.HeritageSite, context: Context): String {
         if (getSavedLocale(context) != "kn") return site.legends
-        val cached = com.example.virasat.data.source.KannadaContentProvider.getCached(context, site.id, "legends")
-        return cached ?: site.legendsLocal.ifBlank { site.legends }
+        return com.example.virasat.data.source.KannadaContentProvider.getCached(context, site.id, "legends") ?: site.legends
     }
 }

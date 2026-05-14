@@ -17,35 +17,12 @@ import java.util.concurrent.TimeUnit
 object GeminiHeritageService {
     private var apiKey: String = ""
 
-    // Rate limiting - 10 requests per minute max
-    private var lastRequestTime = 0L
-    private val minRequestInterval = 6000L // 6 seconds between requests
-    private var requestCount = 0
-    private val maxRequestsPerMinute = 10
-
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)
         // No .certificatePinner(...) — system trust store used
         .build()
-
-    private fun checkRateLimit(): Boolean {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - lastRequestTime > 60000) {
-            requestCount = 0
-        }
-        return if (requestCount >= maxRequestsPerMinute) {
-            false
-        } else {
-            if (currentTime - lastRequestTime < minRequestInterval) {
-                Thread.sleep(minRequestInterval - (currentTime - lastRequestTime))
-            }
-            requestCount++
-            lastRequestTime = currentTime
-            true
-        }
-    }
 
     fun initialize(key: String) {
         apiKey = key

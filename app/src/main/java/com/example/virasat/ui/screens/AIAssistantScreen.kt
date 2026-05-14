@@ -52,10 +52,7 @@ fun AIAssistantScreen(onBack: () -> Unit) {
     val scope = rememberCoroutineScope()
     val messages = remember {
         mutableStateListOf(
-            ChatMessage("Namaste. I am your Heritage Guide. Ask me about Karnataka's magnificent forts, temples, palaces, and monuments.", false, null),
-            ChatMessage("Tell me about Hampi.", true, null),
-            ChatMessage("Hampi was the capital of the Vijayanagara Empire in the 14th century. At its peak in 1500 CE, it was the world's second-largest medieval city after Beijing.", false, "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=400"),
-            ChatMessage("Key highlights include the stone chariot at Vittala Temple, 56 musical pillars, and the second-largest monolithic Nandi statue in India. Legend says the boulders were thrown by Hanuman during the battle in the Ramayana.", false, null)
+            ChatMessage("Namaste. I am your Heritage Guide. Ask me about Karnataka's magnificent forts, temples, palaces, and monuments.", false, null)
         )
     }
 

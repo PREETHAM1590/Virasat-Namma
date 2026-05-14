@@ -13,24 +13,45 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.ui.theme.PlusJakartaSans
 import com.example.virasat.ui.theme.BeVietnamPro
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+private val DATE_FMT = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
 @Composable
 fun MyCheckInsScreen(
     onBack: () -> Unit,
     onSiteClick: (String) -> Unit
 ) {
-    val checkIns = listOf(
-        CheckInEntry("Hampi", "Bellary", "02 May 2026", CheckInStatus.VERIFIED),
-        CheckInEntry("Mysore Palace", "Mysuru", "28 Apr 2026", CheckInStatus.RECENT),
-        CheckInEntry("Badami Cave Temples", "Bagalkot", "15 Apr 2026", CheckInStatus.VERIFIED),
-        CheckInEntry("Belur Temples", "Hassan", "10 Apr 2026", CheckInStatus.VERIFIED)
-    )
+    val ctx = LocalContext.current
+    val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+    val rawCheckIns by repo.getAllCheckIns().collectAsState(initial = emptyList())
+    // Map Room CheckIn → display model. Most recent first.
+    val checkIns = remember(rawCheckIns) {
+        rawCheckIns
+            .sortedByDescending { it.timestamp }
+            .mapIndexed { idx, ci ->
+                CheckInEntry(
+                    name = ci.siteName,
+                    location = ci.siteLocation,
+                    date = DATE_FMT.format(Date(ci.timestamp)),
+                    siteId = ci.siteId,
+                    status = if (idx == 0) CheckInStatus.RECENT else CheckInStatus.VERIFIED
+                )
+            }
+    }
 
     Column(
         modifier = Modifier
@@ -68,18 +89,31 @@ fun MyCheckInsScreen(
             )
         }
 
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(checkIns) { entry ->
-                CheckInCard(
-                    entry = entry,
-                    onClick = { onSiteClick(entry.name.lowercase().replace(" ", "-")) }
+        if (checkIns.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    "No check-ins yet. Scan a QR code at a heritage site!",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            item { Spacer(modifier = Modifier.height(24.dp)) }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(checkIns) { entry ->
+                    CheckInCard(
+                        entry = entry,
+                        onClick = { onSiteClick(entry.siteId) }
+                    )
+                }
+                item { Spacer(modifier = Modifier.height(24.dp)) }
+            }
         }
     }
 }
@@ -196,5 +230,6 @@ data class CheckInEntry(
     val name: String,
     val location: String,
     val date: String,
+    val siteId: String = "",
     val status: CheckInStatus = CheckInStatus.VERIFIED
 )

@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -43,21 +44,14 @@ fun BookmarkedSitesScreen(
     val allSites by produceState<List<HeritageSite>>(emptyList(), ctx) {
         value = repo.getAllSitesList()
     }
-    val bookmarked = remember(allSites) { allSites.filter { it.isFavourite } }
-    val sampleSites = remember(allSites) {
-        allSites.map { site ->
-            SampleBookmarkedSite(
-                site.id,
-                site.name,
-                site.shortDescription,
-                site.location,
-                site.type.name.replaceFirstChar { it.uppercase() },
-                site.imageUrl
-            )
-        }
+    // Use live bookmark IDs from Room (observeBookmarks) so fav toggles from SiteDetail
+    // are immediately reflected here without re-fetching all sites.
+    val bookmarkedIds by repo.observeBookmarks().collectAsState(initial = emptyList())
+    val bookmarked = remember(allSites, bookmarkedIds) {
+        allSites.filter { it.id in bookmarkedIds }
     }
 
-    val displaySites = if (bookmarked.isNotEmpty()) bookmarked else emptyList()
+    val displaySites = bookmarked
 
     Column(
         modifier = Modifier

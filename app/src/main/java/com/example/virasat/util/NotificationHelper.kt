@@ -61,6 +61,7 @@ object NotificationHelper {
     }
 
     fun showRemoteNotification(context: Context, title: String, body: String, deepLink: String?) {
+        if (!NotificationPreferences.isEnabled(context, "weekly")) return
         if (!hasPermission(context)) return
         val pi = deepLink?.let {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))

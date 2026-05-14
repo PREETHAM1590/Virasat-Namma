@@ -20,6 +20,9 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
     private val _unlockedFacts = MutableStateFlow<List<String>>(emptyList())
     val unlockedFacts = _unlockedFacts.asStateFlow()
 
+    private val _isBookmarked = MutableStateFlow(false)
+    val isBookmarked = _isBookmarked.asStateFlow()
+
     val checkIns = repository.getAllCheckIns()
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
@@ -30,6 +33,7 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch {
             _site.value = repository.getSiteById(siteId)
             _hasCheckedIn.value = repository.hasCheckedIn(siteId)
+            _isBookmarked.value = repository.isBookmarked(siteId)
             _site.value?.facts?.forEach { fact ->
                 if (repository.isFactUnlocked(fact.id)) {
                     _unlockedFacts.value = _unlockedFacts.value + fact.id
@@ -61,5 +65,14 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
 
     fun isFactUnlocked(factId: String): Boolean {
         return _unlockedFacts.value.contains(factId)
+    }
+
+    fun toggleBookmark() {
+        viewModelScope.launch {
+            site.value?.let { s ->
+                val newState = repository.toggleBookmark(s.id)
+                _isBookmarked.value = newState
+            }
+        }
     }
 }

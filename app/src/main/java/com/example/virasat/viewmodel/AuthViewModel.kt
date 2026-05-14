@@ -96,11 +96,7 @@ class AuthViewModel : ViewModel() {
     }
 
     private fun validatePassword(password: String): String? {
-        if (password.length < 9) return "Password must be at least 9 characters."
-        if (!password.any { it.isUpperCase() }) return "Password must contain an uppercase letter."
-        if (!password.any { it.isLowerCase() }) return "Password must contain a lowercase letter."
-        if (!password.any { it.isDigit() }) return "Password must contain a number."
-        if (!password.any { !it.isLetterOrDigit() }) return "Password must contain a special character."
+        if (password.length < 6) return "Password must be at least 6 characters."
         return null
     }
 

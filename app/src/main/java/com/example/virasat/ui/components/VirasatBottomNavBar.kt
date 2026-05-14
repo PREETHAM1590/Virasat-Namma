@@ -24,6 +24,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.example.virasat.R
 import com.example.virasat.ui.theme.NavBackground
 import com.example.virasat.ui.theme.NavOnBackground
 import com.example.virasat.ui.theme.OnSecondaryFixedVariant
@@ -31,14 +33,14 @@ import com.example.virasat.ui.theme.PrimaryFixed
 
 enum class BottomNavItem(
     val route: String,
-    val label: String,
+    val labelResId: Int,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector
 ) {
-    HOME("home", "Home", Icons.Default.Home, Icons.Outlined.Home),
-    MAP("map", "Map", Icons.Default.LocationOn, Icons.Outlined.LocationOn),
-    SEARCH("search", "Search", Icons.Default.Search, Icons.Outlined.Search),
-    PROFILE("profile", "Profile", Icons.Default.Person, Icons.Outlined.Person)
+    HOME("home", R.string.nav_explore, Icons.Default.Home, Icons.Outlined.Home),
+    MAP("map", R.string.nav_map, Icons.Default.LocationOn, Icons.Outlined.LocationOn),
+    SEARCH("search", R.string.nav_search, Icons.Default.Search, Icons.Outlined.Search),
+    PROFILE("profile", R.string.nav_profile, Icons.Default.Person, Icons.Outlined.Person)
 }
 
 @Composable
@@ -81,12 +83,12 @@ fun VirasatBottomNavBar(
                 ) {
                     Icon(
                         imageVector = if (selected) item.selectedIcon else item.unselectedIcon,
-                        contentDescription = item.label,
+                        contentDescription = stringResource(item.labelResId),
                         tint = tint,
                         modifier = Modifier.size(24.dp)
                     )
                     Text(
-                        text = item.label,
+                        text = stringResource(item.labelResId),
                         color = tint,
                         fontSize = 11.sp,
                         fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium

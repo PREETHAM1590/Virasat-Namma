@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,6 +61,8 @@ fun QrScannerScreen(
     val hasCheckedIn by viewModel.hasCheckedIn.collectAsState()
     val isCheckingIn by viewModel.isCheckingIn.collectAsState()
     val unlockedFact by viewModel.unlockedFact.collectAsState()
+    val qrError by viewModel.qrError.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -67,6 +70,11 @@ fun QrScannerScreen(
 
     LaunchedEffect(Unit) {
         if (!hasCameraPermission) launcher.launch(Manifest.permission.CAMERA)
+    }
+
+    // Show error snackbar on unrecognized/invalid QR
+    LaunchedEffect(qrError) {
+        if (qrError != null) snackbarHostState.showSnackbar(qrError!!)
     }
 
     // Navigate to site detail once check-in completes
@@ -82,10 +90,15 @@ fun QrScannerScreen(
     val cs = MaterialTheme.colorScheme
     val type = MaterialTheme.typography
 
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = cs.inverseSurface
+    ) { innerPadding ->
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(cs.inverseSurface)
+            .padding(innerPadding)
     ) {
         if (hasCameraPermission) {
             CameraPreviewWithScanner(
@@ -417,7 +430,8 @@ fun QrScannerScreen(
                 }
             }
         }
-    }
+    } // end Box
+    } // end Scaffold
 }
 
 @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)

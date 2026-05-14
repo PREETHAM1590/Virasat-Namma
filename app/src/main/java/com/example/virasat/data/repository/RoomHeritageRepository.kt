@@ -6,9 +6,11 @@ import com.example.virasat.data.model.*
 import com.example.virasat.data.source.KarnatakaSites
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import androidx.room.withTransaction
 
 class RoomHeritageRepository(context: Context) : HeritageRepository {
     private val database = VirasatDatabase.getDatabase(context)
@@ -16,11 +18,20 @@ class RoomHeritageRepository(context: Context) : HeritageRepository {
     private val checkInDao = database.checkInDao()
     private val unlockedFactDao = database.unlockedFactDao()
 
+    // Scoped to the lifetime of the singleton repository (app lifetime).
+    private val repoScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
     init {
-        // Seed the database on first launch
-        CoroutineScope(Dispatchers.IO).launch {
-            if (siteDao.getSiteCount() == 0) {
-                siteDao.insertSites(KarnatakaSites.allSites.map { it.toEntity() })
+        // Reseed only when site count differs from bundled data (avoids clear+insert every launch).
+        repoScope.launch {
+            val expectedCount = KarnatakaSites.allSites.size
+            val currentCount = siteDao.getSiteCount()
+            if (currentCount != expectedCount) {
+                // Atomic: no window where DB is empty.
+                database.withTransaction {
+                    siteDao.clearAllSites()
+                    siteDao.insertSites(KarnatakaSites.allSites.map { it.toEntity() })
+                }
             }
         }
     }

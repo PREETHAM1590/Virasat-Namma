@@ -32,6 +32,9 @@ import com.example.virasat.data.model.AudioChapter
 import com.example.virasat.data.service.GeminiHeritageService
 import com.example.virasat.data.source.KarnatakaSites
 import com.example.virasat.util.LocaleHelper
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -183,11 +186,14 @@ fun AudioGuideScreen(
         }
         if (!GeminiHeritageService.isInitialized()) return@LaunchedEffect
         isGenerating = true
-        val newTranscripts = mutableMapOf<String, String>()
-        for (key in CHAPTER_KEYS) {
-            generatingChapter = key
-            val text = GeminiHeritageService.generateChapterNarration(site, key, selectedLanguage)
-            if (text.isNotBlank()) newTranscripts[key] = text
+        generatingChapter = "all"
+        // Fetch all 5 chapter narrations in parallel — reduces wait from ~25s to ~5s
+        val newTranscripts = coroutineScope {
+            CHAPTER_KEYS
+                .map { key -> async { key to GeminiHeritageService.generateChapterNarration(site, key, selectedLanguage) } }
+                .awaitAll()
+                .filter { (_, text) -> text.isNotBlank() }
+                .toMap()
         }
         geminiTranscripts = newTranscripts
         isGenerating = false

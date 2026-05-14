@@ -1,5 +1,6 @@
 package com.example.virasat.ui.screens
 
+import android.content.Intent
 import com.example.virasat.util.LocaleHelper
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -188,7 +189,14 @@ fun SiteDetailScreen(
                             tint = Color.White
                         )
                     }
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = {
+                        val shareText = "${s.name} - ${s.location}\n${s.shortDescription}\nhttps://virasat.app/site/${s.id}"
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, shareText)
+                        }
+                        ctx.startActivity(Intent.createChooser(shareIntent, "Share via"))
+                    }) {
                         Icon(
                             Icons.Default.Share,
                             stringResource(R.string.share),
