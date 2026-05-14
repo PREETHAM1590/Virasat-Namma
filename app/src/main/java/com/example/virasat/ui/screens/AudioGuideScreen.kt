@@ -266,7 +266,7 @@ fun AudioGuideScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFE2EFE1))
+            .background(cs.background)
             .padding(paddingValues)
     ) {
         Column(
@@ -303,11 +303,15 @@ fun AudioGuideScreen(
                     shape = RoundedCornerShape(999.dp),
                     color = cs.primaryContainer,
                     onClick = {
-                        selectedLanguage = if (selectedLanguage == "English") "Kannada" else "English"
+                        selectedLanguage = when (selectedLanguage) {
+                            "English" -> "Kannada"
+                            "Kannada" -> "Hindi"
+                            else -> "English"
+                        }
                     }
                 ) {
                     Text(
-                        if (selectedLanguage == "English") "EN" else "\u0c95",
+                        when (selectedLanguage) { "English" -> "EN"; "Hindi" -> "HI"; else -> "\u0c95" },
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
@@ -410,7 +414,7 @@ fun AudioGuideScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(32.dp))
-                            .background(Color(0xFF0B2211))
+                            .background(cs.inverseSurface)
                             .padding(24.dp)
                     ) {
                         Column {
@@ -472,7 +476,7 @@ fun AudioGuideScreen(
                                     }
                                 }) {
                                     Icon(Icons.Default.Replay10, "Rewind",
-                                        modifier = Modifier.size(32.dp), tint = Color(0xFFE2EFE1))
+                                        modifier = Modifier.size(32.dp), tint = cs.inverseOnSurface)
                                 }
                                 Button(
                                     onClick = {
@@ -493,7 +497,7 @@ fun AudioGuideScreen(
                                         if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                                         if (isPlaying) "Pause" else "Play",
                                         modifier = Modifier.size(32.dp),
-                                        tint = Color(0xFF0B2211)
+                                        tint = cs.onPrimaryContainer
                                     )
                                 }
                                 IconButton(onClick = {
@@ -502,7 +506,7 @@ fun AudioGuideScreen(
                                     }
                                 }) {
                                     Icon(Icons.Default.Forward10, "Forward",
-                                        modifier = Modifier.size(32.dp), tint = Color(0xFFE2EFE1))
+                                        modifier = Modifier.size(32.dp), tint = cs.inverseOnSurface)
                                 }
                             }
                         }

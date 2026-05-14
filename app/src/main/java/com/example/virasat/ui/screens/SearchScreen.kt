@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.collectAsState
@@ -28,6 +27,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -38,6 +39,7 @@ import coil.compose.AsyncImage
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.R
 import com.example.virasat.data.model.HeritageSite
+import com.example.virasat.util.LocaleHelper
 import com.example.virasat.util.LocationUtils
 import kotlinx.coroutines.launch
 
@@ -292,8 +294,18 @@ fun SearchScreen(
 }
 
 @Composable
-private fun SiteCard(site: HeritageSite, distanceText: String = site.district, onClick: () -> Unit) {
+private fun SiteCard(
+    site: HeritageSite,
+    distanceText: String = site.district,
+    repo: com.example.virasat.data.repository.HeritageRepository? = null,
+    onClick: () -> Unit
+) {
     val cs = MaterialTheme.colorScheme
+    val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val bookmarkedIds by (repo?.observeBookmarks() ?: kotlinx.coroutines.flow.flowOf(emptyList()))
+        .collectAsState(initial = emptyList())
+    val isFav = site.id in bookmarkedIds
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -324,9 +336,11 @@ private fun SiteCard(site: HeritageSite, distanceText: String = site.district, o
                     )
                 )
         )
-        // Star button
+        // Bookmark button
         FilledIconButton(
-            onClick = { /* favourite toggle */ },
+            onClick = {
+                if (repo != null) scope.launch { repo.toggleBookmark(site.id) }
+            },
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(16.dp)
@@ -337,9 +351,9 @@ private fun SiteCard(site: HeritageSite, distanceText: String = site.district, o
             shape = RoundedCornerShape(999.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Star,
+                imageVector = if (isFav) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
                 contentDescription = stringResource(R.string.save),
-                tint = cs.outline,
+                tint = if (isFav) cs.primary else cs.outline,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -350,7 +364,7 @@ private fun SiteCard(site: HeritageSite, distanceText: String = site.district, o
                 .align(Alignment.BottomStart)
         ) {
             Text(
-                text = site.name,
+                text = LocaleHelper.siteName(site.name, site.nameLocal, ctx),
                 style = MaterialTheme.typography.headlineMedium,
                 color = Color.White,
                 maxLines = 1,

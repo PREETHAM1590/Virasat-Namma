@@ -21,6 +21,7 @@
     <string name="home_location">KARNATAKA, INDIA</string>
     <string name="home_search_hint">Search sites</string>
     <string name="home_popular_sites">Popular Sites</string>
+    <string name="home_nearby_sites">Nearby — Not Yet Visited</string>
     <string name="home_curated_trails">Curated Trails</string>
     <string name="home_featured">Featured</string>
     <string name="home_explore_now">Explore Now</string>

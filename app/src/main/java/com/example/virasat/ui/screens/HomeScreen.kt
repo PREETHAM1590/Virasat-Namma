@@ -309,7 +309,7 @@ fun HomeScreen(
                             }
                             Spacer(Modifier.height(10.dp))
                             Text(
-                                site.name,
+                                LocaleHelper.siteName(site.name, site.nameLocal, context),
                                 style = MaterialTheme.typography.headlineLarge,
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold
@@ -382,6 +382,52 @@ fun HomeScreen(
                             } ?: site.district
                         }
                         PopularSiteCard(site = site, distanceText = distanceText, onClick = { onSiteClick(site.id) })
+                    }
+                }
+            }
+
+            // ── Nearby Unvisited Sites ─────────────────────────
+            item {
+                val passportVm: com.example.virasat.viewmodel.PassportViewModel = viewModel()
+                val allCheckIns by passportVm.checkIns.collectAsState()
+                val checkedInIds = remember(allCheckIns) { allCheckIns.map { it.siteId }.toSet() }
+                val nearbySites = remember(allSites, userLocation, checkedInIds) {
+                    val unvisited = allSites.filter { it.id !in checkedInIds }
+                    val loc = userLocation
+                    if (loc != null) {
+                        unvisited
+                            .sortedBy { LocationUtils.distanceKm(loc.latitude, loc.longitude, it.latitude, it.longitude) }
+                            .take(5)
+                    } else {
+                        unvisited.take(5)
+                    }
+                }
+                if (nearbySites.isNotEmpty()) {
+                    Row(
+                        Modifier.fillMaxWidth().padding(horizontal = hPadding),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            stringResource(R.string.home_nearby_sites),
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = OnSurface
+                        )
+                    }
+                    Spacer(Modifier.height(16.dp))
+                    LazyRow(
+                        contentPadding = PaddingValues(horizontal = hPadding),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.padding(bottom = 40.dp)
+                    ) {
+                        items(nearbySites, key = { it.id }) { site ->
+                            val km = userLocation?.let {
+                                LocationUtils.distanceKm(it.latitude, it.longitude, site.latitude, site.longitude)
+                            }
+                            val distText = km?.let { LocationUtils.formatDistance(it) } ?: site.district
+                            PopularSiteCard(site = site, distanceText = distText, onClick = { onSiteClick(site.id) })
+                        }
                     }
                 }
             }

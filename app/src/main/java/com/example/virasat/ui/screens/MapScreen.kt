@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import com.example.virasat.util.LocaleHelper
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -103,7 +104,7 @@ fun MapScreen(
                 val icon = rememberMarkerIcon(ctx, site.type)
                 Marker(
                     state = MarkerState(position = LatLng(site.latitude, site.longitude)),
-                    title = site.name,
+                    title = LocaleHelper.siteName(site.name, site.nameLocal, ctx),
                     snippet = site.district,
                     icon = icon,
                     onClick = {

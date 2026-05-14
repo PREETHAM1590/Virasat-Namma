@@ -156,15 +156,14 @@ fun SiteDetailScreen(
                     .fillMaxWidth()
                     .height(442.dp)
             ) {
+                val fallbackUrl = com.example.virasat.data.source.ImageUrls.SOUTH_INDIAN_TEMPLE
                 AsyncImage(
-                    model = s.imageUrl.ifBlank { null },
+                    model = s.imageUrl.ifBlank { fallbackUrl },
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp)),
-                    contentScale = ContentScale.Crop,
-                    placeholder = androidx.compose.ui.res.painterResource(R.drawable.splash_bg),
-                    error = androidx.compose.ui.res.painterResource(R.drawable.splash_bg)
+                    contentScale = ContentScale.Crop
                 )
                 Box(
                     Modifier

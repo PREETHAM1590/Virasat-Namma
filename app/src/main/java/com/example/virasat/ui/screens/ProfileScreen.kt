@@ -128,32 +128,57 @@ fun ProfileScreen(
                 }
             }
 
-            // Overlapping avatar (centered, overlapping card top)
+            // Overlapping avatar + camera badge (centered on card top edge)
             Box(
                 modifier = Modifier
-                    .size(100.dp)
-                    .align(Alignment.TopCenter)
-                    .offset(y = 14.dp)
-                    .clip(CircleShape)
-                    .shadow(8.dp, CircleShape)
-                    .background(cs.primary),
+                    .size(112.dp)
+                    .align(Alignment.TopCenter),
                 contentAlignment = Alignment.Center
             ) {
-                val profileImagePath = userPrefs.getString("user_profile_image", null)
-                if (profileImagePath != null) {
-                    AsyncImage(
-                        model = profileImagePath,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    val initials = userName.split(" ").take(2).mapNotNull { it.firstOrNull()?.uppercase() }.joinToString("")
-                    Text(
-                        text = initials.ifBlank { "HE" },
-                        style = type.headlineLarge,
-                        color = cs.onPrimary,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                // Avatar circle
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .align(Alignment.Center)
+                        .shadow(8.dp, CircleShape)
+                        .clip(CircleShape)
+                        .background(cs.primary),
+                    contentAlignment = Alignment.Center
+                ) {
+                    val profileImagePath = userPrefs.getString("user_profile_image", null)
+                    if (profileImagePath != null) {
+                        AsyncImage(
+                            model = profileImagePath,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        val initials = userName.split(" ").take(2).mapNotNull { it.firstOrNull()?.uppercase() }.joinToString("")
+                        Text(
+                            text = initials.ifBlank { "HE" },
+                            style = type.headlineLarge,
+                            color = cs.onPrimary,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                        )
+                    }
+                }
+                // Camera edit badge
+                SmallFloatingActionButton(
+                    onClick = onEditProfile,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .align(Alignment.BottomEnd)
+                        .offset(x = (-4).dp, y = (-4).dp),
+                    containerColor = cs.primaryContainer,
+                    contentColor = cs.onPrimaryContainer,
+                    shape = CircleShape,
+                    elevation = FloatingActionButtonDefaults.elevation(2.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CameraAlt,
+                        contentDescription = "Edit photo",
+                        modifier = Modifier.size(16.dp)
                     )
                 }
             }
