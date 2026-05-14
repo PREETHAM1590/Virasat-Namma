@@ -157,12 +157,14 @@ fun SiteDetailScreen(
                     .height(442.dp)
             ) {
                 AsyncImage(
-                    model = s.imageUrl,
+                    model = s.imageUrl.ifBlank { null },
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp)),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    placeholder = androidx.compose.ui.res.painterResource(R.drawable.splash_bg),
+                    error = androidx.compose.ui.res.painterResource(R.drawable.splash_bg)
                 )
                 Box(
                     Modifier

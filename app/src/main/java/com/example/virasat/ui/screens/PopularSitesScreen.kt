@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -54,9 +55,8 @@ fun PopularSitesScreen(
 ) {
     val ctx = LocalContext.current
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
-    val sites by produceState<List<HeritageSite>>(emptyList(), ctx) {
-        value = repo.getAllSitesList()
-    }
+    // Use getAllSites() Flow so list stays live (fix #G)
+    val sites by repo.getAllSites().collectAsState(initial = emptyList())
     val listState = rememberLazyListState()
 
     val regions = remember(sites) {

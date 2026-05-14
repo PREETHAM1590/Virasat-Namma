@@ -12,24 +12,41 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.virasat.R
+import com.example.virasat.viewmodel.LeaderboardViewModel
 
 @Composable
 fun LeaderboardScreen(onBack: () -> Unit) {
-    val leaders = listOf(
-        Leader("Heritage Hunter", 48, 12),
-        Leader("Temple Trekker", 42, 10),
-        Leader("Fort Finder", 38, 9),
-        Leader("History Buff", 35, 8),
-        Leader("Wanderlust", 30, 7),
-        Leader("You", 22, 5)
-    )
+    val leaderboardViewModel: LeaderboardViewModel = viewModel()
+    val entries by leaderboardViewModel.leaderboard.collectAsState()
+    val currentUid = leaderboardViewModel.currentUid
+    // Map Firestore entries to display model; fall back to demo if empty or offline
+    val leaders = if (entries.isNotEmpty()) {
+        entries.map { e ->
+            Leader(
+                name = if (e.uid == currentUid) "You" else e.name.ifBlank { "Explorer" },
+                sites = e.checkIns,
+                badges = e.badges
+            )
+        }
+    } else {
+        listOf(
+            Leader("Heritage Hunter", 48, 12),
+            Leader("Temple Trekker", 42, 10),
+            Leader("Fort Finder", 38, 9),
+            Leader("History Buff", 35, 8),
+            Leader("Wanderlust", 30, 7)
+        )
+    }
 
     Column(
         modifier = Modifier

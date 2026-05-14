@@ -14,18 +14,24 @@ object SecurePreferences {
     private const val KEY_ONBOARDING_SEEN = "onboarding_seen"
     private const val KEY_LOCALE = "app_locale"
 
-    private fun getEncryptedPrefs(context: Context): SharedPreferences {
-        val masterKey = MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
+    // Cache the instance — EncryptedSharedPreferences.create() is expensive (disk I/O + crypto)
+    @Volatile private var encryptedPrefsInstance: SharedPreferences? = null
 
-        return EncryptedSharedPreferences.create(
-            context,
-            PREFS_NAME,
-            masterKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
+    private fun getEncryptedPrefs(context: Context): SharedPreferences {
+        return encryptedPrefsInstance ?: synchronized(this) {
+            encryptedPrefsInstance ?: run {
+                val masterKey = MasterKey.Builder(context.applicationContext)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build()
+                EncryptedSharedPreferences.create(
+                    context.applicationContext,
+                    PREFS_NAME,
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                ).also { encryptedPrefsInstance = it }
+            }
+        }
     }
 
     // User credentials (encrypted)
@@ -101,5 +107,7 @@ object SecurePreferences {
     fun clearAll(context: Context) {
         clearUserCredentials(context)
         clearAuthToken(context)
+        // Reset cached instance so next user gets a fresh open
+        synchronized(this) { encryptedPrefsInstance = null }
     }
 }

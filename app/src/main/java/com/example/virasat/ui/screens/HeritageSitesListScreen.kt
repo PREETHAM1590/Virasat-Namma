@@ -13,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,9 +42,8 @@ fun HeritageSitesListScreen(
 
     val ctx = LocalContext.current
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
-    val allSites by produceState<List<HeritageSite>>(emptyList(), ctx) {
-        value = repo.getAllSitesList()
-    }
+    // Use getAllSites() Flow so list stays live when DB reseeds (fix #F)
+    val allSites by repo.getAllSites().collectAsState(initial = emptyList())
     val filtered = remember(query, selectedType, allSites) {
         allSites.filter { site ->
             val matchesQuery = query.isBlank() ||

@@ -6,7 +6,8 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "check_ins")
 data class CheckIn(
     @PrimaryKey
-    val id: String = "",
+    // No default: callers must supply a UUID so no two check-ins share an empty-string PK
+    val id: String,
     val siteId: String,
     val siteName: String,
     val siteLocation: String,

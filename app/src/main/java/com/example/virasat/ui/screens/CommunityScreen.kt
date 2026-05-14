@@ -13,6 +13,10 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.virasat.viewmodel.CommunityViewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Modifier
@@ -30,30 +34,47 @@ fun CommunityScreen(onBack: () -> Unit) {
     val colorScheme = MaterialTheme.colorScheme
     val typography = MaterialTheme.typography
 
-    val posts = listOf(
-        CommunityPost(
-            author = "Priya Sharma",
-            category = "Heritage Walk",
-            title = "Restoring the Sacred Grove",
-            body = "Join us this weekend as we gather to document the indigenous flora surrounding the 14th-century ruins. We have uncovered three new species of medicinal moss that haven't been recorded in this area for decades.",
-            imageUrl = ImageUrls.HAMPI,
-            time = "2h ago",
-            likes = 24,
-            actionLabel = "Join Event",
-            actionIcon = Icons.Default.NaturePeople
-        ),
-        CommunityPost(
-            author = "Ravi Kumar",
-            category = "Craftsmanship",
-            title = "The Terracotta Revival",
-            body = "A beautiful deep dive into the traditional methods of clay sourcing along the riverbanks. The tactile connection between the maker and the earth is something we must fight to preserve in the digital age.",
-            imageUrl = ImageUrls.BADAMI,
-            time = "5h ago",
-            likes = 18,
-            actionLabel = "12 Comments",
-            actionIcon = Icons.Default.Forum
+    val communityViewModel: CommunityViewModel = viewModel()
+    val livePosts by communityViewModel.posts.collectAsState()
+    // Map Firestore CommunityPost -> UI CommunityPost; fall back to sample if offline/empty
+    val posts = if (livePosts.isNotEmpty()) {
+        livePosts.map { p ->
+            CommunityPost(
+                author = p.userName.ifBlank { "Explorer" },
+                category = p.siteName.ifBlank { "Heritage" },
+                title = p.siteName.ifBlank { "Community Post" },
+                body = p.text,
+                imageUrl = p.imageUrl ?: ImageUrls.HAMPI,
+                time = "",
+                likes = 0
+            )
+        }
+    } else {
+        listOf(
+            CommunityPost(
+                author = "Priya Sharma",
+                category = "Heritage Walk",
+                title = "Restoring the Sacred Grove",
+                body = "Join us this weekend as we gather to document the indigenous flora surrounding the 14th-century ruins. We have uncovered three new species of medicinal moss that haven't been recorded in this area for decades.",
+                imageUrl = ImageUrls.HAMPI,
+                time = "2h ago",
+                likes = 24,
+                actionLabel = "Join Event",
+                actionIcon = Icons.Default.NaturePeople
+            ),
+            CommunityPost(
+                author = "Ravi Kumar",
+                category = "Craftsmanship",
+                title = "The Terracotta Revival",
+                body = "A beautiful deep dive into the traditional methods of clay sourcing along the riverbanks. The tactile connection between the maker and the earth is something we must fight to preserve in the digital age.",
+                imageUrl = ImageUrls.BADAMI,
+                time = "5h ago",
+                likes = 18,
+                actionLabel = "12 Comments",
+                actionIcon = Icons.Default.Forum
+            )
         )
-    )
+    }
 
     Box(
         modifier = Modifier

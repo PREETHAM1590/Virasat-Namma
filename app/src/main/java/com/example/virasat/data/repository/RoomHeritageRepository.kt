@@ -97,6 +97,8 @@ class RoomHeritageRepository(context: Context) : HeritageRepository {
 
     private val bookmarkDao = database.bookmarkDao()
 
+    // @Transaction prevents TOCTOU race between exists-check and insert/delete
+    @androidx.room.Transaction
     override suspend fun toggleBookmark(siteId: String): Boolean {
         return if (bookmarkDao.exists(siteId)) {
             bookmarkDao.delete(siteId)

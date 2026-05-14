@@ -128,23 +128,26 @@ fun AudioGuideScreen(
     var pendingStart by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        tts = TextToSpeech(context) { status ->
+        if (tts != null) return@LaunchedEffect
+        val newTts = TextToSpeech(context) { status ->
             if (status == TextToSpeech.SUCCESS) {
+                if (chapters.isEmpty()) return@TextToSpeech
                 ttsReady = true
                 val unsupported = setTtsLanguage()
                 if (unsupported && selectedLanguage != "English") {
                     ttsUnsupported = true
                     showTtsHint = true
                 }
-                tts?.setSpeechRate(0.88f)
-                tts?.setPitch(0.95f)
+                newTts.setSpeechRate(0.88f)
+                newTts.setPitch(0.95f)
                 // Callbacks fire on TTS thread — post to main to safely mutate Compose state (#3)
-                tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                newTts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                     override fun onStart(utteranceId: String?) {
-                        mainHandler.post { isPlaying = true }
+                        mainHandler.post { if (chapters.isNotEmpty()) isPlaying = true }
                     }
                     override fun onDone(utteranceId: String?) {
                         mainHandler.post {
+                            if (chapters.isEmpty()) return@post
                             isPlaying = false
                             progress = 0f
                             if (currentChapter < chapters.lastIndex) currentChapter++
@@ -154,13 +157,14 @@ fun AudioGuideScreen(
                         mainHandler.post { isPlaying = false }
                     }
                 })
-                if (pendingStart) {
+                if (pendingStart && chapters.isNotEmpty()) {
                     pendingStart = false
-                    tts?.speak(chapters.getOrNull(currentChapter)?.transcript ?: "",
+                    newTts.speak(chapters.getOrNull(currentChapter)?.transcript ?: "",
                         TextToSpeech.QUEUE_FLUSH, null, "chapter_$currentChapter")
                 }
             }
         }
+        tts = newTts
     }
 
     // Show snackbar when TTS language unsupported
@@ -215,8 +219,11 @@ fun AudioGuideScreen(
 
     DisposableEffect(Unit) {
         onDispose {
-            tts?.stop()
-            tts?.shutdown()
+            val old = tts
+            tts = null
+            ttsReady = false
+            old?.stop()
+            old?.shutdown()
         }
     }
 
@@ -464,6 +471,7 @@ fun AudioGuideScreen(
                                 }
                                 Button(
                                     onClick = {
+                                        if (chapters.isEmpty()) return@Button
                                         isPlaying = !isPlaying
                                         if (isPlaying) {
                                             if (ttsReady) {

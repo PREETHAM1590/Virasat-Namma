@@ -39,6 +39,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.virasat.viewmodel.ReviewsViewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,6 +60,7 @@ fun ReviewsScreen(
 ) {
     val ctx = LocalContext.current
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
+    val reviewsViewModel: ReviewsViewModel = viewModel()
     val site by produceState<com.example.virasat.data.model.HeritageSite?>(null, siteId) {
         value = try { repo.getSiteById(siteId) } catch (_: Exception) { null }
     }
@@ -297,8 +300,19 @@ fun ReviewsScreen(
 
                 // Post Review pill button
                 Spacer(modifier = Modifier.height(16.dp))
+                var submitDone by remember { mutableStateOf(false) }
                 Button(
-                    onClick = { },
+                    onClick = {
+                        if (userRating > 0 && !submitDone) {
+                            reviewsViewModel.submitReview(
+                                siteId = siteId,
+                                text = reviewText.trim().ifBlank { "★".repeat(userRating) }
+                            )
+                            submitDone = true
+                            reviewText = ""
+                            userRating = 0
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
@@ -307,10 +321,11 @@ fun ReviewsScreen(
                         contentColor = scheme.onPrimary
                     ),
                     shape = RoundedCornerShape(999.dp),
-                    enabled = userRating > 0
+                    enabled = userRating > 0 && !submitDone
                 ) {
                     Text(
-                        text = stringResource(R.string.reviews_post),
+                        text = if (submitDone) stringResource(R.string.reviews_post) + " ✓"
+                               else stringResource(R.string.reviews_post),
                         style = MaterialTheme.typography.labelLarge.copy(
                             fontFamily = PlusJakartaSans,
                             fontWeight = FontWeight.SemiBold

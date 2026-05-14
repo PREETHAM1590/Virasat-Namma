@@ -89,18 +89,21 @@ class QrScannerViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             val site = _scannedSite.value ?: return@launch
             _isCheckingIn.value = true
-            // Do the check-in
-            repository.checkIn(site)
-            _hasCheckedIn.value = true
-
-            // Unlock the next unread hidden fact for this site
-            val fact = findNextFact(site)
-            if (fact != null) {
-                repository.unlockFact(site.id, fact)
-                _unlockedFact.value = fact
+            try {
+                repository.checkIn(site)
+                _hasCheckedIn.value = true
+                // Unlock the next unread hidden fact for this site
+                val fact = findNextFact(site)
+                if (fact != null) {
+                    repository.unlockFact(site.id, fact)
+                    _unlockedFact.value = fact
+                }
+            } catch (e: Exception) {
+                _qrError.value = "Check-in failed: ${e.message ?: "Unknown error"}"
+            } finally {
+                // Always clear spinner even on failure
+                _isCheckingIn.value = false
             }
-
-            _isCheckingIn.value = false
         }
     }
 
