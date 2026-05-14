@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛕 विनम्र प्रणाम | Namaskara 🙏
+# 🌟 Virasat-Namma Guide
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
 [![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com/)
@@ -11,8 +11,6 @@
 </div>
 
 ---
-
-# 🌟 Virasat-Namma Guide
 
 ### *Rediscover Karnataka's soul — one heritage site at a time.*
 
