@@ -75,9 +75,11 @@ fun SettingsScreen(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Eco",
+                contentDescription = "Back",
                 tint = cs.primary,
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier
+                    .size(28.dp)
+                    .clickable(onClick = onBack)
             )
             Text(
                 text = stringResource(R.string.app_name),

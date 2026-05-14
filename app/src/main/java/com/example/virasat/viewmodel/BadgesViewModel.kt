@@ -18,13 +18,22 @@ class BadgesViewModel(application: Application) : AndroidViewModel(application) 
     private val _badges = MutableStateFlow<List<BadgeResult>>(emptyList())
     val badges: StateFlow<List<BadgeResult>> = _badges.asStateFlow()
 
+    // Cache quiz results in StateFlow so they're not re-parsed from SharedPreferences
+    // on every check-in / fact Flow emission (#11)
+    private val _quizResults = MutableStateFlow(loadQuizResults())
+    val quizResults: StateFlow<List<QuizResult>> = _quizResults.asStateFlow()
+
+    fun refreshQuizResults() {
+        _quizResults.value = loadQuizResults()
+    }
+
     init {
         viewModelScope.launch {
             combine(
                 repo.getAllCheckIns(),
-                repo.getAllUnlockedFacts()
-            ) { checkIns, facts ->
-                val quizResults = loadQuizResults()
+                repo.getAllUnlockedFacts(),
+                _quizResults
+            ) { checkIns, facts, quizResults ->
                 val aiTourUsed = prefs.getBoolean("ai_tour_used", false)
                 BadgeEngine.evaluate(checkIns, facts, quizResults, aiTourUsed)
             }.collect { _badges.value = it }

@@ -64,6 +64,17 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
                 .build()
 
             client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    // Surface rate-limit and auth errors so callers can show feedback (#13)
+                    val errorBody = response.body?.string() ?: ""
+                    val msg = when (response.code) {
+                        429 -> "GEMINI_RATE_LIMIT"
+                        401, 403 -> "GEMINI_AUTH_ERROR"
+                        else -> "GEMINI_HTTP_${response.code}"
+                    }
+                    android.util.Log.w("GeminiService", "HTTP ${response.code}: $errorBody")
+                    return@withContext msg
+                }
                 val body = response.body?.string() ?: return@withContext ""
                 val json = org.json.JSONObject(body)
                 if (json.has("candidates")) {

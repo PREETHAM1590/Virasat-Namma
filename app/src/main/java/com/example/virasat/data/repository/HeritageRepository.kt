@@ -25,4 +25,6 @@ interface HeritageRepository {
     suspend fun toggleBookmark(siteId: String): Boolean
     suspend fun isBookmarked(siteId: String): Boolean
     fun observeBookmarks(): kotlinx.coroutines.flow.Flow<List<String>>
+    /** Clear all local user data on logout so next user does not inherit prior data (#12) */
+    suspend fun clearLocalUserData()
 }

@@ -38,6 +38,9 @@ import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.service.GeminiHeritageService
 import com.example.virasat.data.service.TriviaQuestion
 import com.example.virasat.ui.theme.*
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -124,6 +127,7 @@ fun AINarratedTourScreen(
     val tourStops = remember(siteId, site) { buildTourForSite(site, context) }
     val pagerState = rememberPagerState(pageCount = { tourStops.size.coerceAtLeast(1) })
     val coroutineScope = rememberCoroutineScope()
+    val mainHandler = remember { Handler(Looper.getMainLooper()) }
 
     // AI + TTS state
     var isNarrating by remember { mutableStateOf(false) }
@@ -175,12 +179,16 @@ fun AINarratedTourScreen(
             // generic intro narration so each stop gets relevant content.
             val aiText = GeminiHeritageService.generateChapterNarration(site, focus, language)
             narrationText = aiText.ifBlank { baseText }
+            // Record ai_tour_used so AiVoyager badge can unlock (#21)
+            context.getSharedPreferences("virasat_prefs", Context.MODE_PRIVATE)
+                .edit().putBoolean("ai_tour_used", true).apply()
             // Set listener BEFORE speak() to avoid race where onStart fires before listener registered
+            // Callbacks fire on TTS thread — post to main thread to safely mutate Compose state (#2)
             tts?.setOnUtteranceProgressListener(
                 object : UtteranceProgressListener() {
-                    override fun onStart(id: String?) { isNarrating = true }
-                    override fun onDone(id: String?) { isNarrating = false }
-                    override fun onError(id: String?) { isNarrating = false }
+                    override fun onStart(id: String?) { mainHandler.post { isNarrating = true } }
+                    override fun onDone(id: String?) { mainHandler.post { isNarrating = false } }
+                    override fun onError(id: String?) { mainHandler.post { isNarrating = false } }
                 }
             )
             tts?.speak(narrationText, TextToSpeech.QUEUE_FLUSH, null, "narration")

@@ -15,7 +15,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,9 +40,8 @@ fun BookmarkedSitesScreen(
 ) {
     val ctx = LocalContext.current
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
-    val allSites by produceState<List<HeritageSite>>(emptyList(), ctx) {
-        value = repo.getAllSitesList()
-    }
+    // #24: use getAllSites() Flow so list stays live if DB is reseeded
+    val allSites by repo.getAllSites().collectAsState(initial = emptyList())
     // Use live bookmark IDs from Room (observeBookmarks) so fav toggles from SiteDetail
     // are immediately reflected here without re-fetching all sites.
     val bookmarkedIds by repo.observeBookmarks().collectAsState(initial = emptyList())

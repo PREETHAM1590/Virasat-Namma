@@ -19,4 +19,7 @@ interface BookmarkDao {
 
     @Query("SELECT siteId FROM bookmarks ORDER BY bookmarkedAt DESC")
     fun observeAll(): Flow<List<String>>
+
+    @Query("DELETE FROM bookmarks")
+    suspend fun clearAll()
 }

@@ -12,12 +12,18 @@ class Converters {
 
     @TypeConverter
     fun fromStringList(value: String): List<String> {
-        return if (value.isBlank()) emptyList() else value.split("||")
+        return if (value.isBlank()) emptyList() else try {
+            // New format: JSON array. Legacy fallback: || delimiter.
+            val parsed = json.decodeFromString<List<String>>(value)
+            parsed
+        } catch (_: Exception) {
+            value.split("||")
+        }
     }
 
     @TypeConverter
     fun toStringList(list: List<String>): String {
-        return list.joinToString("||")
+        return try { json.encodeToString(list) } catch (_: Exception) { "" }
     }
 
     @TypeConverter

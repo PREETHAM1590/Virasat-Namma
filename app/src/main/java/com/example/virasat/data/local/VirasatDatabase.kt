@@ -41,7 +41,9 @@ abstract class VirasatDatabase : RoomDatabase() {
                     context.applicationContext,
                     VirasatDatabase::class.java,
                     "virasat_database"
-                ).addMigrations(MIGRATION_3_4).build()
+                // #25: fallback for missing 1→2 and 2→3 migrations; destructive is safe
+                // because Room data is a cache of Firestore / KarnatakaSites seed data.
+                ).addMigrations(MIGRATION_3_4).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 instance
             }

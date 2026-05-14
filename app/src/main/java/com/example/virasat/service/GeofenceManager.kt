@@ -16,6 +16,10 @@ class GeofenceManager(private val context: Context) {
     fun registerAll(sites: List<HeritageSite>) {
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED) return
+        // Android 10+ (API 29) requires ACCESS_BACKGROUND_LOCATION for geofences to fire (#14)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q &&
+            ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) return
 
         val geofences = sites.map { site ->
             Geofence.Builder()

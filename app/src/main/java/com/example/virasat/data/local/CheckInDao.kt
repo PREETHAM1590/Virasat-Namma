@@ -23,4 +23,7 @@ interface CheckInDao {
 
     @Delete
     suspend fun deleteCheckIn(checkIn: CheckIn)
+
+    @Query("DELETE FROM check_ins")
+    suspend fun clearAll()
 }

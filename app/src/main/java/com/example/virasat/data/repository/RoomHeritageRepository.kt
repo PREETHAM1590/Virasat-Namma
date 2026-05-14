@@ -112,4 +112,13 @@ class RoomHeritageRepository(context: Context) : HeritageRepository {
 
     override fun observeBookmarks(): kotlinx.coroutines.flow.Flow<List<String>> =
         bookmarkDao.observeAll()
+
+    override suspend fun clearLocalUserData() {
+        // Clear all user-specific local data so next user starts fresh (#12)
+        database.withTransaction {
+            checkInDao.clearAll()
+            unlockedFactDao.clearAllUnlockedFacts()
+            bookmarkDao.clearAll()
+        }
+    }
 }

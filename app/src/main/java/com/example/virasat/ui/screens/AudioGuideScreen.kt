@@ -1,6 +1,8 @@
 package com.example.virasat.ui.screens
 
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
@@ -103,6 +105,7 @@ fun AudioGuideScreen(
     val chapter = chapters.getOrNull(safeChapterIdx)
 
     val context = LocalContext.current
+    val mainHandler = remember { Handler(Looper.getMainLooper()) }
     var tts by remember { mutableStateOf<TextToSpeech?>(null) }
     var ttsReady by remember { mutableStateOf(false) }
 
@@ -135,14 +138,21 @@ fun AudioGuideScreen(
                 }
                 tts?.setSpeechRate(0.88f)
                 tts?.setPitch(0.95f)
+                // Callbacks fire on TTS thread — post to main to safely mutate Compose state (#3)
                 tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                    override fun onStart(utteranceId: String?) { isPlaying = true }
-                    override fun onDone(utteranceId: String?) {
-                        isPlaying = false
-                        progress = 0f
-                        if (currentChapter < chapters.lastIndex) currentChapter++
+                    override fun onStart(utteranceId: String?) {
+                        mainHandler.post { isPlaying = true }
                     }
-                    override fun onError(utteranceId: String?) { isPlaying = false }
+                    override fun onDone(utteranceId: String?) {
+                        mainHandler.post {
+                            isPlaying = false
+                            progress = 0f
+                            if (currentChapter < chapters.lastIndex) currentChapter++
+                        }
+                    }
+                    override fun onError(utteranceId: String?) {
+                        mainHandler.post { isPlaying = false }
+                    }
                 })
                 if (pendingStart) {
                     pendingStart = false
@@ -174,6 +184,7 @@ fun AudioGuideScreen(
     }
 
     // When language changes: update TTS locale + fetch all chapter narrations from Gemini
+    // TTS locale update is guarded by ttsReady; Gemini fetch is independent — no guard needed (#22)
     LaunchedEffect(selectedLanguage, site) {
         if (site == null) return@LaunchedEffect
         if (ttsReady) {
@@ -184,6 +195,8 @@ fun AudioGuideScreen(
                 ttsUnsupported = false
             }
         }
+        // Gemini transcript fetch happens regardless of ttsReady so language switch
+        // doesn't silently skip when TTS init hasn't finished yet.
         if (!GeminiHeritageService.isInitialized()) return@LaunchedEffect
         isGenerating = true
         generatingChapter = "all"

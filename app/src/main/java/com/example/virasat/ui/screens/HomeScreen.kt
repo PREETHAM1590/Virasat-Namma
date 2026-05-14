@@ -107,7 +107,8 @@ fun HomeScreen(
     val allSites by viewModel.allSites.collectAsState()
     val filteredSites by viewModel.filteredSites.collectAsState()
 
-    val displaySites = if (selectedType == null) allSites else filteredSites
+    // Always use filteredSites so search query is respected even when no type filter is set (#9)
+    val displaySites = filteredSites
     val heroSite = allSites.firstOrNull()
     val popularSites = displaySites.take(6)
 

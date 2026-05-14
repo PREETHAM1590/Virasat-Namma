@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.virasat.data.local.VirasatDatabase
 import com.example.virasat.data.model.*
 import com.example.virasat.data.source.FirestoreDataSource
+import androidx.room.withTransaction
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -91,4 +92,16 @@ class FirebaseHeritageRepository(context: Context) : HeritageRepository {
 
     override fun observeBookmarks(): kotlinx.coroutines.flow.Flow<List<String>> =
         firestore.observeBookmarks()
+
+    override suspend fun clearLocalUserData() {
+        // Clear Room cache on logout so next user doesn't see prior user's local data (#12)
+        val localCheckInDao = db.checkInDao()
+        val localUnlockedFactDao = db.unlockedFactDao()
+        val localBookmarkDao = db.bookmarkDao()
+        db.withTransaction {
+            localCheckInDao.clearAll()
+            localUnlockedFactDao.clearAllUnlockedFacts()
+            localBookmarkDao.clearAll()
+        }
+    }
 }

@@ -398,10 +398,20 @@ fun TypeBadge(type: String) {
 
 @Composable
 private fun rememberMarkerIcon(context: android.content.Context, type: SiteType): com.google.android.gms.maps.model.BitmapDescriptor {
-    return remember(type) { createMarkerBitmap(context, type) }
+    // #15: hold raw Bitmap reference so it can be recycled when the composable leaves (#bitmap-leak fix)
+    var rawBitmap: Bitmap? = null
+    val descriptor = remember(type) {
+        val (bmp, desc) = createMarkerBitmapPair(context, type)
+        rawBitmap = bmp
+        desc
+    }
+    androidx.compose.runtime.DisposableEffect(type) {
+        onDispose { rawBitmap?.recycle() }
+    }
+    return descriptor
 }
 
-private fun createMarkerBitmap(context: android.content.Context, type: SiteType): com.google.android.gms.maps.model.BitmapDescriptor {
+private fun createMarkerBitmapPair(context: android.content.Context, type: SiteType): Pair<Bitmap, com.google.android.gms.maps.model.BitmapDescriptor> {
     val size = 96
     val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
@@ -468,5 +478,6 @@ private fun createMarkerBitmap(context: android.content.Context, type: SiteType)
         it.draw(canvas)
     }
 
-    return BitmapDescriptorFactory.fromBitmap(bitmap)
+    val descriptor = BitmapDescriptorFactory.fromBitmap(bitmap)
+    return Pair(bitmap, descriptor)
 }

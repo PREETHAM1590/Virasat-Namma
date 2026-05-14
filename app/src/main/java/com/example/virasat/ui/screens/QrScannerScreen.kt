@@ -80,13 +80,12 @@ fun QrScannerScreen(
         }
     }
 
-    // Navigate to site detail once check-in completes
+    // Navigate to site detail once check-in completes.
+    // Guard: scannedSite must be non-null so stale hasCheckedIn=true from a prior
+    // session (ViewModel not reset between navigations) does not auto-navigate (#4).
     LaunchedEffect(hasCheckedIn, isCheckingIn) {
-        if (hasCheckedIn && !isCheckingIn) {
-            val site = scannedSite
-            if (site != null) {
-                onNavigateToSite(site.id)
-            }
+        if (hasCheckedIn && !isCheckingIn && scannedSite != null) {
+            onNavigateToSite(scannedSite!!.id)
         }
     }
 

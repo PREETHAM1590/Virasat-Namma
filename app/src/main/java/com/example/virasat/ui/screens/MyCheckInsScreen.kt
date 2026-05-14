@@ -40,15 +40,17 @@ fun MyCheckInsScreen(
     val rawCheckIns by repo.getAllCheckIns().collectAsState(initial = emptyList())
     // Map Room CheckIn → display model. Most recent first.
     val checkIns = remember(rawCheckIns) {
+        val sevenDaysMs = 7L * 24 * 3600 * 1000
+        val now = System.currentTimeMillis()
         rawCheckIns
             .sortedByDescending { it.timestamp }
-            .mapIndexed { idx, ci ->
+            .map { ci ->
                 CheckInEntry(
                     name = ci.siteName,
                     location = ci.siteLocation,
                     date = DATE_FMT.format(Date(ci.timestamp)),
                     siteId = ci.siteId,
-                    status = if (idx == 0) CheckInStatus.RECENT else CheckInStatus.VERIFIED
+                    status = if (now - ci.timestamp < sevenDaysMs) CheckInStatus.RECENT else CheckInStatus.VERIFIED
                 )
             }
     }

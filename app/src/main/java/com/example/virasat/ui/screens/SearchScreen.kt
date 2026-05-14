@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,11 +64,10 @@ fun SearchScreen(
 
     val ctx = LocalContext.current
     val repo = remember(ctx) { RepositoryProvider.getRepository(ctx) }
-    var isLoading by remember(ctx) { mutableStateOf(true) }
-    val allSites by produceState<List<HeritageSite>>(emptyList(), ctx) {
-        value = try { repo.getAllSitesList() } catch (_: Exception) { emptyList() }
-        isLoading = false
-    }
+    var isLoading by remember { mutableStateOf(true) }
+    // Use getAllSites() Flow so list refreshes if DB is reseeded (#10)
+    val allSites by repo.getAllSites().collectAsState(initial = emptyList<HeritageSite>().also { isLoading = false })
+    LaunchedEffect(allSites) { if (allSites.isNotEmpty()) isLoading = false }
 
     var userLocation by remember { mutableStateOf<android.location.Location?>(null) }
     LaunchedEffect(Unit) {

@@ -41,6 +41,8 @@ fun TravelPassportScreen(
 ) {
     val checkIns by viewModel.checkIns.collectAsState()
     val uniqueSites by viewModel.uniqueSiteCount.collectAsState()
+    // #19: level derived from unique site count (every 5 unique sites = 1 level, min 1)
+    val passportLevel = maxOf(1, uniqueSites / 5 + 1)
     val scrollState = rememberScrollState()
     val cs = MaterialTheme.colorScheme
     val type = MaterialTheme.typography
@@ -141,7 +143,7 @@ fun TravelPassportScreen(
                             modifier = Modifier.size(18.dp)
                         )
                         Text(
-                            text = stringResource(R.string.passport_level, 1),
+                            text = stringResource(R.string.passport_level, passportLevel),
                             style = type.labelLarge,
                             color = cs.onPrimaryContainer
                         )

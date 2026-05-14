@@ -47,7 +47,8 @@ class FirestoreDataSource {
     fun observeAllSites(): Flow<List<HeritageSite>> = callbackFlow {
         val listener = sitesCollection
             .addSnapshotListener { snapshot, error ->
-                if (error != null) { close(error); return@addSnapshotListener }
+                // #23: emit empty list on error rather than closing the flow — keeps collectors alive
+                if (error != null) { trySend(emptyList()); return@addSnapshotListener }
                 val sites = snapshot?.documents?.mapNotNull { it.toHeritageSite() } ?: emptyList()
                 trySend(sites)
             }
@@ -71,7 +72,7 @@ class FirestoreDataSource {
         val listener = sitesCollection
             .whereEqualTo("type", type)
             .addSnapshotListener { snapshot, error ->
-                if (error != null) { close(error); return@addSnapshotListener }
+                if (error != null) { trySend(emptyList()); return@addSnapshotListener }
                 val sites = snapshot?.documents?.mapNotNull { it.toHeritageSite() } ?: emptyList()
                 trySend(sites)
             }
@@ -144,7 +145,7 @@ class FirestoreDataSource {
             val listener = col
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener { snapshot, error ->
-                    if (error != null) { close(error); return@addSnapshotListener }
+                    if (error != null) { trySend(emptyList()); return@addSnapshotListener }
                     val checkIns = snapshot?.documents?.mapNotNull { doc ->
                         CheckIn(
                             id = doc.id,
@@ -166,7 +167,7 @@ class FirestoreDataSource {
         val col = userCheckIns() ?: return flowOf(0)
         return callbackFlow {
             val listener = col.addSnapshotListener { snapshot, error ->
-                if (error != null) { close(error); return@addSnapshotListener }
+                if (error != null) { trySend(0); return@addSnapshotListener }
                 trySend(snapshot?.size() ?: 0)
             }
             awaitClose { listener.remove() }
@@ -177,7 +178,7 @@ class FirestoreDataSource {
         val col = userCheckIns() ?: return flowOf(0)
         return callbackFlow {
             val listener = col.addSnapshotListener { snapshot, error ->
-                if (error != null) { close(error); return@addSnapshotListener }
+                if (error != null) { trySend(0); return@addSnapshotListener }
                 val unique = snapshot?.documents?.map { it.getString("siteId") }?.toSet()?.size ?: 0
                 trySend(unique)
             }
@@ -221,7 +222,7 @@ class FirestoreDataSource {
             val listener = col
                 .orderBy("unlockedAt", Query.Direction.DESCENDING)
                 .addSnapshotListener { snapshot, error ->
-                    if (error != null) { close(error); return@addSnapshotListener }
+                    if (error != null) { trySend(emptyList()); return@addSnapshotListener }
                     val facts = snapshot?.documents?.mapNotNull { doc ->
                         UnlockedFact(
                             factId = doc.getString("factId") ?: "",
@@ -243,7 +244,7 @@ class FirestoreDataSource {
             val listener = col
                 .whereEqualTo("siteId", siteId)
                 .addSnapshotListener { snapshot, error ->
-                    if (error != null) { close(error); return@addSnapshotListener }
+                    if (error != null) { trySend(emptyList()); return@addSnapshotListener }
                     val facts = snapshot?.documents?.mapNotNull { doc ->
                         UnlockedFact(
                             factId = doc.getString("factId") ?: "",
@@ -263,7 +264,7 @@ class FirestoreDataSource {
         val col = userUnlockedFacts() ?: return flowOf(0)
         return callbackFlow {
             val listener = col.addSnapshotListener { snapshot, error ->
-                if (error != null) { close(error); return@addSnapshotListener }
+                if (error != null) { trySend(0); return@addSnapshotListener }
                 trySend(snapshot?.size() ?: 0)
             }
             awaitClose { listener.remove() }

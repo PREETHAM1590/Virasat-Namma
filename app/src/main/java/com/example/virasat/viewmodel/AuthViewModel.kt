@@ -1,8 +1,11 @@
 ﻿package com.example.virasat.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.service.FirebaseAuthService
+import com.example.virasat.util.SecurePreferences
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +18,7 @@ data class AuthUiState(
     val success: Boolean = false
 )
 
-class AuthViewModel : ViewModel() {
+class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _loginState = MutableStateFlow(AuthUiState())
     val loginState: StateFlow<AuthUiState> = _loginState.asStateFlow()
@@ -49,6 +52,8 @@ class AuthViewModel : ViewModel() {
                 onSuccess = { user ->
                     _loginState.value = AuthUiState(success = true)
                     val name = user.displayName ?: trimEmail.substringBefore("@")
+                    // #16: persist credentials in encrypted storage
+                    SecurePreferences.saveUserCredentials(getApplication(), name, trimEmail)
                     onSuccess(name, trimEmail)
                 },
                 onFailure = { e ->
@@ -86,6 +91,8 @@ class AuthViewModel : ViewModel() {
             result.fold(
                 onSuccess = {
                     _signUpState.value = AuthUiState(success = true)
+                    // #16: persist credentials in encrypted storage
+                    SecurePreferences.saveUserCredentials(getApplication(), trimName, trimEmail)
                     onSuccess(trimName, trimEmail)
                 },
                 onFailure = { e ->
@@ -129,6 +136,8 @@ class AuthViewModel : ViewModel() {
                     _googleSignInState.value = AuthUiState(success = true)
                     val name = user.displayName ?: user.email?.substringBefore("@") ?: "User"
                     val email = user.email ?: ""
+                    // #16: persist credentials in encrypted storage
+                    SecurePreferences.saveUserCredentials(getApplication(), name, email)
                     onSuccess(name, email)
                 },
                 onFailure = { e ->
@@ -143,6 +152,13 @@ class AuthViewModel : ViewModel() {
     // ── Sign Out ───────────────────────────────────────────────────────────
     fun signOut() {
         FirebaseAuthService.signOut()
+        // #12: clear Room data; #16: clear encrypted credentials
+        SecurePreferences.clearAll(getApplication())
+        viewModelScope.launch {
+            try {
+                RepositoryProvider.getRepository(getApplication()).clearLocalUserData()
+            } catch (_: Exception) { /* best-effort */ }
+        }
     }
 
     fun clearLoginError() { _loginState.value = AuthUiState() }

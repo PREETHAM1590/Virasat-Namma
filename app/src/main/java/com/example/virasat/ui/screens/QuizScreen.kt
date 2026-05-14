@@ -57,8 +57,10 @@ fun QuizScreen(
     }
 
     var questions by remember { mutableStateOf<List<QuizQuestion>>(emptyList()) }
+    // #18: incrementing this key forces LaunchedEffect to re-run and call Gemini on retry
+    var quizRetryKey by remember { androidx.compose.runtime.mutableIntStateOf(0) }
 
-    LaunchedEffect(site, allSites) {
+    LaunchedEffect(site, allSites, quizRetryKey) {
         if (allSites.isEmpty()) return@LaunchedEffect
         if (GeminiHeritageService.isInitialized()) {
             isLoadingGemini = true
@@ -161,9 +163,8 @@ fun QuizScreen(
                     onRetry = {
                         currentQuestion = 0; score = 0; selectedAnswer = null
                         answered = false; showResult = false
-                        if (!GeminiHeritageService.isInitialized()) {
-                            questions = generateQuizQuestionsFromSites(allSites).shuffled().take(8)
-                        }
+                        // #18: bump retry key so LaunchedEffect re-runs Gemini generation
+                        quizRetryKey++
                     },
                     onBack = onBack
                 )

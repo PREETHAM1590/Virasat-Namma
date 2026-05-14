@@ -20,4 +20,7 @@ interface UnlockedFactDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM unlocked_facts WHERE factId = :factId)")
     suspend fun isFactUnlocked(factId: String): Boolean
+
+    @Query("DELETE FROM unlocked_facts")
+    suspend fun clearAllUnlockedFacts()
 }
