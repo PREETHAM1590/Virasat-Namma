@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Virasat QR Codes</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; }
+  .grid { display: flex; flex-wrap: wrap; gap: 24px; }
+  .card { border: 1px solid #ccc; border-radius: 8px; padding: 16px; text-align: center; width: 180px; }
+  .card h3 { font-size: 12px; margin: 8px 0 0; word-break: break-all; color: #333; }
+  @media print { .card { page-break-inside: avoid; } }
+</style>
+</head>
+<body>
+<h1>Virasat Heritage Site QR Codes</h1>
+<button onclick="window.print()">🖨️ Print All</button>
+<br><br>
+<div class="grid" id="qr-grid"></div>
+<script>
+const sites = [
+  ["hampi", "Hampi"],
+  ["mysore-palace", "Mysore Palace"],
+  ["badami", "Badami Caves"],
+  ["belur-halebidu", "Belur & Halebidu"],
+  ["gol-gumbaz", "Gol Gumbaz"],
+  ["coorg", "Coorg"],
+  ["pattadakal", "Pattadakal"],
+  ["aihole", "Aihole"],
+  ["srirangapatna", "Srirangapatna"],
+  ["somanathapura", "Somanathapura"],
+  ["bangalore-palace", "Bangalore Palace"],
+  ["tipu-summer-palace", "Tipu Summer Palace"],
+  ["iskcon-bangalore", "ISKCON Bangalore"],
+  ["bull-temple", "Bull Temple"],
+  ["shravanabelagola", "Shravanabelagola"],
+  ["chitradurga", "Chitradurga Fort"],
+  ["bidar-fort", "Bidar Fort"],
+  ["kittur-fort", "Kittur Fort"],
+  ["lalitha-mahal", "Lalitha Mahal"],
+  ["mirjan-fort", "Mirjan Fort"],
+  ["gajendragad-fort", "Gajendragad Fort"],
+  ["manjarabad-fort", "Manjarabad Fort"],
+  ["bellary-fort", "Bellary Fort"],
+  ["ibrahim-roza", "Ibrahim Roza"],
+  ["jumma-masjid-bijapur", "Jumma Masjid Bijapur"],
+  ["stone-chariot", "Stone Chariot"],
+  ["karkala", "Karkala"],
+  ["gudibande-fort", "Gudibande Fort"],
+  ["nagara-fort", "Nagara Fort"],
+  ["medigeshi-fort", "Madhugiri Fort"],
+  ["bylakuppe", "Bylakuppe"],
+  ["shettihalli-church", "Shettihalli Church"],
+  ["big-banyan", "Big Banyan Tree"],
+  ["sanganakallu", "Sanganakallu"],
+  ["belavadi", "Belavadi"],
+  ["hoysala-temples-mosale", "Mosale Hoysala"],
+  ["vijayanagara", "Vijayanagara"],
+  ["barkur", "Barkur"],
+  ["sagara", "Sagara"],
+  ["sri-sogala-kshetra", "Sri Sogala Kshetra"],
+  ["sonda", "Sonda"],
+  ["halebeedu-museum", "Halebeedu Museum"],
+  ["basavakalyana", "Basavakalyana"],
+  ["keladi", "Keladi"],
+  ["ikkeri", "Ikkeri"],
+  ["sringeri", "Sringeri"],
+  ["udupi", "Udupi"],
+  ["kadri-temple", "Kadri Temple"],
+  ["dharwad-fort", "Dharwad Fort"],
+  ["belagavi-fort", "Belagavi Fort"],
+  ["gulbarga-fort", "Gulbarga Fort"],
+  ["nanjangud-temple", "Nanjangud Temple"],
+  ["melukote-temple", "Melukote Temple"],
+  ["bhoga-nandeeshwara", "Bhoga Nandeeshwara"],
+  ["talakadu", "Talakadu"],
+  ["banavasi", "Banavasi"],
+  ["raichur-fort", "Raichur Fort"]
+];
+
+const grid = document.getElementById("qr-grid");
+sites.forEach(([id, name]) => {
+  const card = document.createElement("div");
+  card.className = "card";
+  const qrDiv = document.createElement("div");
+  card.appendChild(qrDiv);
+  const label = document.createElement("h3");
+  label.textContent = name;
+  card.appendChild(label);
+  const small = document.createElement("small");
+  small.textContent = id;
+  small.style.color = "#999";
+  card.appendChild(small);
+  grid.appendChild(card);
+  new QRCode(qrDiv, { text: id, width: 150, height: 150, correctLevel: QRCode.CorrectLevel.M });
+});
+</script>
+</body>
+</html>
