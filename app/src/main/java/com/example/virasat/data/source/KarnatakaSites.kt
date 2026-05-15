@@ -16,7 +16,7 @@ object KarnatakaSites {
             history = "Founded in 1336 by Harihara I and Bukka Raya I, Hampi became the epicenter of the Vijayanagara Empire. By 1500 CE, it was the world's second-largest medieval-era city after Beijing. The empire fell in 1565 after the Battle of Talikota.",
             architecture = "Hampi showcases Dravidian architecture with elements of Indo-Islamic influence. The Vittala Temple complex features the iconic stone chariot and musical pillars that produce melodic tones when struck.",
             legends = "Legend says that Hampi was the monkey kingdom of Kishkindha from the Ramayana. The boulders are believed to be thrown by Hanuman during the battle between Vali and Sugriva.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/1_Virupaksha_temple_Gopuram_Hampi_Vijayanagar_India.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/f/f2/Hampi_karnataka.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/4/4b/Hampi_virupaksha_temple.jpg",
@@ -51,7 +51,7 @@ object KarnatakaSites {
             history = "The current palace was commissioned in 1897 after the old palace was destroyed in a fire during the wedding of Princess Jayalakshmi. It was completed in 1912 at a cost of ₹42 lakh (about $30 million today).",
             architecture = "Designed by British architect Henry Irwin, the palace blends Hindu, Muslim, Rajput, and Gothic styles. Features include 145-foot five-story tower, marble domes, stained glass ceilings, and intricate woodwork.",
             legends = "The palace is said to be protected by the goddess Chamundeshwari, whose temple sits atop the Chamundi Hills visible from the palace grounds. The royal family still performs pooja here before major events.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Mysore_palace_front_view_001.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1600112356915-089abb8fc71a?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/a/a4/Mysore_Palace_Morning.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/8/81/Mysore_Palace_2812.jpg",
@@ -85,18 +85,14 @@ object KarnatakaSites {
             history = "Built between the 6th and 8th centuries by the Chalukya dynasty, these caves represent some of the earliest examples of Deccan temple architecture. The Chalukyas made Badami their capital from 540 to 757 CE.",
             architecture = "The four caves are carved into a sandstone cliff on the edge of a ravine. Caves 1-3 are dedicated to Shiva and Vishnu, while Cave 4 is a Jain temple. The architecture features elaborate pillar formations and ceiling panels.",
             legends = "Local legend says the Agastya Lake below the caves was created when the sage Agastya prayed to Shiva to provide water. The lake never dries up even during severe droughts.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Cave_Temple_3,_Badami.JPG",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Cave_Temple_4,_Badami.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Rock_Cut_Cave_1,_Badami.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Rock_cut_Cave_2,_Badami.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/A-cave-temple-at-badami.JPG",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/6th_-_7th_century_Badami_cave_temples_layout_exterior_annotated.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Badami_Cave_Temples_-_Sculpture.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Badami_Rock_Cut_Hindu_Jain_Temples_in_Karnataka_India_-_Cave_3.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Jain_Caves_at_Badami,_Karnataka,_India_18.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/The_cave_with_the_best_view_in_Badami_Caves,_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Jain_Caves_at_Badami,_Karnataka,_India_5.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1695453628451-247b9478707c?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/c/c7/Agastya_Lake_with_Badami_Temples.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/d/d9/Badami_cave_view.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/d/d1/Badami_chalukyans_arichitecture.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/0/00/Badami_20.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/3/35/Badami_si05-1387.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/7/7b/Badami_si05-1686.jpg"
             ),
             facts = listOf(
                 Fact("badami-f1", "18-Armed Nataraja", "Cave 1 features a rare 18-armed Nataraja statue with 81 dance poses depicted around it."),
@@ -123,7 +119,7 @@ object KarnatakaSites {
             history = "Built in the 12th century during Hoysala rule, these temples took over 100 years to complete. The Hoysalas were patrons of art and architecture, competing with the Cholas and Chalukyas.",
             architecture = "The temples feature intricate soapstone carvings, with no surface left undecorated. The Darpana Sundari (lady with mirror) and the ceiling panel of Narasimha are world-famous sculptures.",
             legends = "It is said that the sculptors worked with soapstone because it softens when quarried and hardens over time, allowing them to carve impossibly detailed sculptures that last forever.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/The_magestic_Chennakeshava_temple,_Belur,_Karnataka,_India.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1601815264039-67c8ba1a7f98?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/c/c1/Chennakeshava_Temple_at_Belur.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/f/f5/12th-century_Belur_Hindu_temples_complex%2C_exterior.jpg",
@@ -157,7 +153,7 @@ object KarnatakaSites {
             history = "Completed in 1656, this monument took 20 years to build. The whispering gallery under the dome is famous — even the faintest sound is echoed 7-10 times.",
             architecture = "The cube structure supports a hemispherical dome with a diameter of 38 meters internally. The four minarets at the corners act as staircases to the gallery. The building covers an area of 18,000 sq ft.",
             legends = "The Sultan wanted his tomb to surpass all others. Legend says the architect was buried alive inside the monument so he could never replicate the design elsewhere.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Gol_Gumbaz_at_Vojayapura_at_Karnataka,_India.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1707063880573-b15e1f533d9f?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/b/b6/Gol_Gumbaz.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/3/31/Gol_Gumbaz_at_Bijapur%2C_Karnataka.jpg",
@@ -191,7 +187,7 @@ object KarnatakaSites {
             history = "The fort changed hands between the Kodavas, Tipu Sultan, and the British. The British added a church and a museum within its walls. The fort stands as a testament to the region's tumultuous history.",
             architecture = "The fort features a two-story palace inside, a church built by the British, and a museum. The walls offer panoramic views of the misty Western Ghats and coffee plantations.",
             legends = "The nearby Raja's Seat is where kings watched sunsets. Legend says the Kodava kings could communicate with spirits of ancestors during the monsoon mist.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Madikeri_fort2.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1547908771-05259d82e2df?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/6/6a/Madikeri_fort2.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/4/4f/Madikeri_Fort%2C_Kodagu.jpg",
@@ -225,7 +221,7 @@ object KarnatakaSites {
             history = "The Chalukyas built Pattadakal as their alternate capital and coronation site between 700-750 CE. The Virupaksha Temple was built by Queen Lokamahadevi to commemorate her husband Vikramaditya II's victories. The site has 8 temples — 4 in Dravidian style and 4 in Nagara style.",
             architecture = "The Virupaksha Temple is the largest, featuring a sanctum with a huge linga, pillared halls, and elaborate carvings depicting scenes from the Ramayana and Mahabharata. The uniqueness lies in having both Nagara (curvilinear shikhara) and Dravidian (pyramidal) styles side by side.",
             legends = "Legend says the Pattadakal inscription describes the temple as a 'work of gods' — carved by divine architects. The massive stone blocks were reportedly transported using elephants and ramps.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Virupaksha_Temple-Pattadakal-Karnataka-01.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/0/03/Pattadakal_000.JPG",
                 "https://upload.wikimedia.org/wikipedia/commons/6/6b/Virupaksha_Temple%2C_Pattadakal%2C_Karnataka.jpg",
@@ -259,7 +255,7 @@ object KarnatakaSites {
             history = "Aihole was the first capital of the Chalukya dynasty before they moved to Badami. It served as a laboratory for temple architecture between 450-700 CE. The Durga Temple combines Buddhist, Jain, and Hindu architectural elements.",
             architecture = "Various architectural experiments — apsidal (curved) sanctums inspired by Buddhist chaityas and standard square sanctums. The Lad Khan Temple has a two-story structure with 12 pillars — possibly a royal assembly hall.",
             legends = "Local legend says Aihole was where the ancient architect Maya created architectural marvels that even gods envied. The Durga Temple's unusual circular plan is said to have been inspired by a dream.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Durga_Temple_-_Aihole_with_cloud.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1561361058-c24cecae35ca?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/b/bd/Durga_temple_Aihole.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/5/53/Aihole_4.JPG",
@@ -293,7 +289,7 @@ object KarnatakaSites {
             history = "Originally a sacred site with the Ranganathaswamy Temple, the town became Hyder Ali's capital in 1774. Tipu Sultan chose it as his capital and built extensive fortifications. This is where Tipu Sultan died in battle on May 4, 1799.",
             architecture = "Fort walls 10 meters high with 4 gates (Goot Baza, Bangalore Gate, Delhi Gate, Mysore Gate) and water-filled moats. The Dariya Daulat Palace has beautiful teak interiors and wall paintings depicting Tipu's court.",
             legends = "Legend says the island was chosen because the river Kaveri flows around it like a moat — making it naturally defensible. The temple's deity Lord Ranganatha is said to have been installed by Lord Rama himself.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Srirangapatna_Fort41.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1566132127697-4524fea60007?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/b/b1/Gumbaz_-_Srirangapatna.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/6/62/Srirangapatna-2016.jpg",
@@ -327,7 +323,7 @@ object KarnatakaSites {
             history = "Built in 1268 by Soma, a commander under the Hoysala king Narasimha III. Unlike Belur and Halebidu which took over a century, Somanathapura was built in a single generation — hence its remarkable consistency.",
             architecture = "The temple has three sanctums dedicated to Kesava (central), Shiva (south), and Brahma (north). The star-shaped plan has 24 points. The outer wall has over 600 elephants, 12 bands of sculptures depicting puranic stories.",
             legends = "Legend says Soma built this temple to earn merit before his death. The intricate carvings are so precise that local artisans say the sculptors could have been possessed by divine inspiration.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Kesava_Temple_Somanathapura.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1626010448982-0d629a5c0223?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/6/6f/Chennakesava_Temple_at_Somanathapura.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/9/9f/13th_century_Keshava_Hindu_temple_front_view.jpg",
@@ -361,7 +357,7 @@ object KarnatakaSites {
             history = "Built in 1887 by Chamarajendra Wadiyar as a summer residence. Built in 40 days using hired British engineers. The Wadiyar family used it until the 1970s. The palace grounds hosted India's first air show in 1930.",
             architecture = "Fortified tower (like Windsor Castle), arched doorways, Tudor-style wooden pillars, elaborate corridors. Interior has painted ceilings, carved furniture, and royal portraits. Ground floor has a ballroom with original Italian floor tiles.",
             legends = "Legend says the palace was built in a hurry because the king wanted to impress the British. The four towers represent the four directions, and the palace is said to be protected by Wadiyar ancestors' spirits.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Aerial_view_of_Bangalore_Palace_and_Palace_Grounds_(2).jpg",
+            imageUrl = "https://images.unsplash.com/photo-1569158222040-3a4fab1bc6f0?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/2/2f/BLR_palace_main_entrance.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/1/12/Bangalore_Palace.jpg",
@@ -395,7 +391,7 @@ object KarnatakaSites {
             history = "Built in 1791 as Hyder Ali's retreat. Tipu Sultan used it for official meetings. After the British siege of 1799, it was taken over and converted into a military office. Declared a protected monument in 1970.",
             architecture = "Built entirely of teak wood with ornamental arches and balconies. Two-story structure with open courtyard and fountain. Intricate floral patterns and animal motifs carved into pillars. Roof has elegant chhatris (dome pavilions).",
             legends = "Legend says Tipu received spies and emissaries in this palace. The wooden arches are said to contain secret compartments. Some believe the palace has tunnels leading to the Bangalore Fort.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Tipu_Sultan%27s_Summer_Palace_(15732183225).jpg",
+            imageUrl = "https://images.unsplash.com/photo-1566132127697-4524fea60007?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/7/7b/The_summer_palace_of_Tipu_Sultan.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/5/58/Tippu_Sultan_Summer_Palace_Bangalore.jpg",
@@ -429,7 +425,7 @@ object KarnatakaSites {
             history = "Inaugurated in 1997 by Dr. Shankar Dayal Sharma. Built at a cost of ₹70 crore. One of Bangalore's most visited religious sites.",
             architecture = "17-meter-tall shikhara with intricate carvings. Inner sanctum houses deities of Radha and Krishna. Walls have frescoes depicting the Bhagavata Purana. 6000-seat auditorium and museum of Indian culture.",
             legends = "The main deity is said to be very powerful — many devotees report miracles. Known for Sunday mass feasts (mahaprasada).",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/ISKCON_Banglaore_Temple.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/c/ce/Iskcon_bengaluru.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/c/ce/Iskcon_bengaluru.jpg",
@@ -463,7 +459,7 @@ object KarnatakaSites {
             history = "Built in the 16th century during the rule of King Kempe Gowda. The statue was carved by sculptor Nijalingappa. The area Basavanagudi is named after this statue.",
             architecture = "Carved in the round from a single massive granite boulder. Nandi faces east toward the idol of Shiva. The base has inscriptions in Kannada.",
             legends = "Legend says a deity inhabits the statue — people claim it grows a little bigger each year.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Sri_Big_Bull_Temple,_Basavangudi,_Bengaluru,_India.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1626010448982-0d629a5c0223?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/b/b7/Bull_temple_02.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/6/67/Big_bull_temple_bangalore_01.jpg",
@@ -498,18 +494,14 @@ object KarnatakaSites {
             history = "The statue was commissioned by Chavundaraya, a Ganga minister, in 981 CE. The town has been a center of Jain learning for over 2000 years and hosts the spectacular Mahamastakabhisheka festival every 12 years.",
             architecture = "The statue stands atop Vindhyagiri Hill, accessible by 700 steps. The figure is carved from a single block of granite and shows such detail that individual curls of hair and anthills at the feet are visible. The Chandragiri Hill opposite has several Jain basadis.",
             legends = "Legend says the statue was carved from a single rock that appeared miraculously at the site. Another legend says the sculptor used a special mirror to check his work while carving the back of the statue.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Chavundaraya_Basadi_on_Chandragiri_hill_at_Shravanabelagola.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sanctum_guarded_by_a_Yaksha_and_a_Yakshi_in_the_Chavundaraya_Basadi_at_Shravanabelagola.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Frontal_eastern_part_of_the_Chavundaraya_Basadi_at_Shravanabelagola.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Pillared_mantapa_in_the_Chavundaraya_Basadi_at_Shravanabelagola.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Rear_western_view_of_Chavundaraya_Basadi_at_Shravanabelagola.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Rear_south_western_view_of_the_Chavundaraya_Basadi_at_Shravanabelagola.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Frontal_south_eastern_view_of_the_Chavundaraya_Basadi_at_Shravanabelagola.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Frontal_north_eastern_view_of_the_Chavundaraya_Basadi_at_Shravanabelagola.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Staircase_leading_to_the_balcony_of_the_Chavundaraya_Basadi_at_Shravanabelgola.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Rear_view_of_two_storeyed_Chavundaraya_basti,_to_the_right_is_Chandranatha_bas.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Top_portion_of_the_enclosure_that_houses_the_Tyagada_Brahmadeva_pillar_on_Vindyagiri_hill_at_Shravanabelagola.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1602670884688-abb78db59cf0?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/d/dd/Shravanabelagola_%2851057107106%29.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/7/7a/Shravanabelagola_%2851057107466%29.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/f/fd/Shravanabelagola_%2851057203252%29.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/1/1d/Chandragiri_seen_from_Vindhyagiri_hill.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/b/b3/Footprint_of_Chandragupta_Maurya.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/1/13/A_historical_monument%2C_India_%282019%29_1.jpg"
             ),
             facts = listOf(
                 Fact("shravan-f1", "World's Largest", "The 57-foot statue is the largest monolithic statue in the world."),
@@ -536,7 +528,7 @@ object KarnatakaSites {
             history = "Built between the 10th and 18th centuries by the Nayakas of Chitradurga. The fort withstood multiple sieges before finally falling to Hyder Ali in 1779 through betrayal. The heroic tale of Obavva, who single-handedly defended a crevice, is legendary.",
             architecture = "Built on massive granite hills, the fort uses natural boulders as part of its defense. Features include the Hidimbeshwara Temple, rainwater harvesting systems, granaries, and secret escape tunnels. The fort spans 8km in circumference.",
             legends = "The legend of Obavva — a guard's wife who killed enemy soldiers one by one using a wooden pestle (onake) while her husband was on lunch break — is commemorated here. The crevice she defended is still called 'Obavvana Kindi'.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Chitradurga_fort_Image_(10),_Karnataka,_India.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1586293926075-69a00febf780?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/b/b4/Chitradurga_Fort_4218.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/7/7f/Ramparts_of_the_Fort%2C_Chitradurga.jpg",
@@ -570,7 +562,7 @@ object KarnatakaSites {
             history = "Built in 1427 by Sultan Ahmed Shah Wali of the Bahmani dynasty. The fort served as the capital of the Bidar Sultanate and later the Barid Shahi dynasty. It was eventually conquered by the Mughals under Aurangzeb.",
             architecture = "The fort features a triple moat system, seven massive gates, and numerous palaces including the Rangeen Mahal with its mother-of-pearl inlay work. The Turkish cannon foundry was the first of its kind in India.",
             legends = "Legend says the fort has secret underground tunnels connecting to Golconda Fort in Hyderabad, over 140km away. The tunnels were used by royalty to escape during sieges.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Bidar_Fort_Museum.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1696239108269-448ce8d0bacc?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/e/e3/Bidar_Fort_01.JPG",
                 "https://upload.wikimedia.org/wikipedia/commons/e/ef/Bidar_Fort_02.JPG",
@@ -604,7 +596,7 @@ object KarnatakaSites {
             history = "Built by the Maratha chief Allappa Gowda Sardesai in the 17th century. The fort became famous when Queen Chennamma led an armed rebellion against the British in 1824, defeating them and taking prisoners before eventually falling.",
             architecture = "The fort has a palace complex, an archaeological museum, and several monuments. The palace features traditional North Karnataka architecture with thick stone walls and elegant courtyards.",
             legends = "Legend says Queen Chennamma was blessed by the local deity before her battle, and a secret underground passage allowed her soldiers to surprise the British. The passage is said to still exist but has never been found.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Kittur_fort.jpeg",
+            imageUrl = "https://images.unsplash.com/photo-1696239108269-448ce8d0bacc?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/8/8c/Kittur_09.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/3/3e/Kittur_01.jpg",
@@ -638,7 +630,7 @@ object KarnatakaSites {
             history = "Built in 1921 by Maharaja Krishna Raja Wadiyar IV to host the Viceroy of India. The palace was designed by E.W. Fritchley and features Renaissance-style architecture with domes and collonades.",
             architecture = "Painted pure white with striking Italianate architecture. Features a grand staircase, Venetian marble floors, polished woodwork, and a large dome. The palace has been featured in several Bollywood films.",
             legends = "Legend says the palace was built in white to symbolize peace and prosperity after World War I. The Viceroy was so impressed that he extended his stay by a month.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Lalitha_Mahal_Palace,_Mysuru.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1600112356915-089abb8fc71a?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/2/2a/Lalitha_Mahal_Palace_Hotel.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/b/bf/Lalitha_Mahal_1.jpg",
@@ -672,7 +664,7 @@ object KarnatakaSites {
             history = "Built in the 16th century by Queen Chennabhairadevi of Gersoppa, the fort served as a strategic port for the pepper trade. The queen ruled for 54 years and was known as the 'Queen of Pepper'. The fort was later captured by the Vijayanagara Empire and then the Portuguese.",
             architecture = "Built with laterite stones, the fort features bastions, secret tunnels, watchtowers, and a deep well. The double-walled structure covers an area of about 10 acres and includes a temple and a mosque.",
             legends = "Legend says Queen Chennabhairadevi had a secret tunnel connecting the fort to her palace, allowing her to escape during enemy attacks. The tunnel is believed to still exist beneath the fort.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Mirjan_Fort,_Karnataka_(60720).jpg",
+            imageUrl = "https://images.unsplash.com/photo-1586293926075-69a00febf780?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/8/82/Mirjan_Fort%2C_Karnataka.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/6/6b/Front_e_view_of_Mirjan_fort1.jpg",
@@ -706,7 +698,7 @@ object KarnatakaSites {
             history = "The town was an important military and religious center under the Chalukyas and later the Marathas. The fort was strategically positioned to guard the trade routes between the Deccan plateau and the coast.",
             architecture = "The fort is built on a hill and features ancient temples dedicated to Lord Shiva. The main temple has a towering gopuram and intricate carvings typical of Chalukyan architecture.",
             legends = "Legend says the hill was the site of a great battle between gods and demons, and Lord Shiva appeared here as Gajendragad — the elephant's rock — to bless the victorious gods.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Gajendragad_Fort_photo_1.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1696239108269-448ce8d0bacc?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/f/f4/Fort_at_Gajendragad.JPG",
                 "https://upload.wikimedia.org/wikipedia/commons/9/92/Gajendragad_fort_2.JPG",
@@ -740,7 +732,7 @@ object KarnatakaSites {
             history = "Built by Tipu Sultan in 1792 after he got the idea from French military engineers. The fort was named after the mist (manju) that envelops the area. It was used to store arms and ammunition.",
             architecture = "Built in the shape of an eight-pointed star, a design inspired by European military forts. The central area is surrounded by walls and bastions arranged in a star pattern, allowing defenders to fire in all directions.",
             legends = "Legend says Tipu Sultan himself designed the fort after learning about European star forts. The fort was never conquered during his lifetime.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Manjarabad_Fort_2.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1696239108269-448ce8d0bacc?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/7/72/Entrance_to_Manjarabad_Fort.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/3/35/In_Manjarabad_fort.jpg",
@@ -774,7 +766,7 @@ object KarnatakaSites {
             history = "The fort was built during the Vijayanagara era and later strengthened by Hyder Ali. The upper fort was renovated by a French engineer under Hyder Ali's command, and legend says the engineer was killed for failing to build a parapet.",
             architecture = "The Upper Fort sits atop a 600-foot granite hill and features strong ramparts, secret tunnels, and granaries. The Lower Fort has bastions, a temple, and a citadel. The fort showcases a blend of Vijayanagara and Islamic architectural styles.",
             legends = "Legend says the French engineer who built the fort was executed by Hyder Ali because he forgot to build a parapet for soldiers. The engineer's grave is said to be somewhere near the fort.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Bellary_Fort.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1684830235389-60a88c4e626e?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/7/77/Ballari-Fort-01.JPG",
                 "https://upload.wikimedia.org/wikipedia/commons/b/be/Ballari-Fort-02.JPG",
@@ -808,18 +800,14 @@ object KarnatakaSites {
             history = "Built in 1627 by Ibrahim Adil Shah II for his wife Taj Sultana. The king was later buried here as well. He was a patron of arts and music, and his tomb reflects his refined aesthetic sensibilities.",
             architecture = "The tomb and the accompanying mosque are set in a beautiful garden. The structure features finely carved stone screens (jalis), Persian inscriptions, and elegant minarets. The symmetry and proportions are considered perfect.",
             legends = "Legend says the monument was one of the inspirations for the Taj Mahal. Some believe the architect of the Taj Mahal studied Ibrahim Roza before designing the Taj.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Ibrahim_Rauza,_Bijapur,_Karnataka.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Ibrahim_rauza,_Bijapur.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Bijapur_Ibrahim_Rauza_mosque.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Ibrahim_Rauza,_Bijapur.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Bijapur_-_Ibrahim_Rouza_Mosque.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/The_Ibrahim_Rauza_of_Bijapur_(7).jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/The_Ibrahim_Rauza_of_Bijapur_(19).jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Ibrahim_Rauza_Tomb_-_1.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/The_Ibrahim_Rauza_of_Bijapur_(20).jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/The_Ibrahim_Rauza_of_Bijapur_(5).jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/The_Ibrahim_Rauza_of_Bijapur_(3).jpg"
+            imageUrl = "https://images.unsplash.com/photo-1707063880573-b15e1f533d9f?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/4/41/Ibrahim_Rauza%2C_Bijapur%2C_Karnataka.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/0/01/Ibrahim_Rauza%2C_Bijapur.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/8/81/Bijapur_Ibrahim_Rauza_mosque.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/f/f9/Bijapur_-_Ibrahim_Rouza_Mosque.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/7/73/Ibrahim_Rauza_Tomb_-_1.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/8/82/Ibrahim_rauza%2C_Bijapur.jpg"
             ),
             facts = listOf(
                 Fact("ibrahim-f1", "Taj Mahal Inspiration", "Many historians believe Ibrahim Roza inspired the design of the Taj Mahal."),
@@ -846,18 +834,14 @@ object KarnatakaSites {
             history = "Built by Ali Adil Shah I in 1578, the mosque was constructed to rival the great mosques of the Mughal Empire. The Sultan wanted to create a center of Islamic learning and worship in the Deccan.",
             architecture = "The mosque features a large central dome supported by massive arches, surrounded by smaller domes. The mihrab is decorated with gold-inlaid inscriptions from the Quran. The courtyard is one of the largest in India.",
             legends = "Legend says the Sultan consulted architects from Persia and Turkey to design the mosque, and the foundation was laid on an auspicious date calculated by royal astrologers.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Jama_Masjid_Bijapur.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Jumma_Masjid_Vijayapura_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Jama_Masjid_Bijapur.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Jumma_Masjid_Vijayapura_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Jama_Masjid_Bijapur.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Jumma_Masjid_Vijayapura_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Jama_Masjid_Bijapur.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Jumma_Masjid_Vijayapura_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Jama_Masjid_Bijapur.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Jumma_Masjid_Vijayapura_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Jama_Masjid_Bijapur.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1707063880573-b15e1f533d9f?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/3/31/Bijapur_-_Jumma_Masjid.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/2/21/Bijapur_-_Jumma_Masjid_Interior.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/a/a0/Bijapur_-_Jumma_Masjid_Interior_2.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bijapur_-_Jumma_Masjid_Dome.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/c/cb/Inside_Jama_Masjid%2C_Bijapur%2C_Karnataka.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/c/c0/Jama_Masjid_Bijapur.jpg"
             ),
             facts = listOf(
                 Fact("jumma-f1", "Largest Courtyard", "One of the largest mosque courtyards in South India."),
@@ -884,18 +868,14 @@ object KarnatakaSites {
             history = "Built in the 16th century during the reign of King Krishnadevaraya. The chariot was designed to resemble a wooden chariot used in temple processions and was originally mobile on stone wheels.",
             architecture = "The chariot is carved from a single granite block with rotating stone wheels (now fixed to prevent damage), ornate pillars, and a shrine for Garuda. The wheels have spokes and axles carved with astonishing precision.",
             legends = "Legend says the chariot was so perfectly balanced that it could be moved with a single finger. The British reportedly tried to move it and broke one of the wheels, after which the wheels were permanently fixed.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Iconic_Stone_Chariot_@_Vittala_Temple,_Hampi,_Karnataka.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/The_Grand_Stone_chariot_in_the_midst_of_Mantapas_at_Vittala_Temple,_Hampi.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Vittala_Temple_-_Garuda_Stone_Chariot_-_Rupesh_Sarkar_-_24.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Hampi_Garuda_stone_chariot.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Stone_Chariot,_Hampi_2.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Vittala_Temple_chariot-Hampi-Karnataka-DSC_0054.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Stone_Chariot_at_Vittala_temple,_Hampi.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Hampi,_Vittala_Temple,_chariot_(9881832023).jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Vittala_temle.Stone_chariot_hampi.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/HBPA_N_477_Vittala_Temple_from_Anjanadri_Hill.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Iconic_Stone_Chariot_@_Vittala_Temple,_Hampi,_Karnataka.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/a/ae/Stone_Chariot_View%2C_Hampi.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/f/f5/Stone_chariot_Hampi.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/3/3d/Hampi_Vitthala_Temple_3465.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/f/f2/Hampi_karnataka.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/4/4b/Hampi_virupaksha_temple.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/6/65/Hampi_Bazaar.jpg"
             ),
             facts = listOf(
                 Fact("stonechariot-f1", "Single Granite Block", "The entire chariot is carved from one massive piece of granite."),
@@ -922,18 +902,14 @@ object KarnatakaSites {
             history = "Karkala was a major center of Jainism under the Bhairarasa Odeyars who ruled as feudatories of the Vijayanagara Empire. The Bahubali statue was installed in 1432 by King Veerapandya Bhairarasa.",
             architecture = "The 42-foot granite statue stands on a rocky hill called Gommateshwara Betta. The Chaturmukha Basadi is a unique four-faced Jain temple with identical entrances on all four sides. The Neminatha Basadi has exquisite stone carvings.",
             legends = "Legend says the king installed the statue after a sage advised him that it would bring peace and prosperity to his kingdom. The statue is said to have been carved from a single boulder that miraculously appeared at the site.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Bahubali_karkala.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Gomateswara_Bahubali_Karkala_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Karkala_Bahubali.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Jaina_statue_of_Gomateswara_N-KA-B201.JPG",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Gomateswara_Bahubali_Karkala_Karnataka_03.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Gomateswara_Bahubali_Karkala_Karnataka_07.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Gomateswara_Bahubali_Karkala_Karnataka_05.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/64_Tirthankara_Gomateswara_Bahubali_Karkala_Karnataka_01.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Gomateswara_Bahubali_Karkala_Karnataka_06.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Gomateswara_Bahubali_Karkala_Karnataka_04.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Kshetrapala_Gomateswara_Bahubali_Karkala_Karnataka_08.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1602670884688-abb78db59cf0?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/f/f0/Bahubali_karkala.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/c/ce/Gomateswara_Bahubali_Karkala_Karnataka.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/9/98/Karkala_Bahubali.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/3/32/Bahubali_4.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/5/5c/Bahubali_at_Karkala.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/8/80/Bahubali_at_Karkala_%2886605%29.jpg"
             ),
             facts = listOf(
                 Fact("karkala-f1", "Second Largest", "The 42-foot Bahubali is the second largest monolithic statue in Karnataka."),
@@ -960,7 +936,7 @@ object KarnatakaSites {
             history = "Built in the 17th century by Byre Gowda, a local chieftain who ruled the region. The fort was strategically built to control the surrounding trade routes and defend against invading armies.",
             architecture = "The fort uses natural rock formations as part of its defense structure. It features ramparts built on massive boulders, granaries, water cisterns, and a temple dedicated to Lord Shiva at the summit.",
             legends = "Legend says Byre Gowda was a just ruler who could communicate with birds, and the fort's location was chosen by a divine eagle that guided him to the hilltop.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Gudibande_fort.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1684830235389-60a88c4e626e?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/e/e9/Gudibande_fort.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/2/2d/Gudibande_%2826069965140%29.jpg",
@@ -993,7 +969,7 @@ object KarnatakaSites {
             history = "Built by the Keladi Nayakas in the 16th century, the fort served as their capital. It was later captured by Hyder Ali and then the British. The fort has witnessed several battles between regional powers.",
             architecture = "The fort features massive stone walls, bastions, and a palace complex. The Devagange tank with its seven connected pools is an engineering marvel. The fort is surrounded by dense forest.",
             legends = "Legend says the fort has a secret underground tunnel that leads to the Keladi capital at Ikkeri, used by royalty during emergencies.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Nagara_Shimoga_Karnataka_India.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1696239108269-448ce8d0bacc?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/2/22/Nagara_Fort.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/7/77/Entrence_of_the.JPG",
@@ -1026,7 +1002,7 @@ object KarnatakaSites {
             history = "Built during the Vijayanagara period, the fort was later controlled by the Mysore Wadiyars and then the British. The name Medigeshi comes from a local chieftain Medigeshi Nayaka.",
             architecture = "The fort features massive stone walls, bastions, and a temple at the summit. The steep ascent makes it naturally defensible. The fort walls follow the contours of the hill.",
             legends = "Legend says the fort has hidden treasure buried by the Vijayanagara kings, and the location is marked by a secret inscription that no one has been able to decode.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Madhugiri_fort_Karnataka.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1696239108269-448ce8d0bacc?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/2/28/Medigeshi_Fort.jpg"
             ),
@@ -1055,18 +1031,14 @@ object KarnatakaSites {
             history = "Established in 1961 as a refugee settlement for Tibetans fleeing the Chinese occupation. The Namdroling Monastery was established by His Holiness Pema Norbu Rinpoche and has grown into one of the largest teaching centers of the Nyingma lineage of Tibetan Buddhism.",
             architecture = "The Golden Temple features Tibetan-style architecture with vibrant murals, golden statues of Buddha, and ornate decorations. The main prayer hall houses three massive golden statues — Buddha, Padmasambhava, and Amitayus.",
             legends = "Legend says the site was chosen because it resembled the Tibetan landscape, and the local deities welcomed the Tibetans. The monastery is believed to be blessed by Padmasambhava, the founder of Tibetan Buddhism.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Golden_Temple_(Namdroling_Monastery),_Bylakuppe,_Kodagu_(Coorg),_Karnataka.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Namrodoling_Monastery_(Golden_Temple)_Bylakuppe_6716.JPG",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Namrodoling_Monastery_(Golden_Temple)_Bylakuppe_6712.JPG",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Namrodoling_Monastery_(Golden_Temple)_Bylakuppe_6714.JPG",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Namrodoling_Monastery_(Golden_Temple)_Bylakuppe_6713.JPG",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Namrodoling_Monastery_(Golden_Temple)_Bylakuppe_6715.JPG",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Namrodoling_Monastery_(Golden_Temple)_Bylakuppe_6751.JPG",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Namrodoling_Monastery_(Golden_Temple)_Bylakuppe_6772.JPG",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Namrodoling_Monastery_(Golden_Temple)_Bylakuppe_6781.JPG",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Namrodoling_Monastery_(Golden_Temple)_Bylakuppe_6773.JPG",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Namrodoling_Monastery_(Golden_Temple)_Bylakuppe_6782.JPG"
+            imageUrl = "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/b/b5/Golden_Temple_%28Namdroling_Monastery%29%2C_Bylakuppe%2C_Kodagu_%28Coorg%29%2C_Karnataka.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/8/89/Bylakuppe_15.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/d/d4/Bylakuppe_-_Namdroling_Monastery_10.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/f/f4/Bylakuppe_-_Namdroling_Monastery_11.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/9/98/Bylakuppe_-_Namdroling_Monastery_40.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/1/10/Bylakuppe_-_Namdroling_Monastery_41.JPG"
             ),
             facts = listOf(
                 Fact("bylakuppe-f1", "Largest Tibetan Settlement", "The biggest Tibetan settlement in South India, home to over 70,000 Tibetans."),
@@ -1093,18 +1065,14 @@ object KarnatakaSites {
             history = "Built in 1860 by French missionaries for the wealthy British estate owners. After the construction of the Gorur Dam on the Hemavathi River in 1960, the church was abandoned and partially submerged.",
             architecture = "Built in Gothic style with pointed arches, ribbed vaults, and stained glass windows. The church was built with mortar and bricks, and its partial submersion has created a surreal atmosphere that attracts photographers.",
             legends = "Legend says the church bells can still be heard on quiet nights, even though the bells were removed long ago. Some say the spirits of the missionaries still guard the submerged church.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Shettihalli_Church_(lateral_view).jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Picturesque_Shettihalli_Rosary_Church_,_Hassan_04.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Frame_in_Frame_-Shettihalli_Rosary_Church_,_Hassan_10.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/In_Monochrome_-_Shettihalli_Rosary_Church_,_Hassan_02.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/A_Quiet_Sunset_at_Shettihalli_Rosary_Church_,_Hassan_11.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Shettihalli_Rosary_Church_,_Hassan_01.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/In_the_reflections_of_Hemavathi_-_Shettihalli_Rosary_Church_,_Hassan_06.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/French_arches_at_Shettihalli_Rosary_Church_,_Hassan_08.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Ruins_of_Shettihalli_Rosary_Church_,_Hassan_07.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sun_Setting_at_Shettihalli_Rosary_Church_,_Hassan_09.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Old_French_Architecture_-_Shettihalli_Rosary_Church_,_Hassan_05.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1586293926075-69a00febf780?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/2/2f/Front_view_of_Shettihalli_Church.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/f/f4/Picturesque_Shettihalli_Rosary_Church_%2C_Hassan_04.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/5/53/Ruins_of_Shettihalli_Rosary_Church_%2C_Hassan_07.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/c/c7/Frame_in_Frame_-Shettihalli_Rosary_Church_%2C_Hassan_10.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/b/be/In_the_reflections_of_Hemavathi_-_Shettihalli_Rosary_Church_%2C_Hassan_06.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/1/14/A_Quiet_Sunset_at_Shettihalli_Rosary_Church_%2C_Hassan_11.jpg"
             ),
             facts = listOf(
                 Fact("shettihalli-f1", "Submerged Church", "Partially submerged after the Hemavathi Dam was built in 1960."),
@@ -1131,18 +1099,14 @@ object KarnatakaSites {
             history = "The tree is believed to be over 400 years old and has been a natural landmark for centuries. It has survived lightning strikes and urbanization. The main trunk died in the early 2000s, but the tree continues to thrive through its aerial roots.",
             architecture = "The tree covers approximately 3 acres with hundreds of aerial roots that have become full trunks. The canopy forms a natural cathedral-like structure that can shelter hundreds of people.",
             legends = "Legend says the tree was planted by a saint who blessed the area with prosperity. Some believe the tree is inhabited by spirits who protect the surrounding villages.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Dodda_Alada_Mara.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Dodda_Alada_Mara_banyan_8.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Dodda_Alada_Mara_banyan_5.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Dodda_Alada_Mara_banyan_2.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Dodda_Alada_Mara_banyan_4.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Dodda_Alada_Mara_banyan_3.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Dodda_Alada_Mara_banyan_1.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Dodda_Alada_Mara_banyan_7.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Dodda_Alada_Mara_banyan_6.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Description_about_Dodda_Alada_Mara.JPG",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Dod_alada_mara.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1586293926075-69a00febf780?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/2/2f/Dodda_Alada_Mara.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/c/ce/Dodda_Alada_Mara_banyan_5.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/3/3c/Dodda_Alada_Mara_banyan_8.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/2/2f/Dodda_Alada_Mara.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/c/ce/Dodda_Alada_Mara_banyan_5.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/3/3c/Dodda_Alada_Mara_banyan_8.jpg"
             ),
             facts = listOf(
                 Fact("banyan-f1", "3 Acres Wide", "The tree covers an area of about 3 acres — one of India's largest."),
@@ -1169,18 +1133,14 @@ object KarnatakaSites {
             history = "Archaeological evidence shows human habitation at Sanganakallu dating back to the Neolithic period (around 3000 BCE). The site has stone circles, burial chambers, and rock paintings that provide insights into prehistoric life.",
             architecture = "The site features megalithic stone circles, rock shelters with prehistoric paintings, and burial chambers. The rock art depicts animals, human figures, and symbols that offer a glimpse into the beliefs of prehistoric people.",
             legends = "Local legends say the stones were placed by giants who once inhabited the region. The rock paintings are believed to have been created by shamans during spiritual rituals.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Sanganakallu_Ballari_Karnataka.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sanganakallu_prehistoric_site.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sanganakallu_Ballari_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sanganakallu_prehistoric_site.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sanganakallu_Ballari_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sanganakallu_prehistoric_site.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sanganakallu_Ballari_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sanganakallu_prehistoric_site.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sanganakallu_Ballari_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sanganakallu_prehistoric_site.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sanganakallu_Ballari_Karnataka.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1684830235389-60a88c4e626e?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/f/f2/Hampi_karnataka.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/7/77/Ballari-Fort-01.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/b/be/Ballari-Fort-02.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/e/ee/Bellary_Fort_1.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/f/f2/Hampi_karnataka.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/7/77/Ballari-Fort-01.JPG"
             ),
             facts = listOf(
                 Fact("sanganakallu-f1", "5000+ Years", "Evidence of human habitation dating back to 3000 BCE."),
@@ -1207,18 +1167,14 @@ object KarnatakaSites {
             history = "Built in 1200 CE by Hoysala King Veera Ballala II. The temple was commissioned to commemorate a military victory and is dedicated to Vishnu in three forms.",
             architecture = "The temple features a unique trikuta (three-celled) plan with three sanctums dedicated to different forms of Vishnu. The ornate pillars and ceilings showcase the zenith of Hoysala craftsmanship.",
             legends = "Legend says the temple was built at the very spot where the king's army camped before a victorious battle, and the deity was installed to honor the divine blessings.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Veera_Narayana_temple_Belavadi.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Belavadi_temple_Hassan_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Belavadi_Hoysala_temple.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Veera_Narayana_temple_Belavadi.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Belavadi_temple_Hassan_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Belavadi_Hoysala_temple.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Veera_Narayana_temple_Belavadi.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Belavadi_temple_Hassan_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Belavadi_Hoysala_temple.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Veera_Narayana_temple_Belavadi.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Belavadi_temple_Hassan_Karnataka.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1626010448982-0d629a5c0223?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/e/e8/Veeranarayana_temple_at_Belavadi%2C_Chikkamagaluru_district.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/6/62/Veeranarayana_temple_in_belavadi_Karnataka_state_India.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/3/38/KA_110_Belavadi_Veera_Narayana_Temple_small.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/1/12/KAVNB_05_Belavadi_above_front_of_temple.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/b/bc/KA_105_Belavadi_Veera_Narayana_Temple_pillars_small.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/e/e8/Veeranarayana_temple_at_Belavadi%2C_Chikkamagaluru_district.jpg"
             ),
             facts = listOf(
                 Fact("belavadi-f1", "Triple Sanctum", "One of the few Hoysala temples with three sanctums in one structure."),
@@ -1245,18 +1201,14 @@ object KarnatakaSites {
             history = "Built in the 12th century during the reign of King Veera Ballala II. These temples were patronized by a local chieftain and represent the mature phase of Hoysala temple architecture.",
             architecture = "Both temples feature the typical Hoysala star-shaped platform, intricately carved pillars, and detailed sculptures depicting scenes from the epics. The Nageshvara Temple is dedicated to Shiva while the Chennakeshava Temple is dedicated to Vishnu.",
             legends = "Local legend says the temples were built overnight by divine architects as a reward for the villagers' devotion.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Mosale_Hoysala_temple.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Mosale_temple_Hassan_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Mosale_Hoysala_temple.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Mosale_temple_Hassan_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Mosale_Hoysala_temple.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Mosale_temple_Hassan_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Mosale_Hoysala_temple.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Mosale_temple_Hassan_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Mosale_Hoysala_temple.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Mosale_temple_Hassan_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Mosale_Hoysala_temple.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1601815264039-67c8ba1a7f98?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/b/b9/Vesara_tower_of_Chennakeshava_temple_at_Mosale.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/2/24/Ornate_bay_ceiling_in_the_Chennakeshava_temple_at_Mosale.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/0/06/Wall_panel_relief_and_sculpture_in_Chennakeshava_temple_at_Mosale.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/b/b2/Yali_sculpture_in_Chennakeshava_temple_at_Mosale.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/a/a9/Mantapa_%28hall%29_in_Nageshvara_temple_at_Mosale.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/0/0f/Ornate_bay_ceiling_in_mantapa_%28hall%29_of_Nageshvara_temple_at_Mosale.JPG"
             ),
             facts = listOf(
                 Fact("mosale-f1", "Twin Temples", "Two temples stand side by side — one for Shiva, one for Vishnu — a unique arrangement."),
@@ -1283,7 +1235,7 @@ object KarnatakaSites {
             history = "Founded in 1336 by Harihara I and Bukka Raya I, the Vijayanagara Empire became one of the largest and richest empires in Indian history. The city was destroyed in 1565 after the Battle of Talikota and was abandoned for centuries.",
             architecture = "The site features the Virupaksha Temple, the Vitthala Temple complex, the Hazara Rama Temple, the Queen's Bath, the Elephant Stables, and numerous other structures that showcase the zenith of Vijayanagara architecture.",
             legends = "Legend says the gods themselves blessed the founders of Vijayanagara. The boulders of the landscape are said to have been thrown by Hanuman during the Ramayana era.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Hampi_group_of_monuments-Hampi-Karnataka-DSC_8054.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1631986683754-7d511e03864d?w=800",
                         galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/f/f2/Hampi_karnataka.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/4/4b/Hampi_virupaksha_temple.jpg",
@@ -1317,18 +1269,14 @@ object KarnatakaSites {
             history = "Barkur served as the capital of the Alupa dynasty from the 8th to 14th centuries. The town was a major port for trade with Arabia and Southeast Asia. It declined after the Portuguese arrived on the west coast.",
             architecture = "The town has several ancient temples including the Panchalingeshwara Temple and the Kotilingeshwara Temple. The temples showcase a mix of Kadamba, Chalukya, and local Tulu architectural styles.",
             legends = "Legend says Barkur was once a prosperous city of 365 temples, one for each day of the year. The town's decline is attributed to a curse by a spurned lover.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Barkur_temples_Udupi.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Barkur_heritage_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Barkur_temples_Udupi.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Barkur_heritage_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Barkur_temples_Udupi.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Barkur_heritage_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Barkur_temples_Udupi.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Barkur_heritage_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Barkur_temples_Udupi.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Barkur_heritage_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Barkur_temples_Udupi.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1561361058-c24cecae35ca?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/9/9a/Chowlikeri_Temple_in_Barkur.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/4/43/Kattale_Bassadi_Temple_complex_in_Barkur.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/5/59/Kattale_basadi.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/9/9a/Chowlikeri_Temple_in_Barkur.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/4/43/Kattale_Bassadi_Temple_complex_in_Barkur.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/5/59/Kattale_basadi.jpg"
             ),
             facts = listOf(
                 Fact("barkur-f1", "Ancient Port", "Once a major port for trade with Arabia and Southeast Asia."),
@@ -1355,18 +1303,14 @@ object KarnatakaSites {
             history = "Sagara has been an important trading and religious center in the Malnad region for centuries. The town was under the rule of the Keladi Nayakas and later the Mysore kings. It has several ancient temples and a historic fort.",
             architecture = "The town features several temples built in the Dravidian and Hoysala styles. The fort offers views of the surrounding Western Ghats. The temples have ornate carvings and are active places of worship.",
             legends = "Legend says the town was blessed by the river goddess of the Sharavathi, and the misty hills surrounding it are the abode of forest deities who protect the region.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Sagara_heritage_Shivamogga.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sagara_Karnataka_temples.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sagara_heritage_Shivamogga.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sagara_Karnataka_temples.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sagara_heritage_Shivamogga.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sagara_Karnataka_temples.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sagara_heritage_Shivamogga.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sagara_Karnataka_temples.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sagara_heritage_Shivamogga.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sagara_Karnataka_temples.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sagara_heritage_Shivamogga.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/a/af/Aghoreshvara_Temple%2C_Ikkeri.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/c/cd/Ikkeri_Aghoreshwara_Temple.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/c/c8/Ikkeri_Nandi.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/6/65/Aghoreshwara_temple_at_Ikkeri.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/7/74/Ikkeri_temple_Karnataka.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/0/02/Ikkeri_Aghoreshwara_Temple_2.jpg"
             ),
             facts = listOf(
                 Fact("sagara-f1", "Malnad Gateway", "Serves as a gateway to the Western Ghats and Jog Falls."),
@@ -1393,18 +1337,14 @@ object KarnatakaSites {
             history = "The town has been an important religious center for several centuries. The temples here were patronized by local rulers and have been centers of spiritual learning.",
             architecture = "The temple complex features traditional Dravidian architecture with ornate gopurams, pillared halls, and sacred ponds. The hill range nearby has several smaller shrines.",
             legends = "Legend says the sacred hill was the site of a penance by a great sage, and the deity manifested here to bless devotees. The hill is believed to have healing powers.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Sogala_temple_Vijayanagara.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sogala_Kshetra_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sogala_temple_Vijayanagara.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sogala_Kshetra_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sogala_temple_Vijayanagara.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sogala_Kshetra_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sogala_temple_Vijayanagara.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sogala_Kshetra_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sogala_temple_Vijayanagara.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sogala_Kshetra_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sogala_temple_Vijayanagara.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1561361058-c24cecae35ca?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/a/a4/Mysore_Palace_Morning.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/6/6f/Chennakesava_Temple_at_Somanathapura.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/9/9f/13th_century_Keshava_Hindu_temple_front_view.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/7/7c/Chennakesava_Temple_Somanathapura.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/6/6f/Chennakesava_Temple_at_Somanathapura.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/9/9f/13th_century_Keshava_Hindu_temple_front_view.jpg"
             ),
             facts = listOf(
                 Fact("sogala-f1", "Sacred Hills", "The surrounding hill range is considered sacred by devotees."),
@@ -1431,18 +1371,14 @@ object KarnatakaSites {
             history = "Sonda was an important center under the Keladi Nayakas. The Sodhe Matha was established by Sri Vadiraja Tirtha, a prominent saint of the Madhwa tradition. The town was a center of learning and spirituality.",
             architecture = "The Sodhe Matha features traditional temple architecture with ornate carvings. The town also has several smaller temples and mathas that showcase the architectural heritage of the region.",
             legends = "Legend says Sri Vadiraja Tirtha chose this spot after receiving divine guidance. The matha is believed to be blessed by the river goddess, and the waters here are considered sacred.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/Sonda_Swami_Mutt_Karnataka.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sonda_temple_Uttara_Kannada.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sonda_heritage_site.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sonda_Swami_Mutt_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sonda_temple_Uttara_Kannada.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sonda_heritage_site.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sonda_Swami_Mutt_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sonda_temple_Uttara_Kannada.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sonda_heritage_site.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sonda_Swami_Mutt_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Sonda_temple_Uttara_Kannada.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/8/82/Mirjan_Fort%2C_Karnataka.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/6/6b/Front_e_view_of_Mirjan_fort1.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/f/f6/Mirjan_fort_-_Main_entrance.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/6/6d/Mirjan_fort_-_watchtower.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/c/c6/Main_entrance_to_the_Mirjan_fort.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/0/04/Mirjan_Fort%2C_Karnataka_%2860720%29.jpg"
             ),
             facts = listOf(
                 Fact("sonda-f1", "Madhwa Center", "An important center of the Madhwa philosophical tradition."),
@@ -1469,18 +1405,14 @@ object KarnatakaSites {
             history = "Established by the Archaeological Survey of India to preserve and display artifacts recovered from the temples of Belur, Halebidu, and surrounding areas. The museum houses some of the finest Hoysala sculptures.",
             architecture = "The museum building itself is a heritage structure. Inside, visitors can see original sculptures, friezes, inscriptions, and architectural fragments that were replaced during temple restoration.",
             legends = "Many of the displayed sculptures were once part of the temples and tell stories of the Hoysala dynasty's devotion to art and architecture.",
-            imageUrl = "https://commons.wikimedia.org/wiki/Special:FilePath/ASI_Museum_Halebeedu.jpg",
-            galleryImages = listOf(
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Halebeedu_Museum_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/ASI_Museum_Halebeedu.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Halebeedu_Museum_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/ASI_Museum_Halebeedu.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Halebeedu_Museum_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/ASI_Museum_Halebeedu.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Halebeedu_Museum_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/ASI_Museum_Halebeedu.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/Halebeedu_Museum_Karnataka.jpg",
-                "https://commons.wikimedia.org/wiki/Special:FilePath/ASI_Museum_Halebeedu.jpg"
+            imageUrl = "https://images.unsplash.com/photo-1626010448982-0d629a5c0223?w=800",
+                        galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/7/7f/Archaeological_Museum%2C_Halebidu%2C_Karnataka_01.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/c/c2/Archaeological_Museum%2C_Halebidu%2C_Karnataka_02.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/7/75/Archaeological_Museum%2C_Halebidu%2C_Karnataka_03.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/c/ca/Archaeological_Museum%2C_Halebidu%2C_Karnataka_04.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/7/7d/Archaeological_Museum%2C_Halebidu%2C_Karnataka_05.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/5/5c/Archaeological_Museum%2C_Halebidu%2C_Karnataka_06.jpg"
             ),
             facts = listOf(
                 Fact("museum-f1", "ASI Curated", "Maintained by the Archaeological Survey of India with authentic artifacts."),
@@ -1507,7 +1439,7 @@ object KarnatakaSites {
             history = "Kalyani served as the capital of the Chalukyas of Kalyani (973–1190 CE). Basavanna served as the treasury minister (Shivayogi) under King Bijjala II here. The city is dotted with Anubhava Mantapa — the first philosophical parliament of the world, convened by Basavanna around 1160 CE.",
             architecture = "The Basavakalyana Fort displays Chalukyan and later Bahmani architectural influence. The Anubhava Mantapa is a spiritual center. The region has several veeragallu (hero stones) and 12th-century temple ruins reflecting Chalukyan craftsmanship.",
             legends = "Basavanna is believed to have merged with the Shiva lingam at Kudala Sangama after his work was complete. The local Gavimath is said to be the spot where Basavanna meditated for years.",
-            imageUrl = "https://upload.wikimedia.org/wikipedia/commons/a/a2/Basav_kalyan_entrance.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1696239108269-448ce8d0bacc?w=800",
             galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/a/a2/Basav_kalyan_entrance.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/1/11/Basava_Kalyan_temple.JPG",
@@ -1542,7 +1474,7 @@ object KarnatakaSites {
             history = "The Keladi Nayakas were successors of the Vijayanagara Empire in the western Karnataka region. Shivappa Nayaka (1645–1660) was the most notable ruler who standardized land revenue and built extensive water tanks. The kingdom fell to Hyder Ali in 1763.",
             architecture = "The Rameshwara Temple at Keladi is a masterpiece combining three styles: a Hoysala-style sanctum, Vijayanagara-style mandapa, and Dravidian-style gopura. The stone carvings feature intricate scrollwork and deity panels.",
             legends = "Legend holds that the goddess Bhavani of Keladi is the presiding deity who guided the Keladi Nayakas to victory in battles. The Nandi bull facing the shrine is said to have magically appeared overnight.",
-            imageUrl = "https://upload.wikimedia.org/wikipedia/commons/6/6e/Keladi_temple.png",
+            imageUrl = "https://images.unsplash.com/photo-1561361058-c24cecae35ca?w=800",
             galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/6/6e/Keladi_temple.png",
                 "https://upload.wikimedia.org/wikipedia/commons/d/d9/MG_1143-Edit.jpg",
@@ -1577,7 +1509,7 @@ object KarnatakaSites {
             history = "Ikkeri served as the Keladi Nayaka capital before it was shifted to Keladi and later to Bidanuru. The Aghoreshwara Temple was constructed during the reign of Chaudenahalli Nayaka around 1540 CE and expanded by subsequent rulers.",
             architecture = "The Aghoreshwara Temple features an unusual mix of styles — a Dravidian-style entrance gopura, Hoysala-style decorative panels, and a Chalukyan-style shikhara. The temple complex includes shrines to Aghoreshwara (Shiva), Parvati, and Veerabhadra.",
             legends = "The temple's Nandi is said to be self-manifested (swayambhu). Local belief holds that Basavanna himself blessed this site. The Aghoreshwara lingam is believed to grant wishes to devotees who observe a three-day fast.",
-            imageUrl = "https://upload.wikimedia.org/wikipedia/commons/a/af/Aghoreshvara_Temple%2C_Ikkeri.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1561361058-c24cecae35ca?w=800",
             galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/a/af/Aghoreshvara_Temple%2C_Ikkeri.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/c/cd/Ikkeri_Aghoreshwara_Temple.jpg",
@@ -1612,7 +1544,7 @@ object KarnatakaSites {
             history = "Founded by Adi Shankaracharya around 788 CE, Sringeri is the oldest continuously operating Advaita Vedanta institution in India. Vidyaranya Swami, the 12th Shankaracharya of Sringeri (1377 CE), is credited with inspiring the founding of the Vijayanagara Empire.",
             architecture = "The Vidyashankara Temple (1338 CE) is an architectural marvel — its 12 pillars are aligned so that the sun's rays fall on the corresponding zodiac pillar on each month's solar entry day. The Sharada Temple features a golden idol of the goddess and intricate Kerala-style woodwork.",
             legends = "Adi Shankaracharya chose Sringeri after witnessing a cobra spreading its hood to shade a frog giving birth — symbolizing the harmony of opposites. The sacred Tunga river water is said to cure diseases and grant liberation.",
-            imageUrl = "https://upload.wikimedia.org/wikipedia/commons/3/3b/Sri_Vidyashankar_Temple%2C_Sringeri%2C_2019.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800",
             galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/3/3b/Sri_Vidyashankar_Temple%2C_Sringeri%2C_2019.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/a/a8/Sri_Sharada_shrine_at_Sringeri.jpg",
@@ -1647,7 +1579,7 @@ object KarnatakaSites {
             history = "Founded by Madhvacharya (1238–1317 CE), the Udupi Krishna Matha is managed by a council of eight monasteries (Ashtamathas). The paryaya festival, where each matha takes turns managing the temple for two years, has been held without interruption for over 700 years.",
             architecture = "The temple features Kerala-style gopura with gold-plated domes, intricate wooden carvings, and the famous Kanakana Kindi — a window with nine holes through which Kanakadasa, the 16th-century saint-poet, is said to have received Krishna's darshan after being denied entry.",
             legends = "The legend of Kanakana Kindi: Kanakadasa, a devotee denied entry to the temple, sang his devotion outside. Krishna, moved by his bhakti, turned to face him and broke open the wall — creating the Kanakana Kindi window still used for darshan today.",
-            imageUrl = "https://upload.wikimedia.org/wikipedia/commons/3/3e/Brahma_ratha_of_Udupi_Krishna.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800",
             galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/3/3e/Brahma_ratha_of_Udupi_Krishna.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/3/33/Udupi_Sri_Krishna_Temple%2C_Udupi%2C_Karnataka%2C_India_%282010%29.jpg",
@@ -1682,7 +1614,7 @@ object KarnatakaSites {
             history = "The Kadri Temple was built during the Alupa dynasty (9th–10th century CE). It was renovated by the Vijayanagara rulers in the 16th century. The temple inscription of 968 CE (earliest in Karnataka coastal history) records the installation of the bronze Lokeshwara idol.",
             architecture = "The temple's main idol is a magnificent bronze Lokeshwara (Avalokitesvara) dated 968 CE — one of the finest Buddhist-influenced bronze sculptures in South India, indicating the temple's Buddhist origins before it became Shaivite. The temple uses Kerala-style architecture with tiled roofs.",
             legends = "Legend says Parashurama, the Brahmin warrior-sage, created the coastal Karnataka land by throwing his axe into the sea. The Kadri spring is said to be his sacred bath, and drinking from it grants moksha.",
-            imageUrl = "https://upload.wikimedia.org/wikipedia/commons/9/91/Kadri_Manjunath_Temple.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800",
             galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/9/91/Kadri_Manjunath_Temple.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/d/d4/Kadri_temple_entrance_mangalore.jpg",
@@ -1717,7 +1649,7 @@ object KarnatakaSites {
             history = "Dharwad was a key fortified town during the Vijayanagara, Bijapur Sultanate, and later Maratha and British periods. The fort was built and expanded over centuries. The town gave its name to the Dharwad style of Hindustani classical music, which evolved here under the patronage of royals and feudal lords.",
             architecture = "The Dharwad Fort features double gateways — an outer gate and inner gate — in Bijapur-Maratha style. The Banashankari Temple at Amargol has a distinctive temple tank and Hoysala-influenced architecture. The Dattatreya Temple nearby is a 13th-century structure.",
             legends = "The presiding deity of Dharwad is Banashankari Devi, who is said to have guided the founders of the town to build their settlement here after appearing in a dream. The fort is said to be haunted by the spirits of soldiers who fell in battle.",
-            imageUrl = "https://upload.wikimedia.org/wikipedia/commons/2/2d/Banashankari_Temple_Amargol.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1696239108269-448ce8d0bacc?w=800",
             galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/2/2d/Banashankari_Temple_Amargol.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/d/d4/Two_fort_gates_inner.JPG",
@@ -1752,7 +1684,7 @@ object KarnatakaSites {
             history = "The fort was originally built by Ratta chief Bichiraja around 1204 CE. It was later held by the Bahmanis, Adil Shahs of Bijapur, Marathas, and finally the British, who used it as a cantonment. The Indian National Congress held its historic session here in 1924, presided over by Mahatma Gandhi.",
             architecture = "The fort features massive laterite walls with bastions and a moat. Inside are two exquisitely carved Jain temples from the 13th century — the Kamala Basadi features a 1.5m Mahavira idol in Kayotsarga pose. The fort mosque has fine Islamic arches.",
             legends = "Local legend says Belagavi was founded where a shepherd found a sacred stone. The fort's invincibility is attributed to a buried talisman placed by its original builders. The 1924 Congress session is remembered as the last presided over by Gandhi himself.",
-            imageUrl = "https://upload.wikimedia.org/wikipedia/commons/b/be/Belgaum_Fort.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1696239108269-448ce8d0bacc?w=800",
             galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/b/be/Belgaum_Fort.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/c/c3/Fort_of_Belgaum.jpg",
@@ -1787,7 +1719,7 @@ object KarnatakaSites {
             history = "Alauddin Hasan Bahman Shah founded the Bahmani Sultanate at Gulbarga in 1347, after rebelling against the Delhi Sultanate. The Jama Masjid was built by Rafi (an architect from Moorish Spain) in 1367 CE. The capital was later moved to Bidar in 1424 CE.",
             architecture = "The Gulbarga Jama Masjid is architecturally unique in India — its entire prayer hall is covered with 75 domes and 250 arched bays, with no open courtyard (unlike all other Indian mosques). This Cordoban-Spanish design is the only one of its kind on the subcontinent.",
             legends = "The Dargah of Hazrat Banda Nawaz (Gesudaraz), a 15th-century Sufi saint, adjacent to the fort, draws millions of pilgrims annually. He is believed to have performed miracles, including turning saltwater sweet for his followers.",
-            imageUrl = "https://upload.wikimedia.org/wikipedia/commons/4/41/Bahamani_kingdom_01.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1696239108269-448ce8d0bacc?w=800",
             galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/4/41/Bahamani_kingdom_01.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/9/9f/Bahamani_kingdom_02.jpg",
@@ -1810,6 +1742,177 @@ object KarnatakaSites {
             rating = 4.3f,
             reviews = 5600
         ),
+
+        HeritageSite(
+            id = "nanjangud-temple",
+            name = "Srikanteshwara Temple Nanjangud",
+            nameLocal = "ಶ್ರೀಕಂಟೇಶ್ವರ ದೇವಸ್ಥಾನ ನಂಜನಗೂಡು",
+            location = "Nanjangud, Mysuru",
+            district = "Mysuru",
+            type = SiteType.TEMPLE,
+            shortDescription = "The Dakshina Kashi — ancient Shiva temple on the banks of the Kabini.",
+            description = "The Srikanteshwara Temple at Nanjangud is one of the most revered Shiva temples in Karnataka. Located on the banks of the Kapila River (Kabini), it is often called Dakshina Kashi for its sanctity.",
+            history = "The temple was built during the Ganga dynasty in the 9th century and expanded by the Hoysalas and Vijayanagara kings. The current gopuram was built by the Mysore Wadiyars in the 17th century.",
+            architecture = "The temple features a towering 40-meter gopuram with intricate carvings. The main shrine has a large Shivalinga called Srikanteshwara. The complex includes subsidiary shrines, halls, and a sacred tank.",
+            legends = "Legend says Nanjundeshwara (Shiva) consumed poison to save the world, turning his throat blue — thus Nanjangud means 'the town of the one who swallowed poison'.",
+            imageUrl = "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=800",
+            galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/f/f1/Nanjangud_Temple%2CMysore.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/3/3f/Nanjangud_Temple2.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/f/f1/Nanjangud_Temple%2CMysore.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/3/3f/Nanjangud_Temple2.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/f/f1/Nanjangud_Temple%2CMysore.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/3/3f/Nanjangud_Temple2.jpg"
+            ),
+            facts = listOf(
+                Fact("nanjangud-f1", "Dakshina Kashi", "Known as the Varanasi of the South for its immense religious significance."),
+                Fact("nanjangud-f2", "40m Gopuram", "The towering gopuram is visible from kilometres away with intricate multi-storey carvings."),
+                Fact("nanjangud-f3", "Poison Legend", "Shiva consumed poison here to save the universe, giving the town its name.")
+            ),
+            latitude = 12.1177,
+            longitude = 76.6847,
+            visitingHours = "6:00 AM - 8:00 PM",
+            entryFee = "Free",
+            qrCodeId = "QR-NANJANGUD-001",
+            rating = 4.6f,
+            reviews = 11200
+        ),
+        HeritageSite(
+            id = "melukote-temple",
+            name = "Melukote Cheluvanarayana Temple",
+            nameLocal = "ಮೇಲುಕೋಟೆ ಚೆಲುವನಾರಾಯಣ ದೇವಸ್ಥಾನ",
+            location = "Melukote, Mandya",
+            district = "Mandya",
+            type = SiteType.TEMPLE,
+            shortDescription = "A sacred hilltop Vishnu temple visited by Ramanuja himself.",
+            description = "Melukote is a pilgrimage town in Mandya district, home to the Cheluvanarayana Swamy Temple atop a granite hill. The town was chosen by philosopher-saint Ramanuja as his abode for 12 years.",
+            history = "The temple dates to the 9th century. Saint Ramanuja stayed here from 1098 to 1120 CE and recovered the main idol from Delhi. The Vairamudi festival draws millions annually.",
+            architecture = "The main temple atop the hill has a Dravidian gopuram. The Kalyani tank at the base is framed by colonnaded mandapas. Hill fort walls and a Jain temple add to the complex.",
+            legends = "Ramanuja retrieved the deity's golden crown (Vairamudi) from the Delhi Sultan's treasury through divine intervention — a story retold every year during the festival.",
+            imageUrl = "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=800",
+            galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/e/e0/Cheluv_Narayanaswamy.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/e/e0/Cheluv_Narayanaswamy.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/e/e0/Cheluv_Narayanaswamy.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/e/e0/Cheluv_Narayanaswamy.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/e/e0/Cheluv_Narayanaswamy.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/e/e0/Cheluv_Narayanaswamy.JPG"
+            ),
+            facts = listOf(
+                Fact("melukote-f1", "Ramanuja's Home", "Saint Ramanuja lived here for 12 years and established Vaishnava traditions still followed today."),
+                Fact("melukote-f2", "Vairamudi Festival", "The annual Vairamudi festival attracts over a million pilgrims."),
+                Fact("melukote-f3", "Delhi Connection", "The golden crown idol was recovered by Ramanuja from the Delhi court.")
+            ),
+            latitude = 12.6603,
+            longitude = 76.6444,
+            visitingHours = "7:00 AM - 8:30 PM",
+            entryFee = "Free",
+            qrCodeId = "QR-MELUKOTE-001",
+            rating = 4.5f,
+            reviews = 7800
+        ),
+        HeritageSite(
+            id = "bhoga-nandeeshwara",
+            name = "Bhoga Nandeeshwara Temple",
+            nameLocal = "ಭೋಗ ನಂದೀಶ್ವರ ದೇವಸ್ಥಾನ",
+            location = "Nandi Hills, Chikkaballapur",
+            district = "Chikkaballapur",
+            type = SiteType.TEMPLE,
+            shortDescription = "Ancient Shiva temple at the foot of Nandi Hills — over 1500 years old.",
+            description = "The Bhoga Nandeeshwara Temple at the foot of Nandi Hills is one of the oldest temples in Karnataka, worshipped continuously for 1500+ years.",
+            history = "Dating to the 9th century Ganga dynasty with additions by Hoysalas, Vijayanagara, and Wodeyar kings, the complex grew over 1500 years into a sprawling temple town.",
+            architecture = "Three main shrines depict Shiva as child (Uma Maheshwara), youth (Bhoga Nandeeshwara), and elder (Vedha Shastha), each in a distinct architectural style spanning different dynasties.",
+            legends = "Legend says child Kumara (Skanda) lived and learned here under Nandi, giving the hill its name. The three stages of Shiva manifested here as divine blessings.",
+            imageUrl = "https://images.unsplash.com/photo-1561361058-c24cecae35ca?w=800",
+            galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/2/2e/Bhoga_Nandeeshwara_Temple_-_South_Side_View.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/2/2e/Bhoga_Nandeeshwara_Temple_-_South_Side_View.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/2/2e/Bhoga_Nandeeshwara_Temple_-_South_Side_View.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/2/2e/Bhoga_Nandeeshwara_Temple_-_South_Side_View.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/2/2e/Bhoga_Nandeeshwara_Temple_-_South_Side_View.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/2/2e/Bhoga_Nandeeshwara_Temple_-_South_Side_View.jpg"
+            ),
+            facts = listOf(
+                Fact("bhoga-f1", "Three-Stage Shiva", "Unique temple with three shrines depicting Shiva as child, youth, and elder."),
+                Fact("bhoga-f2", "1500 Years Old", "Continuously worshipped for over 1500 years — one of Karnataka's oldest active temples."),
+                Fact("bhoga-f3", "Nandi Hills Foot", "Located at the base of the Nandi Hills, a scenic hill station popular since Tipu Sultan's time.")
+            ),
+            latitude = 13.3617,
+            longitude = 77.6843,
+            visitingHours = "6:00 AM - 8:30 PM",
+            entryFee = "Free",
+            qrCodeId = "QR-BHOGANANDEESHWARA-001",
+            rating = 4.5f,
+            reviews = 6400
+        ),
+        HeritageSite(
+            id = "talakadu",
+            name = "Talakadu",
+            nameLocal = "ತಲಕಾಡು",
+            location = "Talakadu, Mysuru",
+            district = "Mysuru",
+            type = SiteType.TEMPLE,
+            shortDescription = "The sand-buried temple town of Kaveri — a place of mystery and legend.",
+            description = "Talakadu is an ancient town on the Kaveri River, famous for temples half-buried in sand dunes. Once a prosperous Ganga capital. The Panchalinga Darshana, held every 12 years, draws millions.",
+            history = "Talakadu was the capital of the Western Ganga dynasty (4th–11th century). After Chola conquest it declined, and geological evidence plus legend suggest river shift and wind-blown sand buried the city.",
+            architecture = "Five Shiva temples dedicated to the five Pancha Lingas, periodically excavated from sand. The Vaidyeshwara Temple is the largest and most accessible.",
+            legends = "Queen Alamelamma cursed Talakadu to be buried in sand, the river to become a whirlpool, and the Mysore royal family to have no male heirs. All three curses are said to have come true.",
+            imageUrl = "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=800",
+            galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/5/56/A_temple_buried_in_the_sand%2C_Talakadu.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/d/dd/A_temple_from_Talakadu%2C_Karnataka.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/5/56/A_temple_buried_in_the_sand%2C_Talakadu.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/d/dd/A_temple_from_Talakadu%2C_Karnataka.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/5/56/A_temple_buried_in_the_sand%2C_Talakadu.jpg",
+                "https://upload.wikimedia.org/wikipedia/commons/d/dd/A_temple_from_Talakadu%2C_Karnataka.jpg"
+            ),
+            facts = listOf(
+                Fact("talakadu-f1", "Alamelamma's Curse", "A queen's dying curse is said to have buried the city in sand — and it did."),
+                Fact("talakadu-f2", "Panchalinga Darshana", "Once every 12 years, all five Shiva lingas are worshipped together, drawing millions of pilgrims."),
+                Fact("talakadu-f3", "30m Sand Dunes", "The town has 30-meter-high sand dunes that periodically bury the ancient temples.")
+            ),
+            latitude = 12.2041,
+            longitude = 76.9000,
+            visitingHours = "6:00 AM - 6:00 PM",
+            entryFee = "Free",
+            qrCodeId = "QR-TALAKADU-001",
+            rating = 4.4f,
+            reviews = 5200
+        ),
+        HeritageSite(
+            id = "banavasi",
+            name = "Banavasi Madhukeshwara Temple",
+            nameLocal = "ಬನವಾಸಿ ಮಧುಕೇಶ್ವರ ದೇವಸ್ಥಾನ",
+            location = "Banavasi, Uttara Kannada",
+            district = "Uttara Kannada",
+            type = SiteType.TEMPLE,
+            shortDescription = "Karnataka's oldest town — the ancient Kadamba capital with a 2000-year-old Shiva temple.",
+            description = "Banavasi is one of the oldest towns in Karnataka, once the capital of the Kadamba dynasty (4th–6th century CE). The Madhukeshwara Temple is among the oldest functioning Shiva temples in Karnataka.",
+            history = "Banavasi served as the capital of the Kadamba dynasty, Karnataka's first indigenous kingdom. The town is mentioned in the poet Pampa's epic Vikramarjuna Vijaya (941 CE).",
+            architecture = "The temple features a blend of Kadamba, Chalukya, and later styles. The main shikhara is Kadamba-style, one of the oldest surviving examples. Surrounded by the Varada River on three sides.",
+            legends = "Kannada's first great poet Pampa was born in Banavasi and praised it as the most beautiful town. The Varada River is said to protect the town like a divine moat.",
+            imageUrl = "https://images.unsplash.com/photo-1561361058-c24cecae35ca?w=800",
+            galleryImages = listOf(
+                "https://upload.wikimedia.org/wikipedia/commons/1/13/Madhukeshwara_temple_at_Banavasi_sirsi.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/1/13/Madhukeshwara_temple_at_Banavasi_sirsi.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/1/13/Madhukeshwara_temple_at_Banavasi_sirsi.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/1/13/Madhukeshwara_temple_at_Banavasi_sirsi.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/1/13/Madhukeshwara_temple_at_Banavasi_sirsi.JPG",
+                "https://upload.wikimedia.org/wikipedia/commons/1/13/Madhukeshwara_temple_at_Banavasi_sirsi.JPG"
+            ),
+            facts = listOf(
+                Fact("banavasi-f1", "Kadamba Capital", "Banavasi was the capital of the Kadamba dynasty — Karnataka's first indigenous kingdom."),
+                Fact("banavasi-f2", "Poet Pampa's City", "Kannada's first great poet Pampa was born here in the 10th century."),
+                Fact("banavasi-f3", "2000-Year Temple", "The Madhukeshwara Temple has been in continuous worship for over 2000 years.")
+            ),
+            latitude = 14.5333,
+            longitude = 75.0167,
+            visitingHours = "6:00 AM - 8:00 PM",
+            entryFee = "Free",
+            qrCodeId = "QR-BANAVASI-001",
+            rating = 4.5f,
+            reviews = 4100
+        ),
         HeritageSite(
             id = "raichur-fort",
             name = "Raichur Fort",
@@ -1822,7 +1925,7 @@ object KarnatakaSites {
             history = "Originally built by the Kakatiya dynasty around 1294 CE, Raichur Fort became the epicenter of the Vijayanagara-Bahmani wars. The Battle of Raichur (1520 CE) under Krishnadevaraya of Vijayanagara was a decisive victory. The fort later fell to Adil Shah of Bijapur in 1565 CE.",
             architecture = "The fort sits on a rocky hill 100 meters high and has an outer wall of 4.8km. Features include massive gateways, Hindu and Islamic style towers, an ancient mosque, temples, and a cannon called 'Humbli Dana' (artillery cannon) still visible on the ramparts.",
             legends = "The fort is said to be guarded by a powerful yaksha (spirit) who causes bad luck to those who disrespect the site. A treasure is believed hidden in a secret chamber that opens only on Diwali night. The ghost of a Vijayanagara general is said to patrol the battlements.",
-            imageUrl = "https://upload.wikimedia.org/wikipedia/commons/0/0d/Raichur_Fort_1.jpg",
+            imageUrl = "https://images.unsplash.com/photo-1684830235389-60a88c4e626e?w=800",
             galleryImages = listOf(
                 "https://upload.wikimedia.org/wikipedia/commons/0/0d/Raichur_Fort_1.jpg",
                 "https://upload.wikimedia.org/wikipedia/commons/e/ee/Raichur_Fort_2.jpg",

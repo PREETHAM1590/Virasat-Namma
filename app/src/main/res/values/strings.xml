@@ -85,6 +85,7 @@
 
     <!-- Travel Passport -->
     <string name="passport_title">Travel Passport</string>
+    <string name="passport_subtitle">Track your heritage journey</string>
     <string name="passport_sites_visited">Sites Visited</string>
     <string name="passport_facts_unlocked">Facts Unlocked</string>
     <string name="passport_no_checkins">No check-ins yet</string>

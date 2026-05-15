@@ -44,6 +44,11 @@ class QrScannerViewModel(application: Application) : AndroidViewModel(applicatio
             // 3. Fallback: scan all sites for either match
             val site = repository.getSiteById(token)
                 ?: repository.getSiteByQrCode(token)
+                ?: com.example.virasat.data.source.KarnatakaSites.allSites.find {
+                    it.qrCodeId.equals(token, ignoreCase = true) ||
+                    it.id.equals(token, ignoreCase = true) ||
+                    it.name.equals(token, ignoreCase = true)
+                }
                 ?: repository.getAllSitesList().find {
                     it.qrCodeId.equals(token, ignoreCase = true) ||
                     it.id.equals(token, ignoreCase = true)

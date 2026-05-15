@@ -135,7 +135,6 @@ fun AudioGuideScreen(
         val engine = TextToSpeech(context) { status ->
             val t = holder[0] ?: return@TextToSpeech
             if (status == TextToSpeech.SUCCESS) {
-                if (chapters.isEmpty()) return@TextToSpeech
                 ttsReady = true
                 val unsupported = setTtsLanguage()
                 if (unsupported && selectedLanguage != "English") {
@@ -170,6 +169,17 @@ fun AudioGuideScreen(
         }
         holder[0] = engine
         tts = engine
+    }
+
+    // When TTS becomes ready and chapters are available, auto-play if pendingStart
+    LaunchedEffect(ttsReady, chapters.size) {
+        if (ttsReady && pendingStart && chapters.isNotEmpty()) {
+            pendingStart = false
+            tts?.speak(
+                chapters.getOrNull(currentChapter)?.transcript ?: "",
+                android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, "chapter_$currentChapter"
+            )
+        }
     }
 
     // Show snackbar when TTS language unsupported

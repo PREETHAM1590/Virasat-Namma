@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings - Virasat</title>
+<!-- Google Fonts: Plus Jakarta Sans & Be Vietnam Pro -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Neumorphic shadow utility for cards */
+        .neu-shadow {
+            box-shadow: 8px 8px 24px rgba(85, 101, 0, 0.05), -8px -8px 24px rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Custom Scrollbar for a cleaner look */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#2e312e",
+                    "tertiary": "#556157",
+                    "on-primary-container": "#4a5800",
+                    "primary-fixed": "#d3ef59",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-dim": "#d9dad6",
+                    "surface-container-high": "#e7e9e4",
+                    "tertiary-container": "#bdcabd",
+                    "secondary-container": "#ceeace",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f3f4ef",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-background": "#1a1c19",
+                    "surface-variant": "#e2e3de",
+                    "surface-tint": "#556500",
+                    "primary-container": "#b7d23f",
+                    "on-surface": "#1a1c19",
+                    "background": "#f9faf5",
+                    "primary": "#556500",
+                    "outline": "#767964",
+                    "secondary-fixed-dim": "#b2ceb3",
+                    "secondary": "#4c644f",
+                    "secondary-fixed": "#ceeace",
+                    "surface-container": "#edeee9",
+                    "surface-bright": "#f9faf5",
+                    "inverse-primary": "#b7d23f",
+                    "on-tertiary-fixed-variant": "#3e4a40",
+                    "surface": "#f9faf5",
+                    "on-tertiary-fixed": "#131e16",
+                    "outline-variant": "#c6c8b0",
+                    "on-surface-variant": "#454836",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#4a554b",
+                    "on-secondary-fixed": "#09200f",
+                    "inverse-on-surface": "#f0f1ec",
+                    "surface-container-highest": "#e2e3de",
+                    "on-primary-fixed-variant": "#3f4c00",
+                    "on-primary-fixed": "#181e00",
+                    "tertiary-fixed": "#d9e6d8",
+                    "primary-fixed-dim": "#b7d23f",
+                    "on-secondary-fixed-variant": "#354c38",
+                    "on-secondary-container": "#526a54",
+                    "tertiary-fixed-dim": "#bdcabd",
+                    "on-primary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "overlap-margin": "-32px",
+                    "container-padding": "24px",
+                    "section-margin": "48px",
+                    "element-gap": "16px",
+                    "unit": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "body-md": ["Be Vietnam Pro"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "body-lg": ["Be Vietnam Pro"],
+                    "label-md": ["Be Vietnam Pro"],
+                    "headline-md": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-32">
+<!-- TopAppBar from JSON -->
+<header class="bg-transparent w-full px-container-padding pt-4 sticky top-0 z-40 backdrop-blur-sm">
+<div class="flex justify-between items-center w-full max-w-7xl mx-auto">
+<button aria-label="Leading Action" class="text-primary dark:text-primary-fixed-dim hover:opacity-80 transition-opacity transition-transform duration-300 active:scale-95">
+<span class="material-symbols-outlined text-[28px]" data-icon="eco">eco</span>
+</button>
+<h1 class="font-headline-lg text-headline-lg text-primary dark:text-primary-fixed-dim tracking-tight">Virasat</h1>
+<button aria-label="Trailing Action" class="text-primary dark:text-primary-fixed-dim hover:opacity-80 transition-opacity transition-transform duration-300 active:scale-95">
+<span class="material-symbols-outlined text-[28px]" data-icon="search">search</span>
+</button>
+</div>
+</header>
+<main class="w-full max-w-2xl mx-auto px-container-padding pt-element-gap">
+<!-- Page Title -->
+<div class="mb-section-margin">
+<h2 class="font-display-lg text-display-lg text-on-background">Settings</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2">Manage your preferences and account.</p>
+</div>
+<!-- Settings Group: Account -->
+<section class="bg-surface-container-lowest rounded-lg p-container-padding neu-shadow mb-section-margin relative overflow-hidden">
+<!-- Organic decorative blob -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/10 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none"></div>
+<h3 class="font-headline-md text-headline-md text-primary mb-6">Account</h3>
+<div class="flex items-center gap-element-gap mb-8 pb-8 border-b border-surface-variant/50">
+<div class="w-20 h-20 rounded-full bg-tertiary-container overflow-hidden flex-shrink-0 shadow-inner">
+<img alt="Profile picture" class="w-full h-full object-cover" data-alt="A close-up portrait of a serene individual bathed in soft, natural daylight, reflecting a calm and grounded mood. The lighting highlights natural skin tones against a slightly blurred, warm background. The overall aesthetic aligns with a modern, organic, light-mode UI, emphasizing clarity, softness, and a connection to natural elements." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgXQ67WUBtkklaY3vhzZSyauzNxp_HeluArpqL2WlPXHVZyFpUm4WveG0vBj3DJr-HPQkcIbEdEip8I_qargyImbcyAxUXZZkWzBky-MJExnmX-pYG3luWrWBY2a_YXLbLY9Apo39svp5b0zuXJIiEq2bdTc_s_z0iImb327v9ytkJlyA5MbNUx62DfjXNvohgC8t-SyfVPKJLwIDQuj6XlH-lVgJTA-eTZXVhXRhA1Q01IUdALQKWGI6Y4obKbydVJXbhwleQvao"/>
+</div>
+<div class="flex-grow">
+<h4 class="font-body-lg text-body-lg font-semibold text-on-background">Aria Solis</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">aria.solis@example.com</p>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-label-md text-label-md hover:bg-inverse-primary transition-colors flex items-center gap-2 shadow-[inset_0_2px_4px_rgba(255,255,255,0.4)]">
+                    Edit
+                </button>
+</div>
+<div class="space-y-6">
+<div class="flex justify-between items-center group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container/50 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">lock</span>
+</div>
+<span class="font-body-lg text-body-lg text-on-surface">Privacy &amp; Security</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+<div class="flex justify-between items-center group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container/50 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">credit_card</span>
+</div>
+<span class="font-body-lg text-body-lg text-on-surface">Payment Methods</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Settings Group: Preferences -->
+<section class="bg-surface-container-lowest rounded-lg p-container-padding neu-shadow mb-section-margin relative overflow-hidden">
+<h3 class="font-headline-md text-headline-md text-primary mb-6">Preferences</h3>
+<div class="space-y-8">
+<!-- Toggle Item 1 -->
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-variant/50 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">notifications_active</span>
+</div>
+<div>
+<span class="block font-body-lg text-body-lg text-on-surface">Push Notifications</span>
+<span class="block font-body-md text-body-md text-on-surface-variant text-sm">Updates on heritage sites near you</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-14 h-8 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary-container shadow-inner"></div>
+</label>
+</div>
+<!-- Toggle Item 2 -->
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-variant/50 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+<div>
+<span class="block font-body-lg text-body-lg text-on-surface">Location Services</span>
+<span class="block font-body-md text-body-md text-on-surface-variant text-sm">Required for local discovery</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-14 h-8 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary-container shadow-inner"></div>
+</label>
+</div>
+<!-- Toggle Item 3 -->
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-variant/50 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">dark_mode</span>
+</div>
+<div>
+<span class="block font-body-lg text-body-lg text-on-surface">Offline Mode</span>
+<span class="block font-body-md text-body-md text-on-surface-variant text-sm">Download maps and guides</span>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-14 h-8 bg-surface-variant rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary-container shadow-inner"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- Settings Group: Support -->
+<section class="bg-surface-container-lowest rounded-lg p-container-padding neu-shadow mb-section-margin">
+<h3 class="font-headline-md text-headline-md text-primary mb-6">Support &amp; About</h3>
+<div class="space-y-6">
+<div class="flex justify-between items-center group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/30 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">help</span>
+</div>
+<span class="font-body-lg text-body-lg text-on-surface">Help Center</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+<div class="flex justify-between items-center group cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/30 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">info</span>
+</div>
+<span class="font-body-lg text-body-lg text-on-surface">About Virasat</span>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Logout Button -->
+<button class="w-full bg-error-container text-on-error-container font-label-md text-label-md py-4 rounded-full mb-8 hover:opacity-90 transition-opacity flex items-center justify-center gap-2 neu-shadow">
+<span class="material-symbols-outlined">logout</span>
+            Log Out
+        </button>
+</main>
+<!-- BottomNavBar from JSON -->
+<nav class="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-md rounded-full px-6 py-3 z-50 bg-[#0B2211] dark:bg-[#0B2211] shadow-xl flex justify-around items-center gap-element-gap border-none">
+<!-- Explore (Inactive) -->
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined text-[24px]" data-icon="nest_eco_leaf">nest_eco_leaf</span>
+<span class="font-label-md text-label-md text-[10px] mt-1">Explore</span>
+</button>
+<!-- Heritage (Inactive) -->
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined text-[24px]" data-icon="temple_hindu">temple_hindu</span>
+<span class="font-label-md text-label-md text-[10px] mt-1">Heritage</span>
+</button>
+<!-- Saved (Inactive) -->
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined text-[24px]" data-icon="star">star</span>
+<span class="font-label-md text-label-md text-[10px] mt-1">Saved</span>
+</button>
+<!-- Profile (Active - Contextually maps to Settings) -->
+<button class="flex flex-col items-center justify-center text-primary-fixed bg-on-secondary-fixed-variant/20 rounded-full px-4 py-1 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined fill text-[24px]" data-icon="person" data-weight="fill">person</span>
+<span class="font-label-md text-label-md text-[10px] mt-1">Profile</span>
+</button>
+</nav>
+</body></html>

@@ -16,19 +16,21 @@ import java.util.concurrent.TimeUnit
 
 object GeminiHeritageService {
     private var apiKey: String = ""
+    private var deepseekApiKey: String = ""
+    private var novaApiUrl: String = ""
+    private var novaApiKey: String = ""
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)
-        // No .certificatePinner(...) — system trust store used
         .build()
 
-    fun initialize(key: String) {
-        apiKey = key
-    }
+    fun initialize(key: String) { apiKey = key }
+    fun initializeDeepSeek(key: String) { deepseekApiKey = key }
+    fun initializeNova(url: String, key: String = "") { novaApiUrl = url; novaApiKey = key }
 
-    fun isInitialized(): Boolean = apiKey.isNotBlank()
+    fun isInitialized(): Boolean = apiKey.isNotBlank() || deepseekApiKey.isNotBlank() || novaApiUrl.isNotBlank()
 
     private fun getSiteContext(site: HeritageSite?): String {
         if (site == null) return ""
@@ -55,6 +57,70 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
     }
 
     internal suspend fun callGemini(prompt: String, model: String = "gemini-2.0-flash"): String = withContext(Dispatchers.IO) {
+        return@withContext callNova(prompt)
+    }
+
+    private suspend fun callNova(prompt: String, imageBase64: String? = null, imageMimeType: String? = null): String = withContext(Dispatchers.IO) {
+        try {
+            val bodyObj = org.json.JSONObject().put("prompt", prompt)
+            if (imageBase64 != null) {
+                bodyObj.put("imageBase64", imageBase64)
+                bodyObj.put("imageMimeType", imageMimeType ?: "image/jpeg")
+            }
+            val request = Request.Builder()
+                .url(novaApiUrl)
+                .apply { if (novaApiKey.isNotBlank()) addHeader("x-api-key", novaApiKey) }
+                .post(bodyObj.toString().toRequestBody("application/json".toMediaType()))
+                .build()
+            client.newCall(request).execute().use { response ->
+                val bodyStr = response.body?.string() ?: ""
+                if (!response.isSuccessful) {
+                    android.util.Log.w("GeminiService", "Nova HTTP ${response.code}: $bodyStr")
+                    return@withContext "NOVA_HTTP_${response.code}"
+                }
+                val text = org.json.JSONObject(bodyStr).let {
+                    it.optString("text", "").ifBlank { it.optString("reply", "") }
+                }
+                if (text.isBlank()) android.util.Log.w("GeminiService", "Nova empty response: $bodyStr")
+                text
+            }
+        } catch (e: Exception) {
+            android.util.Log.w("GeminiService", "Nova error: ${e.message}")
+            "NOVA_ERROR"
+        }
+    }
+
+    private suspend fun callDeepSeek(prompt: String): String = withContext(Dispatchers.IO) {
+        try {
+            val body = org.json.JSONObject()
+                .put("model", "deepseek-v4-flash")
+                .put("messages", org.json.JSONArray()
+                    .put(org.json.JSONObject().put("role", "user").put("content", prompt)))
+                .put("stream", false)
+                .toString()
+            val request = Request.Builder()
+                .url("https://api.deepseek.com/chat/completions")
+                .addHeader("Authorization", "Bearer $deepseekApiKey")
+                .post(body.toRequestBody("application/json".toMediaType()))
+                .build()
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) {
+                    android.util.Log.w("GeminiService", "DeepSeek HTTP ${response.code}")
+                    return@withContext "DEEPSEEK_HTTP_${response.code}"
+                }
+                val json = org.json.JSONObject(response.body?.string() ?: return@withContext "")
+                json.getJSONArray("choices")
+                    .getJSONObject(0)
+                    .getJSONObject("message")
+                    .optString("content", "")
+            }
+        } catch (e: Exception) {
+            android.util.Log.w("GeminiService", "DeepSeek error: ${e.message}")
+            "DEEPSEEK_ERROR"
+        }
+    }
+
+    private suspend fun callGeminiWithModel(prompt: String, model: String): String = withContext(Dispatchers.IO) {
         if (!isInitialized()) return@withContext ""
         try {
             val requestBody = buildPayload(prompt).toRequestBody("application/json".toMediaType())
@@ -70,6 +136,7 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
                     val msg = when (response.code) {
                         429 -> "GEMINI_RATE_LIMIT"
                         401, 403 -> "GEMINI_AUTH_ERROR"
+                        503 -> "GEMINI_HTTP_503"
                         else -> "GEMINI_HTTP_${response.code}"
                     }
                     android.util.Log.w("GeminiService", "HTTP ${response.code}: $errorBody")
@@ -280,7 +347,12 @@ $context
 
 Look at this Street View image carefully. In a warm, conversational tone in $language, describe what the visitor is seeing — point out specific architectural details, textures, materials, or historical features visible in this exact view. Mention one fascinating detail they might miss. Keep it to about 30 seconds of spoken time."""
 
-            val response = callGeminiMultimodal(promptText, imageBytes) ?: return@withContext fallbackSnapshotNarration(language)
+            val response = if (novaApiUrl.isNotBlank()) {
+                val b64 = Base64.encodeToString(imageBytes, Base64.NO_WRAP)
+                callNova(promptText, b64, "image/jpeg")
+            } else {
+                callGeminiMultimodal(promptText, imageBytes)
+            } ?: return@withContext fallbackSnapshotNarration(language)
             response.ifBlank { fallbackSnapshotNarration(language) }
         } catch (_: Exception) {
             fallbackSnapshotNarration(language)

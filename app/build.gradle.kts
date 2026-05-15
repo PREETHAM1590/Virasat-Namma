@@ -17,6 +17,9 @@ if (localPropsFile.exists()) {
 }
 val geminiApiKey: String = localProps.getProperty("geminiApiKey", "")
 val mapsApiKey: String = localProps.getProperty("mapsApiKey", "")
+val deepseekApiKey: String = localProps.getProperty("deepseekApiKey", "")
+val novaApiUrl: String = localProps.getProperty("novaApiUrl", "")
+val novaApiKey: String = localProps.getProperty("novaApiKey", "")
 
 android {
     namespace = "com.example.virasat"
@@ -28,6 +31,9 @@ android {
         minSdk = 26
         targetSdk = 35
         buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
+        buildConfigField("String", "DEEPSEEK_API_KEY", "\"$deepseekApiKey\"")
+        buildConfigField("String", "NOVA_API_URL", "\"$novaApiUrl\"")
+        buildConfigField("String", "NOVA_API_KEY", "\"$novaApiKey\"")
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
         versionCode = 1
         versionName = "1.0"
@@ -158,6 +164,9 @@ dependencies {
 
     // Biometric Authentication
     implementation("androidx.biometric:biometric:1.1.0")
+
+    // Splash Screen API (eliminates blank screen before first Compose frame)
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Baseline Profile
     implementation("androidx.profileinstaller:profileinstaller:1.3.1")

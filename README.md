@@ -95,9 +95,25 @@
 
 <div align="center">
 
-| Splash | Home | Site Detail | QR Scanner | Passport |
-|--------|------|-------------|------------|----------|
-| 🎨 | 🗺️ | 📜 | 📱 | 🛂 |
+### English
+
+| Home (1) | Home (2) | Site Detail (1) | Site Detail (2) | Audio Guide |
+|----------|----------|-----------------|-----------------|-------------|
+| ![Home 1 EN](screenshots/HOME_1_ENG.jpg) | ![Home 2 EN](screenshots/HOME_2_ENG.jpg) | ![Site 1 EN](screenshots/SITE_1_ENG.jpg) | ![Site 2 EN](screenshots/SITE_2_ENG.jpg) | ![Media EN](screenshots/MEDIA_ENG.jpg) |
+
+| Search | Travel Passport | Profile | Map |
+|--------|-----------------|---------|-----|
+| ![Search EN](screenshots/SEARCH_ENG.jpg) | ![Passport EN](screenshots/PASSPORT_ENG.jpg) | ![Profile EN](screenshots/PROFILE_ENG.jpg) | ![Maps](screenshots/MAPS.jpg) |
+
+### Kannada (ಕನ್ನಡ)
+
+| Home (1) | Home (2) | Site Detail | Audio Guide | Travel Passport |
+|----------|----------|-------------|-------------|------------------|
+| ![Home 1 KN](screenshots/HOME_1_KAN.jpg) | ![Home 2 KN](screenshots/HOME_2_KAN.jpg) | ![Site 1 KN](screenshots/SITE_1_KAN.jpg) | ![Media KN](screenshots/MEDIA_KAN.jpg) | ![Passport KN](screenshots/PASSPORT_KAN.jpg) |
+
+| Search | Profile |
+|--------|---------|
+| ![Search KN](screenshots/SEARCH_KAN.jpg) | ![Profile KN](screenshots/PROFILE_KAN.jpg) |
 
 </div>
 
@@ -137,8 +153,11 @@ To use Firebase features (Auth, Firestore, Storage):
 
 1. Create a Firebase project at [firebase.google.com](https://firebase.google.com)
 2. Add an Android app with package name: `com.example.virasat`
-3. Download `google-services.json` and place it in `app/` directory
+3. Download `google-services.json` and place it in the `app/` directory
+   - A template is provided at `app/google-services.json.template` — copy and fill in your project values
 4. Enable Firebase Auth and Firestore in the console
+
+> **Note:** The app builds and runs fully without Firebase. Room Database powers all local persistence (check-ins, unlocked facts, bookmarks). Firebase features (Auth, leaderboard, community) are additive.
 
 ---
 

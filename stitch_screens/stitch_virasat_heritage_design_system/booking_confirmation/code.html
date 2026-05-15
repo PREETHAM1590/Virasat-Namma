@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Booking Confirmation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#e7e9e4",
+                    "primary-fixed": "#d3ef59",
+                    "inverse-surface": "#2e312e",
+                    "inverse-on-surface": "#f0f1ec",
+                    "on-tertiary-fixed-variant": "#3e4a40",
+                    "surface-tint": "#556500",
+                    "secondary-fixed-dim": "#b2ceb3",
+                    "on-secondary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#131e16",
+                    "on-tertiary-container": "#4a554b",
+                    "on-error-container": "#93000a",
+                    "on-secondary-container": "#526a54",
+                    "outline-variant": "#c6c8b0",
+                    "on-tertiary": "#ffffff",
+                    "background": "#f9faf5",
+                    "surface-dim": "#d9dad6",
+                    "surface-bright": "#f9faf5",
+                    "on-primary-fixed-variant": "#3f4c00",
+                    "secondary": "#4c644f",
+                    "secondary-container": "#ceeace",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f3f4ef",
+                    "tertiary-container": "#bdcabd",
+                    "surface-variant": "#e2e3de",
+                    "outline": "#767964",
+                    "primary-fixed-dim": "#b7d23f",
+                    "on-surface-variant": "#454836",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#ceeace",
+                    "on-surface": "#1a1c19",
+                    "on-secondary-fixed": "#09200f",
+                    "surface": "#f9faf5",
+                    "primary": "#556500",
+                    "surface-container-highest": "#e2e3de",
+                    "tertiary-fixed-dim": "#bdcabd",
+                    "inverse-primary": "#b7d23f",
+                    "primary-container": "#b7d23f",
+                    "on-background": "#1a1c19",
+                    "tertiary": "#556157",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed": "#181e00",
+                    "on-primary-container": "#4a5800",
+                    "surface-container": "#edeee9",
+                    "tertiary-fixed": "#d9e6d8",
+                    "on-secondary-fixed-variant": "#354c38",
+                    "error": "#ba1a1a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "overlap-margin": "-32px",
+                    "container-padding": "24px",
+                    "section-margin": "48px",
+                    "element-gap": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "label-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "body-lg": [
+                            "Be Vietnam Pro"
+                    ],
+                    "headline-md": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-md": [
+                            "Be Vietnam Pro"
+                    ],
+                    "display-lg": [
+                            "Plus Jakarta Sans"
+                    ]
+            },
+            "fontSize": {
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-filled {
+          font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-low min-h-screen text-on-surface pb-32 font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="bg-transparent w-full px-container-padding pt-4 flat no shadows transition-transform duration-300 active:scale-95 flex justify-between items-center max-w-7xl mx-auto z-40 relative">
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity p-2 flex items-center justify-center rounded-full bg-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined">eco</span>
+</button>
+<div class="font-headline-lg text-headline-lg text-primary tracking-tight">Virasat</div>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity p-2 flex items-center justify-center rounded-full bg-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined">search</span>
+</button>
+</header>
+<!-- Main Canvas -->
+<main class="w-full max-w-lg mx-auto px-container-padding flex flex-col items-center mt-8 relative z-10">
+<!-- Header Text -->
+<h1 class="font-display-lg text-display-lg text-on-secondary-fixed text-center mb-10">Booking Confirmed!</h1>
+<!-- E-Ticket Card Container -->
+<div class="relative w-full mb-section-margin">
+<!-- Massive White Floating Card -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[12px_12px_32px_rgba(206,234,206,0.3),-12px_-12px_32px_rgba(255,255,255,0.9)] flex flex-col gap-6 relative z-10 pb-16">
+<!-- Thumbnail -->
+<div class="w-full h-48 rounded-DEFAULT overflow-hidden relative shadow-inner">
+<img alt="Hampi" class="w-full h-full object-cover" data-alt="A breathtaking, cinematic wide shot of the ancient ruins of Hampi under a warm, golden-hour light. The stone chariots and temple pillars cast long, soft shadows across the lush, verdant landscape. The scene is imbued with a sense of timeless serenity and cultural richness, fitting perfectly within a modern light-mode interface with subtle organic undertones and deep forest greens." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAipdO5X6LveXk924FSXFrtDiOQKIaRQuEzAeOxk4yT5s0CjRD-DQ3sqjJZuiRDJhQjUGMT1ozAuc6Va8Rb6bxeWsguquE0BG3Azc54o-7iH9x0JNDX22uLjKUoIjdoLEr5Cs_fTb2vs9CCQXn9t08vInM81cI9Rm5Tys8zZzbXMSSHfriqdxOjSDnfRP8t8_BVeZP6nmQS_-2SV82AAcSWFbpQ45d2h0xU91xg71Vptw6KHW3_7ImMHbHqGx90hc50i_PkIKaSPHo"/>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/60 via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 text-on-primary">
+<h2 class="font-headline-md text-headline-md">Hampi Heritage Walk</h2>
+<p class="font-label-md text-label-md opacity-90">Guided Tour</p>
+</div>
+</div>
+<!-- Details Grid -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low rounded-DEFAULT p-4 shadow-[inset_2px_2px_6px_rgba(0,0,0,0.05),inset_-2px_-2px_6px_rgba(255,255,255,0.5)]">
+<div class="font-label-md text-label-md text-on-surface-variant mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span> Date
+                        </div>
+<div class="font-headline-md text-headline-md text-on-surface text-[18px]">Oct 24, 2023</div>
+</div>
+<div class="bg-surface-container-low rounded-DEFAULT p-4 shadow-[inset_2px_2px_6px_rgba(0,0,0,0.05),inset_-2px_-2px_6px_rgba(255,255,255,0.5)]">
+<div class="font-label-md text-label-md text-on-surface-variant mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">group</span> Guests
+                        </div>
+<div class="font-headline-md text-headline-md text-on-surface text-[18px]">2 Adults</div>
+</div>
+</div>
+<!-- Perforated Line Effect -->
+<div class="w-full border-t-2 border-dashed border-outline-variant relative my-2">
+<div class="absolute -left-8 -top-3 w-6 h-6 rounded-full bg-surface-container-low shadow-inner"></div>
+<div class="absolute -right-8 -top-3 w-6 h-6 rounded-full bg-surface-container-low shadow-inner"></div>
+</div>
+<!-- QR Code Area -->
+<div class="flex flex-col items-center justify-center gap-4 pt-2">
+<div class="font-label-md text-label-md text-on-surface-variant text-center">Scan for Entry</div>
+<div class="w-48 h-48 bg-surface-container-high rounded-DEFAULT p-4 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.05),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] flex items-center justify-center">
+<img alt="QR Code" class="w-full h-full mix-blend-multiply opacity-90 rounded-sm" data-alt="A clean, high-contrast QR code generated in a deep forest green color against a soft pale mint background. The code is crisp and legible, functioning as a digital ticket within a sleek, modern, light-themed user interface focused on organic aesthetics and seamless utility." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqr69XMI3suFen6IZIBaJyT49ZThOG48_tFElDxm-5gCK1PINhCrvbsnF44Cing1Et-eZAHV-zlW5s4Fhwj-jCjuRQ5wpymWCzmDkF1o4NC9i1Gco2E8BfCHnJLEJjPM2RyAsqiH8t0IJg35TOI009Va7W0drgXUtzPlpH9B7J_x7sumhmjrjDAHJS_GD7JAEOb0oMK3HscxDIajG2gGTkBWAxYzTQ4Wx_n2Oo-tCZhD8KpwNcekiIvOCPCulReVHTITI8Q9HeluM"/>
+</div>
+<div class="font-body-md text-body-md text-outline tracking-widest mt-2">ID: VRS-8829-KL</div>
+</div>
+</div>
+<!-- Overlapping Primary Button -->
+<button class="absolute -bottom-7 left-1/2 -translate-x-1/2 z-20 bg-primary-container text-on-primary-container font-headline-md text-headline-md text-[18px] px-8 py-4 rounded-full shadow-[0_8px_24px_rgba(183,210,63,0.4)] flex items-center gap-3 transition-transform duration-200 active:scale-95 hover:opacity-90">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                Save to Gallery
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-[#0B2211] fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-md rounded-full px-6 py-3 z-50 shadow-xl flex justify-around items-center gap-element-gap scale-100 transition-all duration-200">
+<!-- Inactive Tab: Explore -->
+<a class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">nest_eco_leaf</span>
+<span class="font-label-md text-label-md mt-1 text-[10px]">Explore</span>
+</a>
+<!-- Inactive Tab: Heritage -->
+<a class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">temple_hindu</span>
+<span class="font-label-md text-label-md mt-1 text-[10px]">Heritage</span>
+</a>
+<!-- Active Tab: Saved -->
+<a class="flex flex-col items-center justify-center text-primary-fixed bg-on-secondary-fixed-variant/20 rounded-full px-4 py-1 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined icon-filled text-[24px]">star</span>
+<span class="font-label-md text-label-md mt-1 text-[10px]">Saved</span>
+</a>
+<!-- Inactive Tab: Profile -->
+<a class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">person</span>
+<span class="font-label-md text-label-md mt-1 text-[10px]">Profile</span>
+</a>
+</nav>
+</body></html>

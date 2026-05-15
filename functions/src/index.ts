@@ -9,24 +9,39 @@
 
 import {setGlobalOptions} from "firebase-functions";
 import {onRequest} from "firebase-functions/https";
-import * as logger from "firebase-functions/logger";
+import * as admin from "firebase-admin";
+import QRCode from "qrcode";
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+admin.initializeApp();
+const db = admin.firestore();
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
+setGlobalOptions({maxInstances: 10});
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+/**
+ * GET /generateQr?siteId=hampi
+ * Returns a QR code PNG encoding the site's qrCodeId.
+ */
+export const generateQr = onRequest(async (req, res) => {
+  const siteId = req.query.siteId as string;
+  if (!siteId || typeof siteId !== "string" || siteId.length > 100) {
+    res.status(400).send("Missing or invalid siteId parameter");
+    return;
+  }
+
+  const doc = await db.collection("sites").doc(siteId).get();
+  if (!doc.exists) {
+    res.status(404).send("Site not found");
+    return;
+  }
+
+  const qrValue = doc.data()?.qrCodeId || siteId;
+  const pngBuffer = await QRCode.toBuffer(qrValue, {
+    width: 512,
+    margin: 2,
+    type: "png",
+  });
+
+  res.set("Content-Type", "image/png");
+  res.set("Cache-Control", "public, max-age=86400");
+  res.send(pngBuffer);
+});

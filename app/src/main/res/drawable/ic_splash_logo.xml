@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Splash screen icon shown by the Android SplashScreen API.
+    Simple stylised temple/heritage glyph in the brand olive/green colour.
+    The icon occupies the inner 2/3 of the splash circle; the circle itself
+    is painted by windowSplashScreenIconBackgroundColor (#556500).
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Temple silhouette: base platform -->
+    <path
+        android:fillColor="#F9FAF5"
+        android:pathData="M20,78 L88,78 L88,82 L20,82 Z" />
+
+    <!-- Main tower body -->
+    <path
+        android:fillColor="#F9FAF5"
+        android:pathData="M36,44 L72,44 L72,78 L36,78 Z" />
+
+    <!-- Tiered roof — bottom tier -->
+    <path
+        android:fillColor="#F9FAF5"
+        android:pathData="M30,44 L78,44 L72,38 L36,38 Z" />
+
+    <!-- Tiered roof — middle tier -->
+    <path
+        android:fillColor="#F9FAF5"
+        android:pathData="M36,38 L72,38 L67,32 L41,32 Z" />
+
+    <!-- Tiered roof — top tier -->
+    <path
+        android:fillColor="#F9FAF5"
+        android:pathData="M41,32 L67,32 L63,26 L45,26 Z" />
+
+    <!-- Spire / kalasha -->
+    <path
+        android:fillColor="#B7D23F"
+        android:pathData="M51,26 L57,26 L57,22 L54,18 L51,22 Z" />
+
+    <!-- Doorway arch -->
+    <path
+        android:fillColor="#1A2E0D"
+        android:pathData="M46,78 L62,78 L62,58 Q54,52 46,58 Z" />
+
+</vector>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Virasat - Badges</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&amp;family=Be+Vietnam+Pro:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Neumorphic shadow utilities for specific background context */
+        .neumorphic-card {
+            box-shadow: 8px 8px 24px rgba(76, 100, 79, 0.15), -8px -8px 24px rgba(255, 255, 255, 0.7);
+        }
+        .organic-blob-1 {
+            border-radius: 43% 57% 70% 30% / 40% 50% 60% 50%;
+        }
+        .organic-blob-2 {
+            border-radius: 50% 50% 30% 70% / 60% 40% 70% 40%;
+        }
+        .organic-blob-3 {
+            border-radius: 30% 70% 50% 50% / 50% 60% 40% 50%;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#2e312e",
+                        "tertiary": "#556157",
+                        "on-primary-container": "#4a5800",
+                        "primary-fixed": "#d3ef59",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#d9dad6",
+                        "surface-container-high": "#e7e9e4",
+                        "tertiary-container": "#bdcabd",
+                        "secondary-container": "#ceeace",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f3f4ef",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-background": "#1a1c19",
+                        "surface-variant": "#e2e3de",
+                        "surface-tint": "#556500",
+                        "primary-container": "#b7d23f",
+                        "on-surface": "#1a1c19",
+                        "background": "#f9faf5",
+                        "primary": "#556500",
+                        "outline": "#767964",
+                        "secondary-fixed-dim": "#b2ceb3",
+                        "secondary": "#4c644f",
+                        "secondary-fixed": "#ceeace",
+                        "surface-container": "#edeee9",
+                        "surface-bright": "#f9faf5",
+                        "inverse-primary": "#b7d23f",
+                        "on-tertiary-fixed-variant": "#3e4a40",
+                        "surface": "#f9faf5",
+                        "on-tertiary-fixed": "#131e16",
+                        "outline-variant": "#c6c8b0",
+                        "on-surface-variant": "#454836",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#4a554b",
+                        "on-secondary-fixed": "#09200f",
+                        "inverse-on-surface": "#f0f1ec",
+                        "surface-container-highest": "#e2e3de",
+                        "on-primary-fixed-variant": "#3f4c00",
+                        "on-primary-fixed": "#181e00",
+                        "tertiary-fixed": "#d9e6d8",
+                        "primary-fixed-dim": "#b7d23f",
+                        "on-secondary-fixed-variant": "#354c38",
+                        "on-secondary-container": "#526a54",
+                        "tertiary-fixed-dim": "#bdcabd",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "overlap-margin": "-32px",
+                        "container-padding": "24px",
+                        "section-margin": "48px",
+                        "element-gap": "16px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Be Vietnam Pro"],
+                        "label-md": ["Be Vietnam Pro"],
+                        "headline-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-secondary-container text-on-surface font-body-md min-h-screen pb-32">
+<!-- TopAppBar JSON Implemented -->
+<header class="bg-transparent w-full px-container-padding pt-4 flex justify-between items-center w-full max-w-7xl mx-auto fixed top-0 left-0 right-0 z-40 h-20">
+<button class="text-primary dark:text-primary-fixed-dim hover:opacity-80 transition-opacity transition-transform duration-300 active:scale-95 flex items-center justify-center w-12 h-12 rounded-full">
+<span class="material-symbols-outlined" data-icon="eco">eco</span>
+</button>
+<h1 class="font-headline-lg text-headline-lg text-primary dark:text-primary-fixed-dim tracking-tight">Virasat</h1>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity transition-transform duration-300 active:scale-95 flex items-center justify-center w-12 h-12 rounded-full">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-28 px-container-padding max-w-5xl mx-auto">
+<!-- Header Section -->
+<div class="mb-section-margin text-center">
+<h2 class="font-display-lg text-display-lg text-on-secondary-container mb-2">Custodian Badges</h2>
+<p class="font-body-lg text-body-lg text-secondary">You have earned 3 of 12 badges</p>
+</div>
+<!-- Grid of Floating White Cards -->
+<div class="grid grid-cols-2 md:grid-cols-3 gap-container-padding">
+<!-- Earned Badge 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 flex flex-col items-center justify-center text-center neumorphic-card transition-transform duration-300 hover:-translate-y-1">
+<div class="w-24 h-24 mb-4 flex items-center justify-center bg-primary-container text-on-primary-container organic-blob-1 shadow-inner">
+<span class="material-symbols-outlined text-display-lg" data-icon="nest_eco_leaf" data-weight="fill">nest_eco_leaf</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface text-[18px] leading-tight mb-1">First Sprout</h3>
+<p class="font-label-md text-label-md text-secondary">Earned</p>
+</div>
+<!-- Earned Badge 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 flex flex-col items-center justify-center text-center neumorphic-card transition-transform duration-300 hover:-translate-y-1">
+<div class="w-24 h-24 mb-4 flex items-center justify-center bg-primary-container text-on-primary-container organic-blob-2 shadow-inner">
+<span class="material-symbols-outlined text-display-lg" data-icon="temple_hindu" data-weight="fill">temple_hindu</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface text-[18px] leading-tight mb-1">Pilgrim</h3>
+<p class="font-label-md text-label-md text-secondary">Earned</p>
+</div>
+<!-- Earned Badge 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 flex flex-col items-center justify-center text-center neumorphic-card transition-transform duration-300 hover:-translate-y-1">
+<div class="w-24 h-24 mb-4 flex items-center justify-center bg-primary-container text-on-primary-container organic-blob-3 shadow-inner">
+<span class="material-symbols-outlined text-display-lg" data-icon="map" data-weight="fill">map</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface text-[18px] leading-tight mb-1">Pathfinder</h3>
+<p class="font-label-md text-label-md text-secondary">Earned</p>
+</div>
+<!-- Locked Badge 1 -->
+<div class="bg-surface-container-lowest/80 rounded-xl p-6 flex flex-col items-center justify-center text-center neumorphic-card backdrop-blur-sm">
+<div class="w-24 h-24 mb-4 flex items-center justify-center bg-surface-variant/50 text-outline organic-blob-1 border border-outline-variant/30">
+<span class="material-symbols-outlined text-display-lg opacity-60" data-icon="museum">museum</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface-variant text-[18px] leading-tight mb-1 opacity-70">Curator</h3>
+<p class="font-label-md text-label-md text-outline opacity-60">Locked</p>
+</div>
+<!-- Locked Badge 2 -->
+<div class="bg-surface-container-lowest/80 rounded-xl p-6 flex flex-col items-center justify-center text-center neumorphic-card backdrop-blur-sm">
+<div class="w-24 h-24 mb-4 flex items-center justify-center bg-surface-variant/50 text-outline organic-blob-2 border border-outline-variant/30">
+<span class="material-symbols-outlined text-display-lg opacity-60" data-icon="local_florist">local_florist</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface-variant text-[18px] leading-tight mb-1 opacity-70">Botanist</h3>
+<p class="font-label-md text-label-md text-outline opacity-60">Locked</p>
+</div>
+<!-- Locked Badge 3 -->
+<div class="bg-surface-container-lowest/80 rounded-xl p-6 flex flex-col items-center justify-center text-center neumorphic-card backdrop-blur-sm">
+<div class="w-24 h-24 mb-4 flex items-center justify-center bg-surface-variant/50 text-outline organic-blob-3 border border-outline-variant/30">
+<span class="material-symbols-outlined text-display-lg opacity-60" data-icon="groups">groups</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface-variant text-[18px] leading-tight mb-1 opacity-70">Elder</h3>
+<p class="font-label-md text-label-md text-outline opacity-60">Locked</p>
+</div>
+</div>
+</main>
+<!-- BottomNavBar JSON Implemented (Active: Profile) -->
+<nav class="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-48px)] max-w-md rounded-full px-6 py-3 z-50 bg-[#0B2211] dark:bg-[#0B2211] shadow-[0_8px_32px_rgba(0,0,0,0.24)] flex justify-around items-center gap-element-gap md:hidden">
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="nest_eco_leaf">nest_eco_leaf</span>
+<span class="font-label-md text-label-md text-[10px]">Explore</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="temple_hindu">temple_hindu</span>
+<span class="font-label-md text-label-md text-[10px]">Heritage</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary-fixed/60 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="star">star</span>
+<span class="font-label-md text-label-md text-[10px]">Saved</span>
+</button>
+<!-- Active State Logic Applied to Profile -->
+<button class="flex flex-col items-center justify-center text-primary-fixed bg-on-secondary-fixed-variant/20 rounded-full px-4 py-1 hover:text-secondary-fixed transition-colors scale-100 active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined mb-1" data-icon="person" data-weight="fill">person</span>
+<span class="font-label-md text-label-md text-[10px]">Profile</span>
+</button>
+</nav>
+</body></html>

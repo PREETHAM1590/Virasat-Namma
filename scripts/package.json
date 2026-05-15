@@ -1,0 +1,13 @@
+{
+  "name": "virasat-firestore-seeder",
+  "version": "1.0.0",
+  "description": "Firestore seeding scripts for Virasat",
+  "scripts": {
+    "seed": "node seed-firestore.js",
+    "generate-qr": "node generate-qr-codes.mjs"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0",
+    "qrcode": "^1.5.4"
+  }
+}

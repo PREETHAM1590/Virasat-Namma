@@ -36,6 +36,13 @@ class VirasatApplication : Application() {
                 OkHttpClient.Builder()
                     .followRedirects(true)
                     .followSslRedirects(true)
+                    .addInterceptor { chain ->
+                        chain.proceed(
+                            chain.request().newBuilder()
+                                .header("User-Agent", "VirasatApp/1.0")
+                                .build()
+                        )
+                    }
                     .build()
             }
             .diskCache {

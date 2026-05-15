@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Box
@@ -33,6 +34,7 @@ import com.example.virasat.data.service.FirebaseAnalyticsHelper
 import com.example.virasat.data.service.GeminiHeritageService
 import com.example.virasat.data.service.FirebaseAuthService
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeoutOrNull
 import com.example.virasat.util.LocaleHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.example.virasat.ui.components.BottomNavItem
@@ -48,6 +50,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         // Locale is applied in attachBaseContext; no need to repeat here.
         window.setFormat(PixelFormat.OPAQUE)
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
@@ -55,6 +58,8 @@ class MainActivity : ComponentActivity() {
         // Defer non-critical init off main thread
         Thread {
             GeminiHeritageService.initialize(BuildConfig.GEMINI_API_KEY)
+            GeminiHeritageService.initializeDeepSeek(BuildConfig.DEEPSEEK_API_KEY)
+            GeminiHeritageService.initializeNova(BuildConfig.NOVA_API_URL, BuildConfig.NOVA_API_KEY)
             FirebaseAnalyticsHelper.init(this)
         }.start()
         setContent {
@@ -66,18 +71,28 @@ class MainActivity : ComponentActivity() {
                     val prefs = LocalContext.current.getSharedPreferences("virasat_prefs", Context.MODE_PRIVATE)
                     val onboardingSeen = remember { prefs.getBoolean("onboarding_seen", false) }
                     val languageSelected = remember { prefs.getBoolean("language_selected", false) }
+
+                    // Resolve start destination once — wait up to 3s for auth if returning user
+                    val startDest by produceState<String?>(null) {
+                        value = when {
+                            !onboardingSeen && !languageSelected -> "language"
+                            !onboardingSeen && languageSelected -> "onboarding"
+                            else -> {
+                                val user = withTimeoutOrNull(3_000) {
+                                    FirebaseAuthService.authStateFlow().first()
+                                }
+                                if (user != null) "home" else "login"
+                            }
+                        }
+                    }
+
                     val authUser by FirebaseAuthService.authStateFlow()
                         .collectAsState(initial = FirebaseAuthService.currentUser)
-                    val startDest = when {
-                        !onboardingSeen && !languageSelected -> "splash"
-                        !onboardingSeen && languageSelected -> "onboarding"
-                        // Returning user: always start at splash so it can wait for auth
-                        // to resolve (up to 3 s) before navigating to login or home (Req 1.3–1.5)
-                        else -> "splash"
-                    }
-                    val navController = rememberNavController()
+                    // Wait until start destination is resolved before showing NavHost
+                    val resolvedDest = startDest ?: return@Surface
                     // Track whether NavHost has rendered at least once
                     var navGraphReady by remember { mutableStateOf(false) }
+                    val navController = androidx.navigation.compose.rememberNavController()
                     // Re-run whenever authUser changes OR when navGraphReady flips to true,
                     // so a sign-out that occurs before the NavHost is ready is not missed.
                     LaunchedEffect(authUser, navGraphReady) {
@@ -106,37 +121,10 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(Unit) { navGraphReady = true }
                     NavHost(
                         navController = navController,
-                        startDestination = startDest,
+                        startDestination = resolvedDest,
                         enterTransition = { EnterTransition.None },
                         exitTransition = { ExitTransition.None }
                     ) {
-                        composable("splash") {
-                            SplashScreen(
-                                onboardingSeen = onboardingSeen,
-                                authStateProvider = {
-                                    // Collect the first emission from authStateFlow.
-                                    // Firebase emits immediately if a cached session exists,
-                                    // or after network round-trip if not. withTimeoutOrNull
-                                    // inside SplashScreen caps the wait at 3 s (Req 1.5).
-                                    FirebaseAuthService.authStateFlow().first()
-                                },
-                                onNavigateToLanguage = {
-                                    navController.navigate("language") {
-                                        popUpTo("splash") { inclusive = true }
-                                    }
-                                },
-                                onNavigateToLogin = {
-                                    navController.navigate("login") {
-                                        popUpTo("splash") { inclusive = true }
-                                    }
-                                },
-                                onNavigateToHome = {
-                                    navController.navigate("home") {
-                                        popUpTo("splash") { inclusive = true }
-                                    }
-                                }
-                            )
-                        }
                         composable("language") {
                             val isSettingsFlow = navController.previousBackStackEntry?.destination?.route == "settings"
                             val activity = LocalContext.current as? android.app.Activity

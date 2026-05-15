@@ -1,0 +1,21 @@
+[debug] [2026-05-14T17:35:56.547Z] ----------------------------------------------------------------------
+[debug] [2026-05-14T17:35:56.550Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\badbo\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only functions
+[debug] [2026-05-14T17:35:56.551Z] CLI Version:   15.17.0
+[debug] [2026-05-14T17:35:56.551Z] Platform:      win32
+[debug] [2026-05-14T17:35:56.551Z] Node Version:  v22.15.0
+[debug] [2026-05-14T17:35:56.552Z] Time:          Thu May 14 2026 23:05:56 GMT+0530 (India Standard Time)
+[debug] [2026-05-14T17:35:56.552Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-05-14T17:35:56.556Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[error] 
+[error] Error: Cannot understand what targets to deploy/serve. No targets in firebase.json match '--only functions'. If you are using PowerShell make sure you place quotes around any comma-separated lists (ex: --only "functions,firestore").
+[debug] [2026-05-14T17:36:00.808Z] Error: EBUSY: resource busy or locked, unlink 'D:\Android PROJECTS\Virasat\firebase-debug.log'
+    at Object.unlinkSync (node:fs:1953:11)
+    at process.<anonymous> (C:\Users\badbo\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\cli.js:44:16)
+    at process.emit (node:events:530:35)
+    at process.exit (node:internal/process/per_thread:194:15)
+    at Timeout._onTimeout (C:\Users\badbo\AppData\Roaming\npm\node_modules\firebase-tools\lib\errorOut.js:20:17)
+    at listOnTimeout (node:internal/timers:588:17)
+    at process.processTimers (node:internal/timers:523:7)
+[error] 
+[error] Error: An unexpected error has occurred.

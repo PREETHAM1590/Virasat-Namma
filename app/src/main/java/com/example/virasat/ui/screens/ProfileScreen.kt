@@ -318,6 +318,11 @@ fun ProfileScreen(
                 label = stringResource(R.string.profile_preferences),
                 onClick = onSettings
             )
+            MenuRow(
+                icon = Icons.Default.CardTravel,
+                label = stringResource(R.string.passport_title),
+                onClick = onPassport
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))

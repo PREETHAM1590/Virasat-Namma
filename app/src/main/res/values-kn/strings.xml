@@ -85,6 +85,7 @@
 
     <!-- Travel Passport -->
     <string name="passport_title">ಪ್ರಯಾಣ ಪಾಸ್‌ಪೋರ್ಟ್</string>
+    <string name="passport_subtitle">ನಿಮ್ಮ ಪರಂಪರೆ ಪ್ರಯಾಣವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ</string>
     <string name="passport_sites_visited">ಭೇಟಿ ತಾಣಗಳು</string>
     <string name="passport_facts_unlocked">ತೆರೆದ ಸಂಗತಿಗಳು</string>
     <string name="passport_no_checkins">ಇನ್ನೂ ಚೆಕ್-ಇನ್ ಇಲ್ಲ</string>
