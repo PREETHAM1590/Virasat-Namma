@@ -211,6 +211,16 @@ Virasat-Namma/
 
 ---
 
+## 🔄 Recent Changes
+
+| Date | Type | Description |
+|------|------|-------------|
+| 2026-05-21 | 🛡️ Security | Sanitized API service log output to prevent sensitive data leakage via logcat |
+| 2026-05-21 | ⚡ Performance | Added stable keys to HomeScreen LazyRow items for efficient Compose recomposition |
+| 2026-05-15 | 🚀 Feature | Added LICENSE, wired Travel Passport navigation in Home/Profile screens |
+
+---
+
 ## 🎯 Future Enhancements
 
 - [ ] 🌐 **Live GPS Integration** - Real-time nearby site discovery
