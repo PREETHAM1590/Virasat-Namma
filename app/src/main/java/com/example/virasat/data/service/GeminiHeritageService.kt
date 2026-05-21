@@ -75,17 +75,19 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
             client.newCall(request).execute().use { response ->
                 val bodyStr = response.body?.string() ?: ""
                 if (!response.isSuccessful) {
-                    android.util.Log.w("GeminiService", "Nova HTTP ${response.code}: $bodyStr")
+                    // Security: log only status code, not response body (may contain tokens/internal details)
+                    android.util.Log.w("GeminiService", "Nova HTTP ${response.code}")
                     return@withContext "NOVA_HTTP_${response.code}"
                 }
                 val text = org.json.JSONObject(bodyStr).let {
                     it.optString("text", "").ifBlank { it.optString("reply", "") }
                 }
-                if (text.isBlank()) android.util.Log.w("GeminiService", "Nova empty response: $bodyStr")
+                if (text.isBlank()) android.util.Log.w("GeminiService", "Nova returned empty response")
                 text
             }
         } catch (e: Exception) {
-            android.util.Log.w("GeminiService", "Nova error: ${e.message}")
+            // Security: don't log exception details which may contain URLs with API keys
+            android.util.Log.w("GeminiService", "Nova request failed")
             "NOVA_ERROR"
         }
     }
@@ -105,6 +107,7 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
                 .build()
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
+                    // Security: log only status code, not response body
                     android.util.Log.w("GeminiService", "DeepSeek HTTP ${response.code}")
                     return@withContext "DEEPSEEK_HTTP_${response.code}"
                 }
@@ -115,7 +118,7 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
                     .optString("content", "")
             }
         } catch (e: Exception) {
-            android.util.Log.w("GeminiService", "DeepSeek error: ${e.message}")
+            android.util.Log.w("GeminiService", "DeepSeek request failed")
             "DEEPSEEK_ERROR"
         }
     }
@@ -131,15 +134,14 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
 
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
-                    // Surface rate-limit and auth errors so callers can show feedback (#13)
-                    val errorBody = response.body?.string() ?: ""
+                    // Security: don't log response body — may contain API key echo or internal details
                     val msg = when (response.code) {
                         429 -> "GEMINI_RATE_LIMIT"
                         401, 403 -> "GEMINI_AUTH_ERROR"
                         503 -> "GEMINI_HTTP_503"
                         else -> "GEMINI_HTTP_${response.code}"
                     }
-                    android.util.Log.w("GeminiService", "HTTP ${response.code}: $errorBody")
+                    android.util.Log.w("GeminiService", "Gemini HTTP ${response.code}")
                     return@withContext msg
                 }
                 val body = response.body?.string() ?: return@withContext ""
@@ -200,14 +202,14 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
     }
 
     private fun buildMultipartBody(text: String, base64Image: String, boundary: String): String {
-        return """
---$boundary
-Content-Type: application/json
-
-{"parts":[{"text":"$text"},{"inline_data":{"mime_type":"image/jpeg","data":"$base64Image"}}]}
-
---$boundary--
-        """.trimIndent()
+        val textPart = org.json.JSONObject().put("text", text)
+        val inlineData = org.json.JSONObject()
+            .put("mime_type", "image/jpeg")
+            .put("data", base64Image)
+        val imagePart = org.json.JSONObject().put("inline_data", inlineData)
+        val parts = org.json.JSONArray().put(textPart).put(imagePart)
+        val payload = org.json.JSONObject().put("parts", parts).toString()
+        return "--$boundary\nContent-Type: application/json\n\n$payload\n\n--$boundary--"
     }
 
     suspend fun generateNarration(site: HeritageSite?, language: String = "English"): String = withContext(Dispatchers.IO) {
