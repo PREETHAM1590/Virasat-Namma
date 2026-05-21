@@ -226,7 +226,7 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.padding(bottom = 24.dp)
                 ) {
-                    items(categories) { cat ->
+                    items(categories, key = { it }) { cat ->
                         val isSelected = if (cat == allType) selectedType == null
                         else selectedType?.name == siteTypeMap[cat]
                         Box(
@@ -375,7 +375,7 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier.padding(bottom = 40.dp)
                 ) {
-                    items(popularSites) { site ->
+                    items(popularSites, key = { it.id }) { site ->
                         val distanceText = remember(userLocation) {
                             userLocation?.let {
                                 val km = LocationUtils.distanceKm(it.latitude, it.longitude, site.latitude, site.longitude)
