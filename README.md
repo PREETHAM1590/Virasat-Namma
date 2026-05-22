@@ -42,7 +42,7 @@
 - Each site has unique unlockable historical secrets
 
 ### 🔊 Audio Guides
-- AI-generated narration scripts per heritage site using RAG (site context)
+- AI-generated narration scripts per heritage site using structured site-context grounding
 - Chapter-based audio: Introduction, History, Architecture, Legends, Facts
 - Bilingual AI narration (English & Kannada)
 - TextToSpeech playback with play/pause controls
@@ -53,7 +53,7 @@
 - **AI Narrated Tours** — Multi-stop guided tours with auto-generated narrations
 - **Talking Tours** — Street View + real-time AI narration with multimodal vision analysis
 - **AI View Describer** — Describes architectural/historical details of what the user is viewing
-- Powered by **AWS Nova** LLM with RAG (Retrieval-Augmented Generation)
+- Powered by **AWS Nova** LLM with RAG-style prompt grounding using structured heritage-site context
 
 ### 🛂 Digital Travel Passport
 - Check-in to visited sites manually or via QR scan
@@ -168,6 +168,25 @@ To use Firebase features (Auth, Firestore, Storage):
 4. Enable Firebase Auth and Firestore in the console
 
 > **Note:** The app builds and runs fully without Firebase. Room Database powers all local persistence (check-ins, unlocked facts, bookmarks). Firebase features (Auth, leaderboard, community) are additive.
+
+### AI / LLM Setup
+
+The AI features (chatbot, quiz generator, audio narration, talking tours) require API keys configured in `local.properties` at the project root:
+
+```properties
+# local.properties (do NOT commit this file)
+geminiApiKey=your_gemini_api_key_here
+mapsApiKey=your_google_maps_api_key_here
+deepseekApiKey=your_deepseek_api_key_here
+novaApiUrl=https://your-nova-endpoint.amazonaws.com/invoke
+novaApiKey=your_nova_api_key_here
+```
+
+These are read by `app/build.gradle.kts` and exposed as `BuildConfig` fields. The app compiles without them — AI features will gracefully fall back to static site content.
+
+**Current active backend:** AWS Nova (via `novaApiUrl`). The `geminiApiKey` and `deepseekApiKey` are legacy/fallback options.
+
+> **Production Note:** In a production deployment, API keys should not be bundled in the APK. The planned architecture moves all LLM calls behind a backend proxy (e.g., AWS Lambda or Firebase Cloud Function) so that keys remain server-side and are never exposed to the client.
 
 ---
 
