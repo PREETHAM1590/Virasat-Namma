@@ -53,7 +53,7 @@
 - **AI Narrated Tours** — Multi-stop guided tours with auto-generated narrations
 - **Talking Tours** — Street View + real-time AI narration with multimodal vision analysis
 - **AI View Describer** — Describes architectural/historical details of what the user is viewing
-- Powered by **AWS Nova** LLM with RAG-style prompt grounding using structured heritage-site context
+- Powered by **AWS Nova** LLM with structured heritage-site context grounding
 
 ### 🛂 Digital Travel Passport
 - Check-in to visited sites manually or via QR scan
