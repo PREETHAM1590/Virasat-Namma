@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.virasat.data.di.RepositoryProvider
-import com.example.virasat.data.service.GeminiHeritageService
+import com.example.virasat.data.service.AIHeritageService
 import com.example.virasat.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -326,7 +326,7 @@ fun AIAssistantScreen(onBack: () -> Unit) {
                             input = ""
                             isLoading = true
                             scope.launch {
-                                val response = GeminiHeritageService.chatWithHeritageGuide(userMsg, sitesSummary = sitesSummary)
+                                val response = AIHeritageService.chatWithHeritageGuide(userMsg, sitesSummary = sitesSummary)
                                 messages.add(ChatMessage(response, false, null))
                                 isLoading = false
                             }

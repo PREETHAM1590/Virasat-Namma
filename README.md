@@ -42,9 +42,18 @@
 - Each site has unique unlockable historical secrets
 
 ### 🔊 Audio Guides
-- Immersive audio narrations for each heritage site
-- Play, pause, and seek controls
-- Lifecycle-aware MediaPlayer with proper resource management
+- AI-generated narration scripts per heritage site using RAG (site context)
+- Chapter-based audio: Introduction, History, Architecture, Legends, Facts
+- Bilingual AI narration (English & Kannada)
+- TextToSpeech playback with play/pause controls
+
+### 🤖 AI-Powered Features
+- **AI Heritage Chatbot** — Context-aware guide that answers questions about Karnataka's heritage
+- **AI Quiz Generator** — Generates site-specific trivia with structured JSON parsing
+- **AI Narrated Tours** — Multi-stop guided tours with auto-generated narrations
+- **Talking Tours** — Street View + real-time AI narration with multimodal vision analysis
+- **AI View Describer** — Describes architectural/historical details of what the user is viewing
+- Powered by **AWS Nova** LLM with RAG (Retrieval-Augmented Generation)
 
 ### 🛂 Digital Travel Passport
 - Check-in to visited sites manually or via QR scan
@@ -81,10 +90,11 @@
 | **Language** | ![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=flat&logo=kotlin&logoColor=white) | Primary development language |
 | **UI Framework** | ![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-4285F4?style=flat&logo=jetpackcompose&logoColor=white) | Modern declarative UI |
 | **Architecture** | MVVM + Repository Pattern | Clean, testable code |
+| **AI/LLM** | ![AWS](https://img.shields.io/badge/AWS%20Nova-232F3E?style=flat&logo=amazonaws&logoColor=white) | AI narration, quiz generation, heritage chatbot |
 | **Database** | ![Room](https://img.shields.io/badge/Room-3DDC84?style=flat&logo=android&logoColor=white) | Local data persistence |
 | **DI** | ![Hilt](https://img.shields.io/badge/Hilt-3DDC84?style=flat&logo=android&logoColor=white) | Dependency injection |
 | **QR Scanning** | ![ML Kit](https://img.shields.io/badge/ML%20Kit-FF6D00?style=flat&logo=firebase&logoColor=white) | Barcode scanning |
-| **Audio** | MediaPlayer | Audio guide playback |
+| **Audio** | TextToSpeech | AI-generated audio guide playback |
 | **Backend** | ![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=flat&logo=firebase&logoColor=black) | Auth, Firestore, Storage |
 | **Navigation** | Jetpack Navigation | Screen navigation |
 | **Async** | Kotlin Coroutines | Asynchronous operations |

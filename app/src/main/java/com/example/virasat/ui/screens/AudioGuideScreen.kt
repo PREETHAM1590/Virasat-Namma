@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.model.AudioChapter
-import com.example.virasat.data.service.GeminiHeritageService
+import com.example.virasat.data.service.AIHeritageService
 import com.example.virasat.data.source.KarnatakaSites
 import com.example.virasat.util.LocaleHelper
 import kotlinx.coroutines.async
@@ -56,8 +56,8 @@ fun AudioGuideScreen(
     var selectedLanguage by remember {
         mutableStateOf(when (savedLocale) { "kn" -> "Kannada"; "hi" -> "Hindi"; else -> "English" })
     }
-    // Gemini transcripts: chapterKey -> generated text
-    var geminiTranscripts by remember { mutableStateOf<Map<String, String>>(emptyMap()) }
+    // AI transcripts: chapterKey -> generated text
+    var aiTranscripts by remember { mutableStateOf<Map<String, String>>(emptyMap()) }
     var isGenerating by remember { mutableStateOf(false) }
     var generatingChapter by remember { mutableStateOf("") }
     // TTS state
@@ -78,10 +78,10 @@ fun AudioGuideScreen(
     fun estimateDuration(text: String): Int =
         (text.split(" ").size.coerceAtLeast(20) * 60 / 130).coerceAtLeast(30)
 
-    // Chapters: use Gemini transcripts if available, else site data
-    val chapters = remember(siteId, geminiTranscripts, site, ctx) {
+    // Chapters: use AI transcripts if available, else site data
+    val chapters = remember(siteId, aiTranscripts, site, ctx) {
         fun transcript(key: String, fallback: String): String =
-            geminiTranscripts[key]?.ifBlank { fallback } ?: fallback
+            aiTranscripts[key]?.ifBlank { fallback } ?: fallback
         val introText = transcript("introduction", site?.shortDescription ?: "")
         val historyText = transcript("history", site?.history ?: "")
         val archText = transcript("architecture", site?.architecture ?: "")
@@ -202,8 +202,8 @@ fun AudioGuideScreen(
         }
     }
 
-    // When language changes: update TTS locale + fetch all chapter narrations from Gemini
-    // TTS locale update is guarded by ttsReady; Gemini fetch is independent — no guard needed (#22)
+    // When language changes: update TTS locale + fetch all chapter narrations from AI
+    // TTS locale update is guarded by ttsReady; AI fetch is independent — no guard needed (#22)
     LaunchedEffect(selectedLanguage, site) {
         if (site == null) return@LaunchedEffect
         if (ttsReady) {
@@ -214,20 +214,20 @@ fun AudioGuideScreen(
                 ttsUnsupported = false
             }
         }
-        // Gemini transcript fetch happens regardless of ttsReady so language switch
+        // AI transcript fetch happens regardless of ttsReady so language switch
         // doesn't silently skip when TTS init hasn't finished yet.
-        if (!GeminiHeritageService.isInitialized()) return@LaunchedEffect
+        if (!AIHeritageService.isInitialized()) return@LaunchedEffect
         isGenerating = true
         generatingChapter = "all"
         // Fetch all 5 chapter narrations in parallel — reduces wait from ~25s to ~5s
         val newTranscripts = coroutineScope {
             CHAPTER_KEYS
-                .map { key -> async { key to GeminiHeritageService.generateChapterNarration(site, key, selectedLanguage) } }
+                .map { key -> async { key to AIHeritageService.generateChapterNarration(site, key, selectedLanguage) } }
                 .awaitAll()
                 .filter { (_, text) -> text.isNotBlank() }
                 .toMap()
         }
-        geminiTranscripts = newTranscripts
+        aiTranscripts = newTranscripts
         isGenerating = false
         generatingChapter = ""
     }
@@ -330,7 +330,7 @@ fun AudioGuideScreen(
                 }
             }
 
-            // Gemini generating status bar
+            // AI generating status bar
             if (isGenerating) {
                 Row(
                     modifier = Modifier
@@ -348,7 +348,7 @@ fun AudioGuideScreen(
                     Text(
                         text = if (selectedLanguage == "Kannada")
                             "\u0c97\u0cc6\u0cae\u0cbf\u0ca8\u0cbf AI \u0cb5\u0cbf\u0cb5\u0cb0\u0ca3 \u0ca4\u0caf\u0cbe\u0cb0\u0cbf\u0cb8\u0cc1\u0ca4\u0ccd\u0ca4\u0cbf\u0ca6\u0cc6..."
-                            else "Gemini AI generating audio descriptions...",
+                            else "AI generating audio descriptions...",
                         style = type.labelMedium,
                         color = cs.onSecondaryContainer
                     )
@@ -614,7 +614,7 @@ fun AudioGuideScreen(
                                     fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Normal
                                 )
                                 Text(
-                                    if (chGenerating) (if (selectedLanguage == "Kannada") "\u0c97\u0cc6\u0cae\u0cbf\u0ca8\u0cbf \u0ca4\u0caf\u0cbe\u0cb0\u0cbf\u0cb8\u0cc1\u0ca4\u0ccd\u0ca4\u0cbf\u0ca6\u0cc6..." else "Generating with Gemini AI...")
+                                    if (chGenerating) (if (selectedLanguage == "Kannada") "\u0c97\u0cc6\u0cae\u0cbf\u0ca8\u0cbf \u0ca4\u0caf\u0cbe\u0cb0\u0cbf\u0cb8\u0cc1\u0ca4\u0ccd\u0ca4\u0cbf\u0ca6\u0cc6..." else "Generating with AI...")
                                     else ch.transcript.take(55) + "\u2026",
                                     style = type.bodyMedium,
                                     color = cs.onSurfaceVariant

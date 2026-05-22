@@ -248,7 +248,7 @@
     <!-- AI Tour / Talking Tour -->
     <string name="ai_insight">AI ಒಳನೋಟ</string>
     <string name="ai_snapshot">AI ಸ್ನ್ಯಾಪ್‌ಶಾಟ್</string>
-    <string name="ai_powered_gemini">Gemini ಮೂಲಕ</string>
+    <string name="ai_powered_gemini">AI ಮೂಲಕ</string>
     <string name="ai_tap_insights">AI ಒಳನೋಟಗಳಿಗೆ ಟ್ಯಾಪ್ ಮಾಡಿ</string>
     <string name="ai_questions_consider">ಯೋಚಿಸಬೇಕಾದ ಪ್ರಶ್ನೆಗಳು</string>
     <string name="tour_heritage_tour">ಪರಂಪರೆ ಪ್ರವಾಸ</string>

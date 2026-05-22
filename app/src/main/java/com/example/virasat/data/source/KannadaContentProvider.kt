@@ -2,7 +2,7 @@ package com.example.virasat.data.source
 
 import android.content.Context
 import com.example.virasat.data.model.HeritageSite
-import com.example.virasat.data.service.GeminiHeritageService
+import com.example.virasat.data.service.AIHeritageService
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 
 /**
  * Provides Kannada translations for site content.
- * Read strategy: local SharedPreferences cache → Firestore shared read → Gemini AI translation.
+ * Read strategy: local SharedPreferences cache → Firestore shared read → AI translation.
  * Write strategy: local cache only. Firestore write-back removed — `translations` collection
  * requires admin write access; client writes were causing PERMISSION_DENIED errors.
  */
@@ -31,7 +31,7 @@ object KannadaContentProvider {
     }
 
     /**
-     * Get translation: local cache → Firestore shared read → Gemini translate & cache locally.
+     * Get translation: local cache → Firestore shared read → AI translate & cache locally.
      */
     suspend fun getTranslation(
         context: Context,
@@ -54,7 +54,7 @@ object KannadaContentProvider {
             }
         } catch (_: Exception) { }
 
-        // 3. Translate via Gemini and cache locally (no Firestore write — requires admin access)
+        // 3. Translate via AI and cache locally (no Firestore write — requires admin access)
         val englishText = when (field) {
             "description" -> site.description
             "shortDescription" -> site.shortDescription
@@ -63,13 +63,13 @@ object KannadaContentProvider {
             "legends" -> site.legends
             else -> return@withContext ""
         }
-        if (englishText.isBlank() || !GeminiHeritageService.isInitialized()) return@withContext ""
+        if (englishText.isBlank() || !AIHeritageService.isInitialized()) return@withContext ""
 
         return@withContext try {
             val prompt = """Translate to Kannada (ಕನ್ನಡ). Output ONLY the Kannada text:
 
 $englishText"""
-            val translation = GeminiHeritageService.callGemini(prompt) ?: ""
+            val translation = AIHeritageService.callAI(prompt) ?: ""
             if (translation.isNotBlank()) {
                 cacheLocally(context, site.id, field, translation)
             }

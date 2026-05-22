@@ -35,7 +35,7 @@ import coil.compose.AsyncImage
 import com.example.virasat.data.model.Fact
 import com.example.virasat.R
 import com.example.virasat.data.di.RepositoryProvider
-import com.example.virasat.data.service.GeminiHeritageService
+import com.example.virasat.data.service.AIHeritageService
 import com.example.virasat.data.service.TriviaQuestion
 import com.example.virasat.ui.theme.*
 import android.content.Context
@@ -168,7 +168,7 @@ fun AINarratedTourScreen(
         val baseText = stop?.subtitle ?: ""
         narrationText = baseText
 
-        if (GeminiHeritageService.isInitialized() && stop != null) {
+        if (AIHeritageService.isInitialized() && stop != null) {
             val focus = when (stop) {
                 is HistoryStop -> "history"
                 is ArchitectureStop -> "architecture"
@@ -177,7 +177,7 @@ fun AINarratedTourScreen(
             }
             // Use chapter-specific narration (generateChapterNarration) instead of
             // generic intro narration so each stop gets relevant content.
-            val aiText = GeminiHeritageService.generateChapterNarration(site, focus, language)
+            val aiText = AIHeritageService.generateChapterNarration(site, focus, language)
             narrationText = aiText.ifBlank { baseText }
             // Record ai_tour_used so AiVoyager badge can unlock (#21)
             context.getSharedPreferences("virasat_prefs", Context.MODE_PRIVATE)
@@ -528,7 +528,7 @@ fun AINarratedTourScreen(
                                 showSnapshot = true
                                 isLoading = true
                                 coroutineScope.launch {
-                                    snapshotFact = GeminiHeritageService.describeView(
+                                    snapshotFact = AIHeritageService.describeView(
                                         site,
                                         when (currentStop) {
                                             is HistoryStop -> "history"
@@ -552,7 +552,7 @@ fun AINarratedTourScreen(
                                 if (showTrivia && triviaQuestions.isEmpty()) {
                                     isLoading = true
                                     coroutineScope.launch {
-                                        triviaQuestions = GeminiHeritageService.generateTrivia(site, 3, language)
+                                        triviaQuestions = AIHeritageService.generateTrivia(site, 3, language)
                                         isLoading = false
                                     }
                                 }

@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.virasat.R
 import com.example.virasat.data.di.RepositoryProvider
-import com.example.virasat.data.service.GeminiHeritageService
+import com.example.virasat.data.service.AIHeritageService
 import com.example.virasat.data.service.TriviaQuestion
 import com.example.virasat.data.source.StreetViewData
 import com.google.android.gms.maps.StreetViewPanoramaOptions
@@ -472,8 +472,8 @@ fun TalkingToursScreen(
                                                 4 -> "legends"
                                                 else -> "overview"
                                             }
-                                            val aiText = GeminiHeritageService.describeView(s, focus, language)
-                                            val questions = GeminiHeritageService.generateTrivia(s, 3, language)
+                                            val aiText = AIHeritageService.describeView(s, focus, language)
+                                            val questions = AIHeritageService.generateTrivia(s, 3, language)
                                             snapshotText = aiText.ifBlank { stop.bodyText.take(300) }
                                             snapshotQuestions = questions
                                             isSnapshotLoading = false

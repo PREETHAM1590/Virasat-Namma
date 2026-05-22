@@ -27,7 +27,7 @@ import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.model.HeritageSite
 import com.example.virasat.data.model.QuizQuestion
 import com.example.virasat.data.model.SiteType
-import com.example.virasat.data.service.GeminiHeritageService
+import com.example.virasat.data.service.AIHeritageService
 import com.example.virasat.util.LocaleHelper
 
 @Composable
@@ -40,7 +40,7 @@ fun QuizScreen(
     var selectedAnswer by remember { mutableStateOf<Int?>(null) }
     var showResult by remember { mutableStateOf(false) }
     var answered by remember { mutableStateOf(false) }
-    var isLoadingGemini by remember { mutableStateOf(false) }
+    var isLoadingAI by remember { mutableStateOf(false) }
 
     val ctx = LocalContext.current
     val savedLocale = LocaleHelper.getSavedLocale(ctx)
@@ -57,28 +57,28 @@ fun QuizScreen(
     }
 
     var questions by remember { mutableStateOf<List<QuizQuestion>>(emptyList()) }
-    // #18: incrementing this key forces LaunchedEffect to re-run and call Gemini on retry
+    // #18: incrementing this key forces LaunchedEffect to re-run and call AI on retry
     var quizRetryKey by remember { androidx.compose.runtime.mutableIntStateOf(0) }
 
     LaunchedEffect(site, allSites, quizRetryKey) {
         if (allSites.isEmpty()) return@LaunchedEffect
-        if (GeminiHeritageService.isInitialized()) {
-            isLoadingGemini = true
+        if (AIHeritageService.isInitialized()) {
+            isLoadingAI = true
             val result = if (site != null) {
-                GeminiHeritageService.generateQuizForSite(
+                AIHeritageService.generateQuizForSite(
                     site = site,
                     count = 8,
                     language = language,
                     allSiteNames = allSites.map { it.name }
                 )
             } else {
-                GeminiHeritageService.generateGeneralKarnatakaQuiz(
+                AIHeritageService.generateGeneralKarnatakaQuiz(
                     count = 8,
                     language = language,
                     allSites = allSites
                 )
             }
-            isLoadingGemini = false
+            isLoadingAI = false
             questions = if (result.isNotEmpty()) result
                         else generateQuizQuestionsFromSites(allSites).shuffled().take(8)
         } else {
@@ -135,7 +135,7 @@ fun QuizScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
         ) {
-            if (isLoadingGemini || questions.isEmpty()) {
+            if (isLoadingAI || questions.isEmpty()) {
                 Spacer(modifier = Modifier.height(80.dp))
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -144,8 +144,8 @@ fun QuizScreen(
                     CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = if (isLoadingGemini)
-                            (if (language == "Kannada") "\u0caa\u0ccd\u0cb0\u0cb6\u0ccd\u0ca8\u0cc6\u0c97\u0cb3\u0ca8\u0ccd\u0ca8\u0cc1 \u0ca4\u0caf\u0cbe\u0cb0\u0cbf\u0cb8\u0cb2\u0cbe\u0c97\u0cc1\u0ca4\u0ccd\u0ca4\u0cbf\u0ca6\u0cc6..." else "Generating quiz with Gemini AI...")
+                        text = if (isLoadingAI)
+                            (if (language == "Kannada") "\u0caa\u0ccd\u0cb0\u0cb6\u0ccd\u0ca8\u0cc6\u0c97\u0cb3\u0ca8\u0ccd\u0ca8\u0cc1 \u0ca4\u0caf\u0cbe\u0cb0\u0cbf\u0cb8\u0cb2\u0cbe\u0c97\u0cc1\u0ca4\u0ccd\u0ca4\u0cbf\u0ca6\u0cc6..." else "Generating quiz with AI...")
                         else
                             (if (language == "Kannada") "\u0cb2\u0ccb\u0ca1\u0ccd \u0c86\u0c97\u0cc1\u0ca4\u0ccd\u0ca4\u0cbf\u0ca6\u0cc6..." else "Loading..."),
                         style = MaterialTheme.typography.bodyMedium,
@@ -163,7 +163,7 @@ fun QuizScreen(
                     onRetry = {
                         currentQuestion = 0; score = 0; selectedAnswer = null
                         answered = false; showResult = false
-                        // #18: bump retry key so LaunchedEffect re-runs Gemini generation
+                        // #18: bump retry key so LaunchedEffect re-runs AI generation
                         quizRetryKey++
                     },
                     onBack = onBack

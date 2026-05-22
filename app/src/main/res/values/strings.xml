@@ -254,7 +254,7 @@
     <!-- AI Tour / Talking Tour -->
     <string name="ai_insight">AI Insight</string>
     <string name="ai_snapshot">AI Snapshot</string>
-    <string name="ai_powered_gemini">Powered by Gemini</string>
+    <string name="ai_powered_gemini">Powered by AI</string>
     <string name="ai_tap_insights">Tap to get AI insights</string>
     <string name="ai_questions_consider">Questions to Consider</string>
     <string name="tour_heritage_tour">Heritage Tour</string>

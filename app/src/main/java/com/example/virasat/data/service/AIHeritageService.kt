@@ -14,7 +14,7 @@ import org.json.JSONArray
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
 
-object GeminiHeritageService {
+object AIHeritageService {
     private var apiKey: String = ""
     private var deepseekApiKey: String = ""
     private var novaApiUrl: String = ""
@@ -56,7 +56,7 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
         return org.json.JSONObject().put("contents", contents).toString()
     }
 
-    internal suspend fun callGemini(prompt: String, model: String = "gemini-2.0-flash"): String = withContext(Dispatchers.IO) {
+    internal suspend fun callAI(prompt: String): String = withContext(Dispatchers.IO) {
         return@withContext callNova(prompt)
     }
 
@@ -75,19 +75,17 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
             client.newCall(request).execute().use { response ->
                 val bodyStr = response.body?.string() ?: ""
                 if (!response.isSuccessful) {
-                    // Security: log only status code, not response body (may contain tokens/internal details)
-                    android.util.Log.w("GeminiService", "Nova HTTP ${response.code}")
+                    android.util.Log.w("AIService", "Nova HTTP ${response.code}")
                     return@withContext "NOVA_HTTP_${response.code}"
                 }
                 val text = org.json.JSONObject(bodyStr).let {
                     it.optString("text", "").ifBlank { it.optString("reply", "") }
                 }
-                if (text.isBlank()) android.util.Log.w("GeminiService", "Nova returned empty response")
+                if (text.isBlank()) android.util.Log.w("AIService", "Nova returned empty response")
                 text
             }
         } catch (e: Exception) {
-            // Security: don't log exception details which may contain URLs with API keys
-            android.util.Log.w("GeminiService", "Nova request failed")
+            android.util.Log.w("AIService", "Nova request failed")
             "NOVA_ERROR"
         }
     }
@@ -107,8 +105,7 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
                 .build()
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
-                    // Security: log only status code, not response body
-                    android.util.Log.w("GeminiService", "DeepSeek HTTP ${response.code}")
+                    android.util.Log.w("AIService", "DeepSeek HTTP ${response.code}")
                     return@withContext "DEEPSEEK_HTTP_${response.code}"
                 }
                 val json = org.json.JSONObject(response.body?.string() ?: return@withContext "")
@@ -118,98 +115,22 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
                     .optString("content", "")
             }
         } catch (e: Exception) {
-            android.util.Log.w("GeminiService", "DeepSeek request failed")
+            android.util.Log.w("AIService", "DeepSeek request failed")
             "DEEPSEEK_ERROR"
         }
     }
 
-    private suspend fun callGeminiWithModel(prompt: String, model: String): String = withContext(Dispatchers.IO) {
-        if (!isInitialized()) return@withContext ""
-        try {
-            val requestBody = buildPayload(prompt).toRequestBody("application/json".toMediaType())
-            val request = Request.Builder()
-                .url("https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey")
-                .post(requestBody)
-                .build()
-
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    // Security: don't log response body — may contain API key echo or internal details
-                    val msg = when (response.code) {
-                        429 -> "GEMINI_RATE_LIMIT"
-                        401, 403 -> "GEMINI_AUTH_ERROR"
-                        503 -> "GEMINI_HTTP_503"
-                        else -> "GEMINI_HTTP_${response.code}"
-                    }
-                    android.util.Log.w("GeminiService", "Gemini HTTP ${response.code}")
-                    return@withContext msg
-                }
-                val body = response.body?.string() ?: return@withContext ""
-                val json = org.json.JSONObject(body)
-                if (json.has("candidates")) {
-                    val candidates = json.getJSONArray("candidates")
-                    if (candidates.length() > 0) {
-                        val content = candidates.getJSONObject(0).getJSONObject("content")
-                        val parts = content.getJSONArray("parts")
-                        if (parts.length() > 0) {
-                            return@withContext parts.getJSONObject(0).optString("text", "")
-                        }
-                    }
-                }
-                return@withContext ""
-            }
-        } catch (_: Exception) {
-            ""
-        }
-    }
-
-    private suspend fun callGeminiMultimodal(
+    private suspend fun callMultimodal(
         promptText: String,
-        imageBytes: ByteArray,
-        model: String = "gemini-2.0-flash"
+        imageBytes: ByteArray
     ): String = withContext(Dispatchers.IO) {
         if (!isInitialized()) return@withContext ""
         try {
             val base64Image = Base64.encodeToString(imageBytes, Base64.NO_WRAP)
-
-            // Build multipart request
-            val boundary = "boundary_" + System.currentTimeMillis()
-            val multipartBody = buildMultipartBody(promptText, base64Image, boundary)
-
-            val request = Request.Builder()
-                .url("https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey")
-                .post(multipartBody.toRequestBody("multipart/form-data; boundary=$boundary".toMediaType()))
-                .build()
-
-            client.newCall(request).execute().use { response ->
-                val body = response.body?.string() ?: return@withContext ""
-                val json = org.json.JSONObject(body)
-                if (json.has("candidates")) {
-                    val candidates = json.getJSONArray("candidates")
-                    if (candidates.length() > 0) {
-                        val content = candidates.getJSONObject(0).getJSONObject("content")
-                        val parts = content.getJSONArray("parts")
-                        if (parts.length() > 0) {
-                            return@withContext parts.getJSONObject(0).optString("text", "")
-                        }
-                    }
-                }
-                return@withContext ""
-            }
+            callNova(promptText, base64Image, "image/jpeg")
         } catch (_: Exception) {
             ""
         }
-    }
-
-    private fun buildMultipartBody(text: String, base64Image: String, boundary: String): String {
-        val textPart = org.json.JSONObject().put("text", text)
-        val inlineData = org.json.JSONObject()
-            .put("mime_type", "image/jpeg")
-            .put("data", base64Image)
-        val imagePart = org.json.JSONObject().put("inline_data", inlineData)
-        val parts = org.json.JSONArray().put(textPart).put(imagePart)
-        val payload = org.json.JSONObject().put("parts", parts).toString()
-        return "--$boundary\nContent-Type: application/json\n\n$payload\n\n--$boundary--"
     }
 
     suspend fun generateNarration(site: HeritageSite?, language: String = "English"): String = withContext(Dispatchers.IO) {
@@ -217,7 +138,7 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
         try {
             val context = getSiteContext(site)
             val prompt = "You are a knowledgeable heritage tour guide. Create a warm, engaging 60-second audio narration script in $language about this heritage site.\n\nSite Context:\n$context\n\nRequirements:\n- Write in $language only\n- Natural, conversational tone like a live tour guide\n- 150-200 words, approx 60 seconds spoken\n- Start with \"Welcome to...\" or equivalent in $language\n- Mention the site's historical significance and one fascinating architectural detail\n- End with an invitation to explore"
-            val response = callGemini(prompt) ?: ""
+            val response = callAI(prompt) ?: ""
             response.ifBlank { site?.description ?: "" }
         } catch (e: Exception) {
             site?.shortDescription ?: "Explore this magnificent heritage site."
@@ -233,7 +154,7 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
                 else -> site.description
             }
             val prompt = "You are looking at ${site.name} in Karnataka, India. Your current focus is on the $focus of this site.\n\nContext about $focus:\n${focusText}\n\nIn 2-3 sentences in $language, describe what makes this view special. Mention one specific detail the viewer might notice."
-            val response = callGemini(prompt) ?: ""
+            val response = callAI(prompt) ?: ""
             response.ifBlank { "Observe the remarkable craftsmanship of this heritage site." }
         } catch (e: Exception) {
             "Each corner of this site holds centuries of history waiting to be discovered."
@@ -245,7 +166,7 @@ ${site.facts.joinToString("\n") { "- ${it.title}: ${it.description}" }}
         try {
             val context = getSiteContext(site)
             val prompt = "Based on this heritage site context, create $count engaging trivia questions in $language.\n\nContext:\n$context\n\nReturn ONLY a JSON array with no markdown formatting, no code fences:\n[\n  {\"question\": \"...\", \"options\": [\"A. ...\", \"B. ...\", \"C. ...\", \"D. ...\"], \"correctAnswer\": 0, \"explanation\": \"...\"}\n]\nCorrectAnswer is the 0-based index of the correct option."
-            val response = callGemini(prompt) ?: return@withContext defaultTrivia(site)
+            val response = callAI(prompt) ?: return@withContext defaultTrivia(site)
             parseTriviaJson(response, count)
         } catch (e: Exception) {
             defaultTrivia(site)
@@ -287,7 +208,7 @@ Site context:
 $context
 
 In a warm, conversational tone in $language, describe what the visitor is seeing in 3-4 sentences. Point out one fascinating detail they might miss. Keep it to about 30 seconds of spoken time. Start with an engaging observation."""
-            val response = callGemini(prompt) ?: return@withContext fallbackSnapshotNarration(language)
+            val response = callAI(prompt) ?: return@withContext fallbackSnapshotNarration(language)
             response.ifBlank { fallbackSnapshotNarration(language) }
         } catch (_: Exception) {
             fallbackSnapshotNarration(language)
@@ -314,7 +235,7 @@ Site context:
 $context
 
 Generate exactly 3 short, thought-provoking curiosity questions in $language that encourage the visitor to look closer at this view. Each question should be 1 sentence, no longer than 15 words. Return as a plain numbered list, one per line. No markdown, no quotes."""
-            val response = callGemini(prompt) ?: return@withContext curiosityFallback(site)
+            val response = callAI(prompt) ?: return@withContext curiosityFallback(site)
             response.lines()
                 .map { it.replace(Regex("^\\d+[.)]\\s*"), "").trim() }
                 .filter { it.isNotBlank() && it.endsWith("?") }
@@ -335,7 +256,6 @@ Generate exactly 3 short, thought-provoking curiosity questions in $language tha
         try {
             val context = getSiteContext(site)
 
-            // Compress bitmap for vision API
             val stream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, 85, stream)
             val imageBytes = stream.toByteArray()
@@ -349,12 +269,7 @@ $context
 
 Look at this Street View image carefully. In a warm, conversational tone in $language, describe what the visitor is seeing — point out specific architectural details, textures, materials, or historical features visible in this exact view. Mention one fascinating detail they might miss. Keep it to about 30 seconds of spoken time."""
 
-            val response = if (novaApiUrl.isNotBlank()) {
-                val b64 = Base64.encodeToString(imageBytes, Base64.NO_WRAP)
-                callNova(promptText, b64, "image/jpeg")
-            } else {
-                callGeminiMultimodal(promptText, imageBytes)
-            } ?: return@withContext fallbackSnapshotNarration(language)
+            val response = callMultimodal(promptText, imageBytes)
             response.ifBlank { fallbackSnapshotNarration(language) }
         } catch (_: Exception) {
             fallbackSnapshotNarration(language)
@@ -381,7 +296,7 @@ Instructions:
 - If the user greets you, respond warmly and offer to help explore Karnataka's heritage
 
 Site-specific context provided: ${siteContext.ifBlank { "None" }}"""
-            val response = callGemini(prompt) ?: ""
+            val response = callAI(prompt) ?: ""
             response.ifBlank { "I'm exploring the heritage archives for you. Could you rephrase your question?" }
         } catch (e: Exception) {
             "I'm having trouble connecting to the heritage database. Please try again in a moment."
@@ -407,10 +322,6 @@ Site-specific context provided: ${siteContext.ifBlank { "None" }}"""
             )
         }
     }
-
-    // ---------------------------------------------------------------------------
-    // Quiz generation via Gemini
-    // ---------------------------------------------------------------------------
 
     suspend fun generateQuizForSite(
         site: HeritageSite?,
@@ -447,7 +358,7 @@ Rules:
 - All 4 options plausible, only 1 correct
 - Questions in $language only
 - No duplicate questions"""
-            val response = callGemini(prompt)
+            val response = callAI(prompt)
             if (response.isBlank()) return@withContext emptyList()
             parseQuizJson(response, count)
         } catch (_: Exception) {
@@ -485,7 +396,7 @@ Rules:
 - correctAnswer is 0-based index of the right option
 - All 4 options plausible, only 1 correct
 - Questions in $language only"""
-            val response = callGemini(prompt)
+            val response = callAI(prompt)
             if (response.isBlank()) return@withContext emptyList()
             parseQuizJson(response, count)
         } catch (_: Exception) {
@@ -518,13 +429,9 @@ Rules:
         }
     }
 
-    // ---------------------------------------------------------------------------
-    // Per-chapter audio narration
-    // ---------------------------------------------------------------------------
-
     suspend fun generateChapterNarration(
         site: HeritageSite?,
-        chapterKey: String,   // "introduction" | "history" | "architecture" | "legends" | "facts"
+        chapterKey: String,
         language: String = "English"
     ): String = withContext(Dispatchers.IO) {
         if (!isInitialized() || site == null) return@withContext ""
@@ -534,7 +441,7 @@ Rules:
                 "architecture" -> site.architecture
                 "legends"      -> site.legends
                 "facts"        -> site.facts.take(4).joinToString(" | ") { "${it.title}: ${it.description}" }
-                else           -> site.shortDescription   // introduction
+                else           -> site.shortDescription
             }
             if (baseText.isBlank()) return@withContext ""
             val siteName = if (language.contains("Kannada", ignoreCase = true)) site.nameLocal.ifBlank { site.name } else site.name
@@ -558,7 +465,7 @@ Requirements:
 - No bullet points, no headings, no markdown
 - Naturally mention the site name $siteName once
 - End with one sentence inviting visitors to observe or explore"""
-            val response = callGemini(prompt)
+            val response = callAI(prompt)
             response.ifBlank { baseText }
         } catch (_: Exception) {
             ""

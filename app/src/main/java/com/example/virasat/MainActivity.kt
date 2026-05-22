@@ -31,7 +31,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.virasat.data.di.RepositoryProvider
 import com.example.virasat.data.service.FirebaseAnalyticsHelper
-import com.example.virasat.data.service.GeminiHeritageService
+import com.example.virasat.data.service.AIHeritageService
 import com.example.virasat.data.service.FirebaseAuthService
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeoutOrNull
@@ -57,9 +57,9 @@ class MainActivity : ComponentActivity() {
         window.decorView.setBackgroundColor(android.graphics.Color.parseColor("#FFF5E6"))
         // Defer non-critical init off main thread
         Thread {
-            GeminiHeritageService.initialize(BuildConfig.GEMINI_API_KEY)
-            GeminiHeritageService.initializeDeepSeek(BuildConfig.DEEPSEEK_API_KEY)
-            GeminiHeritageService.initializeNova(BuildConfig.NOVA_API_URL, BuildConfig.NOVA_API_KEY)
+            AIHeritageService.initialize(BuildConfig.GEMINI_API_KEY)
+            AIHeritageService.initializeDeepSeek(BuildConfig.DEEPSEEK_API_KEY)
+            AIHeritageService.initializeNova(BuildConfig.NOVA_API_URL, BuildConfig.NOVA_API_KEY)
             FirebaseAnalyticsHelper.init(this)
         }.start()
         setContent {
