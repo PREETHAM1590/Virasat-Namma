@@ -210,8 +210,8 @@ Virasat-Namma/
 │ name            │     │ checkin_date │     │ site_id (FK)    │
 │ district        │     │ method       │     │ fact_en         │
 │ era             │     └──────────────┘     │ fact_kn         │
-│ type            │                            │ unlocked_date   │
-│ description_en  │                            └─────────────────┘
+│ type            │                          │ unlocked_date   │
+│ description_en  │                          └─────────────────┘
 │ description_kn  │
 │ lat, lng        │
 │ image_path      │
