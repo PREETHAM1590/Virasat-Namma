@@ -174,7 +174,7 @@ To use Firebase features (Auth, Firestore, Storage):
 The AI features (chatbot, quiz generator, audio narration, talking tours) require API keys configured in `local.properties` at the project root:
 
 ```properties
-# local.properties (do NOT commit this file)
+# local.properties 
 geminiApiKey=your_gemini_api_key_here
 mapsApiKey=your_google_maps_api_key_here
 deepseekApiKey=your_deepseek_api_key_here
