@@ -28,7 +28,11 @@
 
 <div align="center">
 
-https://github.com/PREETHAM1590/Virasat-Namma/raw/master/Resources/PROJECT%20DEMO.mp4
+
+
+https://github.com/user-attachments/assets/c3302959-c356-446a-8c6e-a4fdc22dc213
+
+
 
 </div>
 
