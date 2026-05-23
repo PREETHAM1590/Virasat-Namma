@@ -20,3 +20,4 @@ node_modules
 scripts/serviceAccountKey.json
 
 app/google-services.json
+.jules/
