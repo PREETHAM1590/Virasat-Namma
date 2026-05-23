@@ -28,9 +28,7 @@
 
 <div align="center">
 
-https://github.com/user-attachments/assets/PROJECT%20DEMO.mp4
-
-https://github.com/PREETHAM1590/Virasat-Namma/raw/main/images/PROJECT%20DEMO.mp4
+https://github.com/PREETHAM1590/Virasat-Namma/raw/master/Resources/PROJECT%20DEMO.mp4
 
 </div>
 
