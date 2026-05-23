@@ -115,6 +115,122 @@ https://github.com/user-attachments/assets/c3302959-c356-446a-8c6e-a4fdc22dc213
 
 ---
 
+## 🏗️ Architecture
+
+```mermaid
+graph TB
+    subgraph Presentation["Presentation Layer - 45 Compose Screens"]
+        Screens["Jetpack Compose UI"]
+        BottomNav["Bottom Nav: Explore | Heritage | Saved | Profile"]
+    end
+
+    subgraph ViewModels["ViewModel Layer"]
+        HVM["HomeViewModel"]
+        DVM["DetailViewModel"]
+        SVM["SearchViewModel"]
+        PVM["ProfileViewModel"]
+        PAVM["PassportViewModel"]
+        MVM["MapViewModel"]
+    end
+
+    subgraph Repositories["Repository Layer"]
+        HSR["HeritageSiteRepository"]
+        UR["UserRepository"]
+        CR["CheckInRepository"]
+        BR["BookmarkRepository"]
+    end
+
+    subgraph DataSources["Data Sources"]
+        Room["Room DB - SQLite"]
+        Firebase["Firebase - Auth, Firestore, Storage"]
+        AI["AWS Nova LLM"]
+    end
+
+    Screens --> HVM
+    Screens --> DVM
+    Screens --> SVM
+    Screens --> PVM
+    Screens --> PAVM
+    Screens --> MVM
+    HVM --> HSR
+    DVM --> HSR
+    SVM --> HSR
+    PVM --> UR
+    PAVM --> CR
+    MVM --> HSR
+    DVM --> BR
+    HSR --> Room
+    HSR --> Firebase
+    HSR --> AI
+    UR --> Firebase
+    CR --> Room
+    BR --> Room
+```
+
+### Navigation Flow
+
+```mermaid
+graph LR
+    Splash --> Language
+    Language --> Login
+    Login --> Onboarding
+    Onboarding --> Home
+    Home --> SiteDetail
+    Home --> Search
+    Home --> Map
+    Home --> Profile
+    SiteDetail --> AudioGuide
+    SiteDetail --> AINarratedTour
+    SiteDetail --> Quiz
+    SiteDetail --> VirtualTour
+    Profile --> Settings
+    Profile --> Badges
+    Profile --> CheckIns
+    Profile --> Community
+```
+
+### Database Schema
+
+```mermaid
+erDiagram
+    HeritageSite {
+        string id PK
+        string name
+        string nameLocal
+        string district
+        string type
+        float latitude
+        float longitude
+        string qrCodeId
+        float rating
+    }
+    CheckIn {
+        string id PK
+        string site_id FK
+        date checkin_date
+        string method
+    }
+    UnlockedFact {
+        string id PK
+        string site_id FK
+        string fact_en
+        string fact_kn
+        date unlocked_date
+    }
+    Bookmark {
+        string id PK
+        string site_id FK
+        date created_at
+    }
+    HeritageSite ||--o{ CheckIn : has
+    HeritageSite ||--o{ UnlockedFact : has
+    HeritageSite ||--o{ Bookmark : has
+```
+
+> 📐 [Full Architecture Documentation →](docs/ARCHITECTURE.md)
+
+---
+
 ## 📸 Screenshots
 
 <div align="center">
